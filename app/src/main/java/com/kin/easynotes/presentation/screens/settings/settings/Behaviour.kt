@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Style
+import androidx.compose.material.icons.rounded.Title
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -48,7 +49,17 @@ fun MarkdownScreen(navController: NavController, settingsViewModel: SettingsView
                     switchEnabled = { settingsViewModel.update(settingsViewModel.settings.value.copy(editMode = it))}
                 )
             }
+            item {
+                SettingsBox(
+                    title = stringResource(id = R.string.show_only_title),
+                    description = stringResource(id = R.string.show_only_title_description),
+                    icon = Icons.Rounded.Title,
+                    actionType = ActionType.SWITCH,
+                    radius = shapeManager(isBoth = true, radius = settingsViewModel.settings.value.cornerRadius),
+                    variable = settingsViewModel.settings.value.showOnlyTitle,
+                    switchEnabled = { settingsViewModel.update(settingsViewModel.settings.value.copy(showOnlyTitle = it))}
+                )
+            }
         }
     }
-
 }

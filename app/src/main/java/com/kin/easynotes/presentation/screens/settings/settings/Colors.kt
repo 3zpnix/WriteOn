@@ -80,18 +80,6 @@ fun ColorStylesScreen(navController: NavController, settingsViewModel: SettingsV
         LazyColumn {
             item {
                 SettingsBox(
-                    title = stringResource(id = R.string.minimalistic_mode),
-                    description = stringResource(id = R.string.minimalistic_mode_description),
-                    icon = Icons.Rounded.DynamicFeed,
-                    radius = shapeManager(radius = settingsViewModel.settings.value.cornerRadius, isBoth = true),
-                    actionType = ActionType.SWITCH,
-                    variable = settingsViewModel.settings.value.minimalisticMode,
-                    switchEnabled = { settingsViewModel.update(settingsViewModel.settings.value.copy(minimalisticMode = it))}
-                )
-                Spacer(modifier = Modifier.height(18.dp))
-            }
-            item {
-                SettingsBox(
                     title = stringResource(id = R.string.system_theme),
                     description = stringResource(id = R.string.system_theme_description),
                     icon = Icons.Rounded.HdrAuto,

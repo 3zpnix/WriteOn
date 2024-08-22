@@ -23,6 +23,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
+import com.kin.easynotes.R
 
 @Composable
 fun CloseButton(
@@ -101,15 +104,26 @@ fun SettingsButton(onSettingsClicked: () -> Unit) {
 }
 
 @Composable
-fun VaultButton(vaultEnabled: Boolean,onVaultButtonClicked: () -> Unit) {
-    IconButton(onClick = onVaultButtonClicked) {
+fun PrivacyButton(onSettingsClicked: () -> Unit) {
+    IconButton(onClick = onSettingsClicked) {
         Icon(
-            imageVector = if (vaultEnabled) Icons.Rounded.Lock else Icons.Rounded.LockOpen,
-            contentDescription = "Vault",
+            ImageVector.vectorResource(id = R.drawable.incognito_fill),
+            contentDescription = "Settings",
             tint = MaterialTheme.colorScheme.onBackground
         )
     }
 }
+
+// @Composable
+//fun VaultButton(vaultEnabled: Boolean,onVaultButtonClicked: () -> Unit) {
+//    IconButton(onClick = onVaultButtonClicked) {
+//        Icon(
+//            imageVector = if (vaultEnabled) Icons.Rounded.Lock else Icons.Rounded.LockOpen,
+//            contentDescription = "Vault",
+//            tint = MaterialTheme.colorScheme.onBackground
+//        )
+//    }
+//}
 
 @Composable
 fun TitleText(titleText: String) {

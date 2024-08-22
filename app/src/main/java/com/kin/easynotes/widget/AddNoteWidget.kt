@@ -16,6 +16,7 @@ import androidx.glance.layout.Alignment
 import androidx.glance.layout.Row
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.height
+import androidx.glance.layout.padding
 import androidx.glance.layout.width
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
@@ -33,11 +34,11 @@ class AddNoteWidget : GlanceAppWidget() {
                 Row(
                     modifier = GlanceModifier
                         .fillMaxSize()
-                        .height(50.dp)
+                        .height(950.dp)
                         .width(100.dp)
                         .background(GlanceTheme.colors.primary)
                         .clickable { context.startActivity(intent) }
-                        .cornerRadius(20.dp),
+                        .cornerRadius(90.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {

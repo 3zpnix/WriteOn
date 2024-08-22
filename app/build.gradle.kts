@@ -5,7 +5,6 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.hilt)
 }
-
 android {
     namespace = "com.kin.easynotes"
     compileSdk = 34
@@ -73,6 +72,7 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.hilt.navigation.compose)
     implementation(libs.androidx.glance.appwidget)
+    implementation(libs.androidx.biometric.ktx)
     ksp(libs.androidx.room.compiler)
     ksp(libs.hilt.android.compiler)
     ksp(libs.hilt.compile)
@@ -87,4 +87,8 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.compose.calendar)
+    implementation(libs.compose.core)
+    implementation(libs.message.bar)
+    implementation(libs.automatic.backup)
 }

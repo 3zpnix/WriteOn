@@ -2,8 +2,8 @@ package com.kin.easynotes.domain.model
 
 data class Settings(
     val viewMode: Boolean = true,
-    val automaticTheme: Boolean = true,
-    val darkTheme: Boolean = false,
+    val automaticTheme: Boolean = false,
+    val darkTheme: Boolean = true,
     var dynamicTheme: Boolean = false,
     var amoledTheme: Boolean = false,
     var minimalisticMode: Boolean = false,
@@ -15,6 +15,10 @@ data class Settings(
     var vaultSettingEnabled: Boolean = false,
     var vaultEnabled: Boolean = false,
     var editMode: Boolean = false,
+    var showOnlyTitle: Boolean = false,
+    var termsOfService: Boolean = false,
+    val isBiometricEnabled: Boolean = false,
+    val autoBackupEnabled: Boolean = false,
 
     var cornerRadius: Int = 32,
 )

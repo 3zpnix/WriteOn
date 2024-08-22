@@ -4,10 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
@@ -20,19 +17,21 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.kin.easynotes.R
 import com.kin.easynotes.domain.model.Note
 import com.kin.easynotes.presentation.components.CloseButton
 import com.kin.easynotes.presentation.components.DeleteButton
-import com.kin.easynotes.presentation.components.NotesButton
+import com.kin.easynotes.presentation.components.CenteredNotesButton
 import com.kin.easynotes.presentation.components.NotesScaffold
 import com.kin.easynotes.presentation.components.PinButton
 import com.kin.easynotes.presentation.components.SelectAllButton
 import com.kin.easynotes.presentation.components.SettingsButton
 import com.kin.easynotes.presentation.components.TitleText
-import com.kin.easynotes.presentation.components.VaultButton
+import com.kin.easynotes.presentation.components.PrivacyButton
 import com.kin.easynotes.presentation.components.defaultScreenEnterAnimation
 import com.kin.easynotes.presentation.components.defaultScreenExitAnimation
+import com.kin.easynotes.presentation.navigation.NavRoutes
 import com.kin.easynotes.presentation.screens.home.viewmodel.HomeViewModel
 import com.kin.easynotes.presentation.screens.home.widgets.NoteFilter
 import com.kin.easynotes.presentation.screens.settings.model.SettingsViewModel
@@ -45,7 +44,8 @@ fun HomeView (
     viewModel: HomeViewModel = hiltViewModel(),
     settingsModel: SettingsViewModel,
     onSettingsClicked: () -> Unit,
-    onNoteClicked: (Int, Boolean) -> Unit
+    onNoteClicked: (Int, Boolean) -> Unit,
+    navController: NavController
 ) {
     val context = LocalContext.current
     if (viewModel.isPasswordPromptVisible.value) {
@@ -57,7 +57,7 @@ fun HomeView (
                 if (password != null) {
                     if (password.text.isNotBlank()) {
                         viewModel.encryptionHelper.setPassword(password.text)
-                        viewModel.toggleIsVaultMode(true)
+                        viewModel.noteUseCase.observe()
                     }
                 }
                 viewModel.toggleIsPasswordPromptVisible(false)
@@ -68,7 +68,12 @@ fun HomeView (
     if (settingsModel.databaseUpdate.value) viewModel.noteUseCase.observe()
     val containerColor = getContainerColor(settingsModel)
     NotesScaffold(
-        floatingActionButton = { NewNoteButton { onNoteClicked(it, viewModel.isVaultMode.value) } },
+        floatingActionButton = {
+            NewNoteButton(
+                navController = navController, // Pass the navController here
+                onNoteClicked = { onNoteClicked(it, viewModel.isVaultMode.value) }
+            )
+        },
         topBar = {
             AnimatedVisibility(
                 visible = viewModel.selectedNotes.isNotEmpty(),
@@ -97,12 +102,13 @@ fun HomeView (
                     onSettingsClick = onSettingsClicked,
                     onClearClick = { viewModel.changeSearchQuery("") },
                     viewModel = viewModel,
+                    navController = navController,
                     onVaultClicked = {
                         if (!viewModel.isVaultMode.value) {
                             viewModel.toggleIsPasswordPromptVisible(true)
                         } else {
-                            viewModel.encryptionHelper.removePassword()
                             viewModel.toggleIsVaultMode(false)
+                            viewModel.encryptionHelper.removePassword()
                         }
                     }
                 )
@@ -138,10 +144,15 @@ fun getContainerColor(settingsModel: SettingsViewModel): Color {
 }
 
 @Composable
-private fun NewNoteButton(onNoteClicked: (Int) -> Unit) {
-    NotesButton(text = stringResource(R.string.new_note)) {
-        onNoteClicked(0)
-    }
+private fun NewNoteButton(
+    navController: NavController, // Add navController as a parameter
+    onNoteClicked: (Int) -> Unit
+) {
+    CenteredNotesButton(
+        secondButton = "Create",
+        onSecondClick = { onNoteClicked(0) },
+        onSearchButtonClick = { },
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -186,22 +197,20 @@ private fun NotesSearchBar(
     onQueryChange: (String) -> Unit,
     onSettingsClick: () -> Unit,
     onVaultClicked: () -> Unit,
-    onClearClick: () -> Unit
+    onClearClick: () -> Unit,
+    navController: NavController
 ) {
     SearchBar(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 36.dp, vertical = 18.dp),
+            .padding(horizontal = 42.dp, vertical = 10.dp),
         query = query,
         placeholder = { Text(stringResource(R.string.search)) },
-        leadingIcon = { Icon(Icons.Rounded.Search, contentDescription = "Search") },
+        leadingIcon = { PrivacyButton{ navController.navigate(NavRoutes.Privacy.route) } },
         trailingIcon = {
             Row {
                 if (query.isNotBlank()) {
                     CloseButton(contentDescription = "Clear", onCloseClicked = onClearClick)
-                }
-                if (settingsModel.settings.value.vaultSettingEnabled) {
-                    VaultButton(viewModel.isVaultMode.value) { onVaultClicked() }
                 }
                 SettingsButton(onSettingsClicked = onSettingsClick)
             }

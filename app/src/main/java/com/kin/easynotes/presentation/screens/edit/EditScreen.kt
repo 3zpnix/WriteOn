@@ -1,6 +1,7 @@
 package com.kin.easynotes.presentation.screens.edit
 
 import android.icu.text.SimpleDateFormat
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
@@ -104,6 +105,7 @@ fun EditNoteView(
 @Composable
 fun TopBarActions(pagerState: PagerState, onClickBack: () -> Unit, viewModel: EditViewModel) {
     val context = LocalContext.current
+    val isPinned = viewModel.isPinned.value
 
     when (pagerState.currentPage) {
 
@@ -126,35 +128,34 @@ fun TopBarActions(pagerState: PagerState, onClickBack: () -> Unit, viewModel: Ed
                 ) {
                     if (viewModel.noteId.value != 0) {
                         DropdownMenuItem(
-                            text = { Text(stringResource(R.string.delete)) },
-                            leadingIcon = { Icon(Icons.Rounded.Delete, contentDescription = "Delete")},
+                            text = { Text(stringResource(R.string.pin)) },
+                            leadingIcon = { Icon(if (viewModel.isPinned.value) Icons.Rounded.PushPin else Icons.Outlined.PushPin, contentDescription = "Pin")},
+                            onClick = {
+                                val message = if (isPinned) {
+                                    "Unpinned"
+                                } else {
+                                    "Pinned"
+                                }
+                                viewModel.toggleNotePin(!isPinned)
+                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text(stringResource(id = R.string.copy)) },
+                            leadingIcon = { Icon(Icons.Rounded.ContentCopy, contentDescription = "Copy")},
+                            onClick = {
+                                copyToClipboard(context, viewModel.noteDescription.value.text)
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.information)) },
+                            leadingIcon = { Icon(Icons.Rounded.Info, contentDescription = "Information")},
                             onClick = {
                                 viewModel.toggleEditMenuVisibility(false)
-                                viewModel.deleteNote(viewModel.noteId.value)
-                                onClickBack()
+                                viewModel.toggleNoteInfoVisibility(true)
                             }
                         )
                     }
-                    DropdownMenuItem(
-                        text = { Text(stringResource(id = R.string.pinned)) },
-                        leadingIcon = { Icon(if (viewModel.isPinned.value) Icons.Rounded.PushPin else Icons.Outlined.PushPin, contentDescription = "Pin")},
-                        onClick = { viewModel.toggleNotePin(!viewModel.isPinned.value) }
-                    )
-                    DropdownMenuItem(
-                        text = { Text(stringResource(R.string.copy)) },
-                        leadingIcon = { Icon(Icons.Rounded.ContentCopy, contentDescription = "Copy")},
-                        onClick = {
-                            copyToClipboard(context, viewModel.noteDescription.value.text)
-                        }
-                    )
-                    DropdownMenuItem(
-                        text = { Text(stringResource(R.string.information)) },
-                        leadingIcon = { Icon(Icons.Rounded.Info, contentDescription = "Information")},
-                        onClick = {
-                            viewModel.toggleEditMenuVisibility(false)
-                            viewModel.toggleNoteInfoVisibility(true)
-                        }
-                    )
                 }
             }
         }

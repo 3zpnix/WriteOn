@@ -1,4 +1,4 @@
-Easy Notes - Modern Design, Extra Privacy
+OracleSwift - Modern Design, Extra Privacy
 
 Features:
 • 📝 Sleek, Minimalistic Design

@@ -15,6 +15,7 @@ import androidx.compose.material.icons.rounded.Coffee
 import androidx.compose.material.icons.rounded.ContactSupport
 import androidx.compose.material.icons.rounded.Download
 import androidx.compose.material.icons.rounded.Email
+import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Verified
 import androidx.compose.material3.MaterialTheme
@@ -47,16 +48,6 @@ fun AboutScreen(navController: NavController, settingsViewModel: SettingsViewMod
         LazyColumn {
             item {
                 SettingsBox(
-                    title = stringResource(id = R.string.support_list),
-                    icon = Icons.Rounded.Coffee,
-                    actionType = ActionType.CUSTOM,
-                    radius = shapeManager(isBoth = true, radius = settingsViewModel.settings.value.cornerRadius),
-                    customAction = { onExit -> ContributorsClicked(list = SupportConst.SUPPROTERS_LIST, settingsViewModel = settingsViewModel) { onExit() } }
-                )
-                Spacer(modifier = Modifier.height(18.dp))
-            }
-            item {
-                SettingsBox(
                     title = stringResource(id = R.string.build_type),
                     description = settingsViewModel.build,
                     icon = Icons.Rounded.Build,
@@ -80,7 +71,7 @@ fun AboutScreen(navController: NavController, settingsViewModel: SettingsViewMod
                     icon = Icons.Rounded.Verified,
                     actionType = ActionType.LINK,
                     radius = shapeManager(isFirst = true, radius = settingsViewModel.settings.value.cornerRadius),
-                    linkClicked = { uriHandler.openUri("https://github.com/Kin69/EasyNotes/releases") }
+                    linkClicked = { uriHandler.openUri("https://github.com/ezpnix") }
                 )
             }
             item {
@@ -89,7 +80,7 @@ fun AboutScreen(navController: NavController, settingsViewModel: SettingsViewMod
                     icon = Icons.Rounded.Download,
                     actionType = ActionType.LINK,
                     radius = shapeManager(isLast = true, radius = settingsViewModel.settings.value.cornerRadius),
-                    linkClicked = { uriHandler.openUri("https://github.com/Kin69/EasyNotes/releases") }
+                    linkClicked = { uriHandler.openUri("https://github.com/ezpnix") }
                 )
                 Spacer(modifier = Modifier.height(18.dp))
             }
@@ -106,27 +97,16 @@ fun AboutScreen(navController: NavController, settingsViewModel: SettingsViewMod
             item {
                 SettingsBox(
                     isBig = true,
-                    title = stringResource(id = R.string.discord),
-                    icon = Icons.AutoMirrored.Rounded.ContactSupport,
-                    actionType = ActionType.LINK,
-                    linkClicked = { uriHandler.openUri(ConnectionConst.SUPPORT_DISCORD) },
-                    radius = shapeManager(radius = settingsViewModel.settings.value.cornerRadius),
-                )
-            }
-            item {
-                SettingsBox(
-                    isBig = true,
-                    title = stringResource(id = R.string.feature),
-                    icon = Icons.Rounded.BugReport,
-                    linkClicked = { uriHandler.openUri(ConnectionConst.GITHUB_FEATURE_REQUEST) },
-                    actionType = ActionType.LINK,
+                    title = stringResource(id = R.string.homepage),
+                    icon = Icons.Rounded.Home,
+                    actionType = ActionType.CUSTOM,
                     radius = shapeManager(isLast = true, radius = settingsViewModel.settings.value.cornerRadius),
+                    customAction = { navController.navigateUp() }
                 )
             }
+}
         }
     }
-
-}
 
 @Composable
 fun ContributorsClicked(
@@ -135,7 +115,7 @@ fun ContributorsClicked(
     onExit: () -> Unit
 ) {
     ListDialog(
-        text = stringResource(R.string.support_list),
+        text = stringResource(R.string.app_list),
         list = list,
         settingsViewModel = settingsViewModel,
         onExit = onExit,

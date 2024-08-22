@@ -96,7 +96,7 @@ class EditViewModel @Inject constructor(
         if (id != 0) {
             viewModelScope.launch {
                 noteUseCase.getNoteById(id).collectLatest { note ->
-                    if (note != null && !isInsertingImage.value) {
+                    if (!isInsertingImage.value) {
                         syncNote(note)
                     }
                 }
@@ -208,7 +208,7 @@ class EditViewModel @Inject constructor(
         val rangeOfCurrentLine = getIntRangeForCurrentLine()
         val updatedText = if (!rangeOfCurrentLine.isEmpty()) {
             val currentLineContents = currentText.substring(rangeOfCurrentLine)
-            val newLine = if (isSelectorAtStartOfNonEmptyLine()) {
+            @Suppress("NAME_SHADOWING") val newLine = if (isSelectorAtStartOfNonEmptyLine()) {
                 insertText + currentLineContents
             } else {
                 if (newLine) {

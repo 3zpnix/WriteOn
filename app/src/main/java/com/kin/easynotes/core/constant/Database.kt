@@ -14,7 +14,7 @@ object DatabaseConst {
     /**
      * Name of backup
      */
-    const val NOTES_DATABASE_BACKUP_NAME = "EasyNotes"
+    const val NOTES_DATABASE_BACKUP_NAME = "OracleSwift"
 
     /**
      * Exported settings datastore name and extension

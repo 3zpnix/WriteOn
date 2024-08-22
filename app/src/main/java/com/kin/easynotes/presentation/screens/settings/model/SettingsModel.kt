@@ -8,27 +8,37 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.kin.easynotes.BuildConfig
 import com.kin.easynotes.R
-import com.kin.easynotes.data.repository.BackupRepository
+import com.kin.easynotes.data.repository.ImportExportRepository
 import com.kin.easynotes.data.repository.BackupResult
 import com.kin.easynotes.domain.model.Settings
+import com.kin.easynotes.domain.usecase.ImportExportUseCase
+import com.kin.easynotes.domain.usecase.ImportResult
 import com.kin.easynotes.domain.usecase.NoteUseCase
 import com.kin.easynotes.domain.usecase.SettingsUseCase
+import com.kin.easynotes.presentation.screens.settings.BackupWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    val backup: BackupRepository,
+    val backup: ImportExportRepository,
     private val settingsUseCase: SettingsUseCase,
-    val noteUseCase: NoteUseCase
+    val noteUseCase: NoteUseCase,
+    private val importExportUseCase: ImportExportUseCase,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
     val databaseUpdate = mutableStateOf(false)
     var password : String? = null
@@ -39,6 +49,10 @@ class SettingsViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             loadSettings()
+            // Start or stop auto backup based on saved setting
+            if (_settings.value.autoBackupEnabled) run {
+                startAutoBackup(context)
+            }
         }
     }
 
@@ -53,23 +67,53 @@ class SettingsViewModel @Inject constructor(
         _settings.value = newSettings.copy()
         viewModelScope.launch {
             settingsUseCase.saveSettingsToRepository(newSettings)
+            // Manage auto backup based on the updated setting
+            if (newSettings.autoBackupEnabled) {
+                startAutoBackup(context)
+            } else {
+                stopAutoBackup(context)
+            }
         }
     }
 
+    // Auto backup management functions
+    private fun startAutoBackup(context: Context) {
+        val backupRequest = PeriodicWorkRequestBuilder<BackupWorker>(1, TimeUnit.DAYS)
+            .build()
 
-    fun onExport(uri: Uri, context: Context) {
+        WorkManager.getInstance(context).enqueueUniquePeriodicWork(
+            "AutoBackup",
+            ExistingPeriodicWorkPolicy.REPLACE,
+            backupRequest
+        )
+    }
+
+    private fun stopAutoBackup(context: Context) {
+        WorkManager.getInstance(context).cancelUniqueWork("AutoBackup")
+    }
+
+
+    fun onExportBackup(uri: Uri, context: Context) {
         viewModelScope.launch {
-            val result = backup.export(uri, password)
+            val result = backup.exportBackup(uri, password)
             handleBackupResult(result, context)
             databaseUpdate.value = true
         }
     }
 
-    fun onImport(uri: Uri, context: Context) {
+    fun onImportBackup(uri: Uri, context: Context) {
         viewModelScope.launch {
-            val result = backup.import(uri, password)
+            val result = backup.importBackup(uri, password)
             handleBackupResult(result, context)
             databaseUpdate.value = true
+        }
+    }
+
+    fun onImportFiles(uris: List<Uri>, context: Context) {
+        viewModelScope.launch {
+            importExportUseCase.importNotes(uris) { result ->
+                handleImportResult(result, context)
+            }
         }
     }
 
@@ -109,9 +153,17 @@ class SettingsViewModel @Inject constructor(
 
     private fun handleBackupResult(result: BackupResult, context: Context) {
         when (result) {
-            is BackupResult.Success -> {}
+            is BackupResult.Success -> showToast("Backup Restored", context)
             is BackupResult.Error -> showToast("Error", context)
-            BackupResult.BadPassword -> showToast(context.getString(R.string.detabase_restore_error), context)
+            BackupResult.BadPassword -> showToast(context.getString(R.string.database_restore_error), context)
+        }
+    }
+
+    private fun handleImportResult(result: ImportResult, context: Context) {
+        when (result.successful) {
+            result.total -> {showToast(context.getString(R.string.file_import_success), context)}
+            0 -> {showToast(context.getString(R.string.file_import_error), context)}
+            else -> {showToast(context.getString(R.string.file_import_partial_error), context)}
         }
     }
 

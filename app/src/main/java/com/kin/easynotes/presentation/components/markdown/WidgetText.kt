@@ -143,7 +143,7 @@ fun WidgetMarkdownElement(
                         )
                     } else {
                         Text(
-                            text = context.getString(R.string.unsuported_image_size),
+                            text = context.getString(R.string.unsupported_image_size),
                             style = TextStyle(
                                 fontSize = fontSize,
                                 fontWeight = weight,

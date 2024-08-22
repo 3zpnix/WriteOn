@@ -3,7 +3,12 @@ package com.kin.easynotes.presentation.screens.home.widgets
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.List
+import androidx.compose.material.icons.automirrored.rounded.Message
+import androidx.compose.material.icons.automirrored.rounded.NoteAdd
 import androidx.compose.material.icons.automirrored.rounded.Notes
+import androidx.compose.material.icons.automirrored.rounded.ViewList
+import androidx.compose.material.icons.automirrored.rounded.WrapText
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -39,7 +44,7 @@ fun NoteFilter(
                     getEmptyIcon(searchText),
                     contentDescription = "Placeholder icon",
                     tint = MaterialTheme.colorScheme.outline,
-                    modifier = Modifier.size(64.dp)
+                    modifier = Modifier.size(55.dp),
                 )
             },
             placeholderText = getEmptyText(searchText)
@@ -71,15 +76,15 @@ private fun filterNotes(notes: List<Note>, searchText: String?): List<Note> {
 @Composable
 private fun getEmptyText(searchText: String?): String {
     return when {
-        searchText.isNullOrEmpty() -> stringResource(R.string.no_created_notes)
-        else -> stringResource(R.string.no_found_notes)
+        searchText.isNullOrEmpty() -> stringResource(R.string.press_create)
+        else -> stringResource(R.string.empty_notes)
     }
 }
 
 @Composable
 private fun getEmptyIcon(searchText: String?): ImageVector {
     return when {
-        searchText.isNullOrEmpty() -> Icons.AutoMirrored.Rounded.Notes
+        searchText.isNullOrEmpty() -> Icons.AutoMirrored.Rounded.ViewList
         else -> Icons.Rounded.Search
     }
 }
