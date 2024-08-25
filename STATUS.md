@@ -1,15 +1,26 @@
-# Project Status - Version 1.2
+# OracleSwift v0.1
+Version Changelogs: 
+> Version 0.1 <br>
+> - Added Biometric Authentication
+> - Enhanced User Interface
+> - Modified Search Bar
+> - Go-to Calendar
+> - Optimizations
+> - Typos fixed
+> <br> </br>
+> Last Updated: 08/22/2024
 
-## Completed Tasks
-- [x] Markdown images,Checkmarks
-- [x] Note Search
-- [x] Note Info
-- [x] Font Fix
-- [x] EditScreen Simplify
-- [x] Fix Bugs and typos
-- [x] Note created time
+> Version 0.2 <br>
+> - Coming Soon...
 
-## In Progress
-- [X] Add debug builds
-- [X] Code Refactor (EditScreen finished)
-- [ ] Feature requests
+## In Progress:
+- [ ] Floating Search Button Navigation
+- [ ] Recycle Bin (Not sure about adding this)
+- [ ] Sketch directly through notes (Will come later)
+- [ ] Display over other apps (Movable floating display)
+- Might add a security layer to it to avoid issues
+- Can be toggled within the tools settings
+- [ ] Alternative app login (Passcode, etc)
+- [ ] Alternative backup methods (?)
+
+Contact me if you have any other suggestions or feedbacks about the current/upcoming changes.
