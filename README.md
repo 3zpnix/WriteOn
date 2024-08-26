@@ -51,7 +51,7 @@ Lightweight android notes app with Material You.
 ## ⚠️ License
     OracleSwift
 
-    Copyright @2024 by 3zpnix
+    Copyright (C)2024 3zpnix
     
     This software is free to use, modify, and redistribute under 
     the terms of the GNU General Public License, as published by the 
