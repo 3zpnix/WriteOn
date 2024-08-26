@@ -3,7 +3,7 @@
 <div align="left">
 <img width="192" height="192" src="app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp" align="left" alt="" > 
 
-# OracleSwift
+### OracleSwift ✅
 Lightweight android notes app with Material You.
 
 [<img src=".github/github.png" alt="Get it on GitHub" height="55">](https://github.com/Kin69/EasyNotes/releases/latest) &nbsp; 
