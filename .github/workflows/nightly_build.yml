@@ -55,17 +55,17 @@ jobs:
           BUILD_TOOLS_VERSION: "34.0.0"
 
       - name: Rename APK
-        run: mv app/build/outputs/apk/release/app-release-signed.apk EasyNotes-nightly.apk
+        run: mv app/build/outputs/apk/release/app-release-signed.apk OracleSwift-nightly.apk
 
       - name: Upload the APK
         uses: actions/upload-artifact@v4.3.5
         with:
-          name: EasyNotes-Nightly
-          path: EasyNotes-nightly.apk
+          name: OracleSwift-Nightly
+          path: OracleSwift-nightly.apk
 
       - name: Update nightly release
         uses: pyTooling/Actions/releaser@main
         with:
          tag: Nightly
          token: ${{ secrets.TOKEN }}
-         files: EasyNotes-nightly.apk
+         files: OracleSwift-nightly.apk
