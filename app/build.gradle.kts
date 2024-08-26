@@ -6,15 +6,15 @@ plugins {
     alias(libs.plugins.hilt)
 }
 android {
-    namespace = "com.kin.easynotes"
+    namespace = "com.ezpnix.oracleswift"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.kin.easynotes"
+        applicationId = "com.ezpnix.oracleswift"
         minSdk = 26
         targetSdk = 34
         versionCode = 5
-        versionName = "1.3"
+        versionName = "0.1"
         vectorDrawables {
             useSupportLibrary = true
         }
