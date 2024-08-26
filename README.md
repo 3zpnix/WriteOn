@@ -6,8 +6,8 @@
 # OracleSwift
 Lightweight android notes app with Material You.
 
-[<img src=".github/github.png" alt="Get it on GitHub" height="55">](https://github.com/Kin69/EasyNotes/releases/latest) &nbsp; 
-[<img src=".github/fdroid.png" alt="Get it on F-Droid" height="55">](https://f-droid.org/packages/com.kin.easynotes/) &nbsp;
+[<img src=".github/github.png" alt="Get it on GitHub" height="55">](https://github.com/3zpnix/OracleSwift/tree/master) &nbsp; 
+[<img src=".github/fdroid.png" alt="Get it on F-Droid" height="55">](https://f-droid.org/) &nbsp;
 
 ---
 

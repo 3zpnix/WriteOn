@@ -67,7 +67,7 @@ fun AboutScreen(navController: NavController, settingsViewModel: SettingsViewMod
                     icon = Icons.Rounded.Download,
                     actionType = ActionType.LINK,
                     radius = shapeManager(isLast = true, radius = settingsViewModel.settings.value.cornerRadius),
-                    linkClicked = { uriHandler.openUri("https://github.com/ezpnix") }
+                    linkClicked = { uriHandler.openUri("https://github.com/3zpnix/OracleSwift/tree/master") }
                 )
                 Spacer(modifier = Modifier.height(18.dp))
             }

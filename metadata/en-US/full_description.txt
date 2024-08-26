@@ -17,4 +17,4 @@ A minimalistic note-taking app with Material You design to create a visually att
 
 Whether you're jotting down quick thoughts or crafting detailed notes, Oracle Swift is the perfect companion for staying organized and creative. Download now and experience note-taking like never before!
 
-Open-Source Code: https://www.github.com/3zpnix
+Open-Source Code: https://github.com/3zpnix/OracleSwift/tree/master
