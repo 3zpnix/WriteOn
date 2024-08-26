@@ -1,5 +1,0 @@
-• Widgets
-• New markdown elements
-• More Settings
-• Encrypted vault
-• Bug fixes

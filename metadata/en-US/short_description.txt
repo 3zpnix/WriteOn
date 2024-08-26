@@ -1,1 +1,1 @@
-Private, Material, Markdown supported notes app.
+A clean, intuitive note-taking open source app - Safe and Secure

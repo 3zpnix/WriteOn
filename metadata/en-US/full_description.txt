@@ -1,10 +1,20 @@
-OracleSwift - Modern Design, Extra Privacy
+Oracle Swift - is a beautifully designed note-taking app that helps you capture your thoughts, ideas, and inspirations in a clean, distraction-free environment. With a focus on simplicity and usability, Oracle Swift offers customizable themes that adapt to your preferences, ensuring a comfortable writing experience whether you prefer light or dark modes.
 
-Features:
-• 📝 Sleek, Minimalistic Design
-• 🌟 Full Markdown Support (Images Included)
-• 🔒 Secure, Encrypted Notes Vault
-• 🚀 Constant Updates & Improvements
-• 🔐 Zero Permissions Required
+A minimalistic note-taking app with Material You design to create a visually attractive interface.
 
-Download now and experience note-taking like never before!
+🔐 Key features include:
+
+★ Biometric Authentication: Secure your notes with biometric authentication, keeping your data safe and private.
+★ Zero Permissions Required: Enjoy peace of mind knowing that Oracle Swift doesn't require unnecessary permissions.
+★ Backup/Restore: Easily back up your notes and restore them whenever needed.
+★ Automatic Backup: Ensure your notes are always safe with automatic backup options.
+★ Screen Protection: Protect your notes from prying eyes with screen protection features.
+★ Markdown Support: Format your notes effortlessly with Markdown, allowing you to create rich text notes with ease.
+★ Customizable Themes: Choose from a variety of themes to match your style, with options designed to be easy on the eyes.
+★ Intuitive UI: A user-friendly interface that keeps your notes organized and accessible.
+★ Offline Functionality: Keep your notes with you, even without an internet connection. Basically ad-free & clutter-free.
+★ Data Privacy: Your notes are stored securely on your device, ensuring your personal information remains private.
+
+Whether you're jotting down quick thoughts or crafting detailed notes, Oracle Swift is the perfect companion for staying organized and creative. Download now and experience note-taking like never before!
+
+Open-Source Code: https://www.github.com/3zpnix
