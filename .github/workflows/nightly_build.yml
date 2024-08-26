@@ -64,7 +64,7 @@ jobs:
           path: EasyNotes-nightly.apk
 
       - name: Update nightly release
-        uses: eine/tip@master
+        uses: pyTooling/Actions/releaser@main
         with:
          tag: Nightly
          token: ${{ secrets.TOKEN }}
