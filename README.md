@@ -1,7 +1,7 @@
 
 
-<div align="left">
-<img width="192" height="192" src="app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp" align="left" alt="" > 
+<div align="center">
+<img width="192" height="192" src="app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp" align="center" alt="" > 
 
 ### OracleSwift ✅
 Lightweight android notes app with Material You.
