@@ -173,7 +173,7 @@ fun BottomModal(navController: NavController,settingsViewModel: SettingsViewMode
                 icon = Icons.Rounded.Android,
                 radius = shapeManager(radius = settingsViewModel.settings.value.cornerRadius),
                 actionType = ActionType.CUSTOM,
-                customAction = { uriHandler.openUri(ConnectionConst.DISCORD) }
+                customAction = { uriHandler.openUri(ConnectionConst.GITHUB) }
             )
             SettingsBox(
                 title = "KoFi",
