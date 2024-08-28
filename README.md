@@ -1,10 +1,10 @@
 
 
-<div align="left">
-<img width="192" height="192" src="app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp" align="left" alt="" > 
+<div align="center">
+<img width="192" height="192" src="app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp" align="center" alt="" > 
 
 ### OracleSwift ✅
-Lightweight android notes app with Material You.
+A clean, intuitive note-taking open source app with Material You design.
 
 [<img src=".github/github.png" alt="Get it on GitHub" height="55">](https://github.com/3zpnix/OracleSwift/tree/master) &nbsp; 
 [<img src=".github/fdroid.png" alt="Get it on F-Droid" height="55">](https://f-droid.org/) &nbsp;
@@ -51,7 +51,7 @@ Lightweight android notes app with Material You.
 ## ⚠️ License
     OracleSwift
 
-    Copyright @2024 by 3zpnix
+    Copyright (C)2024 3zpnix
     
     This software is free to use, modify, and redistribute under 
     the terms of the GNU General Public License, as published by the 

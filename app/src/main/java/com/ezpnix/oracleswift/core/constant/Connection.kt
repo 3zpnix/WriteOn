@@ -8,6 +8,8 @@ object ConnectionConst {
 
     const val DISCORD = "https://discord.gg/y8eZjDDNbj"
 
+    const val GITHUB = "https://github.com/3zpnix/OracleSwift/tree/master"
+
     const val KOFI = "https://ko-fi.com/3zpnix"
 
     const val TERMS_EFFECTIVE_DATE = "2024/08/25"
