@@ -4,7 +4,7 @@
 <img width="192" height="192" src="app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp" align="center" alt="" > 
 
 ### OracleSwift ✅
-Lightweight android notes app with Material You.
+A clean, intuitive note-taking open source app with Material You design.
 
 [<img src=".github/github.png" alt="Get it on GitHub" height="55">](https://github.com/3zpnix/OracleSwift/tree/master) &nbsp; 
 [<img src=".github/fdroid.png" alt="Get it on F-Droid" height="55">](https://f-droid.org/) &nbsp;
