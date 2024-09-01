@@ -3,10 +3,10 @@
 <div align="center">
 <img width="192" height="192" src="app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp" align="center" alt="" > 
 
-### OracleSwift ✅
+### Write On: Simple Notes ✅
 A clean, intuitive note-taking open source app with Material You design.
 
-[<img src=".github/github.png" alt="Get it on GitHub" height="55">](https://github.com/3zpnix/OracleSwift/tree/master) &nbsp; 
+[<img src=".github/github.png" alt="Get it on GitHub" height="55">](https://github.com/3zpnix/WriteOn/tree/master) &nbsp; 
 [<img src=".github/fdroid.png" alt="Get it on F-Droid" height="55">](https://f-droid.org/) &nbsp;
 
 ---
@@ -25,7 +25,7 @@ A clean, intuitive note-taking open source app with Material You design.
 
 ## 🎉 Available Features
 - Biometric Authentication: Secure your notes with biometric authentication, keeping your data safe and private.
-- Zero Permissions Required: Enjoy peace of mind knowing that Oracle Swift doesn't require unnecessary permissions.
+- Zero Permissions Required: Enjoy peace of mind knowing that WriteOn doesn't require unnecessary permissions.
 - Backup/Restore: Easily back up your notes and restore them whenever needed.
 - Automatic Backup: Ensure your notes are always safe with automatic backup options.
 - Screen Protection: Protect your notes from prying eyes with screen protection features.
@@ -49,7 +49,7 @@ A clean, intuitive note-taking open source app with Material You design.
 
 ---
 ## ⚠️ License
-    OracleSwift
+    Write On: Simple Notes
 
     Copyright (C)2024 3zpnix
     

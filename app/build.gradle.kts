@@ -6,15 +6,15 @@ plugins {
     alias(libs.plugins.hilt)
 }
 android {
-    namespace = "com.ezpnix.oracleswift"
+    namespace = "com.ezpnix.writeon"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.ezpnix.oracleswift"
+        applicationId = "com.ezpnix.writeon"
         minSdk = 26
         targetSdk = 34
         versionCode = 1
-        versionName = "0.1"
+        versionName = "1.0"
         vectorDrawables {
             useSupportLibrary = true
         }

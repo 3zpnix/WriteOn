@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">OracleSwift</string>
+    <string name="app_name">WriteOn</string>
     <string name="new_note">Create</string>
     <string name="press_create">Press Create To Begin</string>
     <string name="created_time">Created Time</string>
@@ -12,7 +12,7 @@
     <string name="select_all">Select all</string>
     <string name="delete">Delete</string>
     <string name="information">Details</string>
-    <string name="search">Search • with • OracleSwift</string>
+    <string name="search">Search for notes ⌕</string>
     <string name="screen_settings">Settings</string>
     <string name="display">Display</string>
     <string name="system_theme">System Theme</string>
@@ -26,7 +26,7 @@
     <string name="version">Version</string>
     <string name="latest_release">Latest Release</string>
     <string name="restore">Restore</string>
-    <string name="support">Thank you for downloading (^-^)</string>
+    <string name="support">(✔) Write On: Simple Notes</string>
     <string name="color_styles"><![CDATA[Colors & Styles]]></string>
     <string name="language">Language</string>
     <string name="markdown">Additional Customizations</string>
@@ -106,21 +106,21 @@
     <string name="auto_backup">Automatic Backup</string>
     <string name="auto_backup_description">Locally updates every day</string>
     <string name="terms_acceptance_title">1. Acceptance of Terms</string>
-    <string name="terms_acceptance_body">Welcome to OracleSwift. By using our application, you agree to these Terms of Service. Please read them carefully.</string>
+    <string name="terms_acceptance_body">Welcome to WriteOn. By using our application, you agree to these Terms of Service. Please read them carefully.</string>
     <string name="terms_license_title">2. License in General</string>
-    <string name="terms_license_body">OracleSwift is licensed under the **GNU General Public License (GPL) version 3**. This permits you to:\n- Use, modify, and share the application freely.\n- Distribute the application or modified versions, provided you also distribute the source code and retain the GPL license.</string>
+    <string name="terms_license_body">WriteOn is licensed under the **GNU General Public License (GPL) version 3**. This permits you to:\n- Use, modify, and share the application freely.\n- Distribute the application or modified versions, provided you also distribute the source code and retain the GPL license.</string>
     <string name="terms_responsibilities_title">3. User Responsibilities</string>
     <string name="terms_responsibilities_body">You are responsible for maintaining the confidentiality of your account information and for all activities under your account.</string>
     <string name="terms_liabilities_title">4. Limitation of Liability</string>
-    <string name="terms_liabilities_body">OracleSwift is provided "as is," without any warranties. We do not guarantee that the app will be error-free, secure, or uninterrupted.</string>
+    <string name="terms_liabilities_body">WriteOn is provided "as is," without any warranties. We do not guarantee that the app will be error-free, secure, or uninterrupted.</string>
     <string name="terms_warranties_title">5. Disclaimer of Warranties</string>
-    <string name="terms_warranties_body">We are not liable for any damages resulting from your use of OracleSwift, including indirect, incidental, or consequential damages.</string>
+    <string name="terms_warranties_body">We are not liable for any damages resulting from your use of WriteOn, including indirect, incidental, or consequential damages.</string>
     <string name="terms_changes_title">6. Modification of Terms</string>
     <string name="terms_changes_body">We may update these terms from time to time. The updated terms will be posted in the website, and the effective date will be updated accordingly.</string>
     <string name="terms_privacy_title">7. Privacy Policy</string>
-    <string name="terms_privacy_body">OracleSwift does not collect any personal data. For more information, please refer to our Privacy Policy available at</string>
+    <string name="terms_privacy_body">WriteOn does not collect any personal data. For more information, please refer to our Privacy Policy available at</string>
     <string name="terms_contact_title">8. Contact Us</string>
-    <string name="terms_contact_body">For any questions about these Terms of Service of OracleSwift, please contact us at</string>
+    <string name="terms_contact_body">For any questions about these Terms of Service of WriteOn, please contact us at</string>
     <string name="terms_effective_date">Effective Date</string>
     <string name="agree">Agree</string>
     <string name="terms_of_service">Terms of service</string>

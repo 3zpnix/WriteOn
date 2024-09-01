@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider
-    android:configure="com.ezpnix.oracleswift.widget.NotesWidgetActivity"
+    android:configure="com.ezpnix.writeon.widget.NotesWidgetActivity"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:minHeight="50.dp"
     android:minWidth="100.dp"

@@ -21,6 +21,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "OracleSwift"
+rootProject.name = "WriteOn"
 include(":app")
  

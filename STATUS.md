@@ -1,4 +1,4 @@
-# OracleSwift v0.1
+# Write On: Simple Notes v1.0
 Version Changelogs: 
 > Version 0.1 <br>
 > - Added Biometric Authentication
