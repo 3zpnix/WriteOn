@@ -55,17 +55,17 @@ jobs:
           BUILD_TOOLS_VERSION: "34.0.0"
 
       - name: Rename APK
-        run: mv app/build/outputs/apk/release/app-release-signed.apk OracleSwift-nightly.apk
+        run: mv app/build/outputs/apk/release/app-release-signed.apk WriteOn-nightly.apk
 
       - name: Upload the APK
         uses: actions/upload-artifact@v4.3.5
         with:
-          name: OracleSwift-Nightly
-          path: OracleSwift-nightly.apk
+          name: WriteOn-Nightly
+          path: WriteOn-nightly.apk
 
       - name: Update nightly release
         uses: pyTooling/Actions/releaser@main
         with:
          tag: Nightly
          token: ${{ secrets.TOKEN }}
-         files: OracleSwift-nightly.apk
+         files: WriteOn-nightly.apk
