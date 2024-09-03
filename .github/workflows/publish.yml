@@ -1,4 +1,4 @@
-name: Publish WriteOn Package
+name: Publish Docker Image
 
 on:
   push:
@@ -10,36 +10,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Java 17
-        uses: actions/setup-java@v4
+      - uses: docker/build-push-action@v4
         with:
-          java-version: 17
-          distribution: 'adopt'
-          cache: gradle
-
-      - name: Grant execution permission to Gradle Wrapper
-        run: chmod +x gradlew
-
-      - name: Build Release APK
-        run: ./gradlew assembleRelease
-
-      - name: Sign app APK
-        uses: r0adkll/sign-android-release@v1
-        with:
-          releaseDirectory: app/build/outputs/apk/release
-          signingKeyBase64: ${{ secrets.KEY_BASE64 }}
-          alias: ${{ secrets.KEY_ALIAS }}
-          keyStorePassword: ${{ secrets.KEYSTORE_PASS }}
-          keyPassword: ${{ secrets.KEYSTORE_PASS }}
+          context: .
+          push: true
+          tags: ${{ secrets.GITHUB_REPOSITORY }}:latest
+          # Use a more specific tag if desired (e.g., ${{ secrets.GITHUB_REPOSITORY }}:v1.0.0)
         env:
-          BUILD_TOOLS_VERSION: "34.0.0"
-
-      - name: Rename APK
-        run: mv app/build/outputs/apk/release/app-release-signed.apk WriteOn.apk
-
-      - name: Upload the APK
-        uses: actions/upload-artifact@v4.3.5
-        with:
-          name: WriteOn-APK
-          path: WriteOn.apk
+          DOCKER_HOST: unix:///var/run/docker.sock
+          DOCKER_TLS_CERTDIR: ''
+          DOCKER_USERNAME: ${{ secrets.GITHUB_ACTOR }}
+          DOCKER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
