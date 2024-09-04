@@ -14,8 +14,6 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.GITHUB_REPOSITORY }}:latest
-          # Use a more specific tag if desired (e.g., ${{ secrets.GITHUB_REPOSITORY }}:v1.0.0)
         env:
           DOCKER_HOST: unix:///var/run/docker.sock
           DOCKER_TLS_CERTDIR: ''
