@@ -1,4 +1,4 @@
-Oracle Swift - is a beautifully designed note-taking app that helps you capture your thoughts, ideas, and inspirations in a clean, distraction-free environment. With a focus on simplicity and usability, Oracle Swift offers customizable themes that adapt to your preferences, ensuring a comfortable writing experience whether you prefer light or dark modes.
+Write On: Simple Notepad - is a beautifully designed note-taking app that helps you capture your thoughts, ideas, and inspirations in a clean, distraction-free environment. With a focus on simplicity and usability, Write On offers customizable themes that adapt to your preferences, ensuring a comfortable writing experience whether you prefer light or dark modes.
 
 A minimalistic note-taking app with Material You design to create a visually attractive interface.
 
@@ -15,6 +15,6 @@ A minimalistic note-taking app with Material You design to create a visually att
 ★ Offline Functionality: Keep your notes with you, even without an internet connection. Basically ad-free & clutter-free.
 ★ Data Privacy: Your notes are stored securely on your device, ensuring your personal information remains private.
 
-Whether you're jotting down quick thoughts or crafting detailed notes, Oracle Swift is the perfect companion for staying organized and creative. Download now and experience note-taking like never before!
+Whether you're jotting down quick thoughts or crafting detailed notes, Write On is the perfect companion for staying organized and creative. Download now and experience note-taking like never before!
 
-Open-Source Code: https://github.com/3zpnix/OracleSwift/tree/master
+Open-Source Code: https://github.com/3zpnix/WriteOn
