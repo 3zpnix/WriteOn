@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">WriteOn</string>
+    <string name="app_name">Write On</string>
     <string name="new_note">Create</string>
     <string name="press_create">Press Create To Begin</string>
     <string name="created_time">Created Time</string>
