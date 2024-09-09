@@ -5,7 +5,7 @@ A minimalistic note-taking app with Material You design to create a visually att
 🔐 Key features include:
 
 ★ Biometric Authentication: Secure your notes with biometric authentication, keeping your data safe and private.
-★ Zero Permissions Required: Enjoy peace of mind knowing that Oracle Swift doesn't require unnecessary permissions.
+★ Zero Permissions Required: Enjoy peace of mind knowing that Write On doesn't require unnecessary permissions.
 ★ Backup/Restore: Easily back up your notes and restore them whenever needed.
 ★ Automatic Backup: Ensure your notes are always safe with automatic backup options.
 ★ Screen Protection: Protect your notes from prying eyes with screen protection features.
