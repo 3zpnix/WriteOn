@@ -8,7 +8,7 @@ object ConnectionConst {
 
     const val DISCORD = "https://discord.gg/y8eZjDDNbj"
 
-    const val GITHUB = "https://github.com/3zpnix/WriteOn/tree/master"
+    const val GITHUB = "https://github.com/3zpnix/WriteOn/"
 
     const val KOFI = "https://ko-fi.com/3zpnix"
 
