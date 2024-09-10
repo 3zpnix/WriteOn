@@ -69,8 +69,7 @@ jobs:
       - name: Create GitHub Release
         run: |
           gh release create Release WriteOn.apk \
-            --title "Release Build" \
-            --notes "Release build of WriteOn" \
-            --draft
+            --title "Release" \
+            --notes "Official Release Build" \
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
