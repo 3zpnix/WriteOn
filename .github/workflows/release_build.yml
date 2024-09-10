@@ -78,7 +78,7 @@ jobs:
               name: releaseName,
               body: releaseBody,
               draft: false,
-              prerelease: false
+              prerelease: true
             });
 
             console.log(`Release created: ${release.html_url}`);
