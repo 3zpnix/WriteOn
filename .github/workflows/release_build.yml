@@ -1,7 +1,7 @@
 name: Release Build
 
 on:
-  push:
+  push: ###Enabled/Disabled
     branches:
       - master
   workflow_dispatch:
@@ -69,7 +69,7 @@ jobs:
       - name: Create GitHub Release
         run: |
           gh release create Release WriteOn.apk \
-            --title "Release" \
-            --notes "Official Release Build" \
+            --title "v1.0" \
+            --notes "Official Release Build by 3zpnix" \
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
