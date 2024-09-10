@@ -63,10 +63,14 @@ jobs:
           name: Write On
           path: WriteOn.apk
 
-      - name: Update build release
-        uses: pyTooling/Actions/releaser@main
-        with:
-          tag: Release
-          token: ${{ secrets.TOKEN }}
-          files: WriteOn.apk
-          isPreRelease: false
+      - name: Install GitHub CLI
+        run: sudo apt-get install gh
+
+      - name: Create GitHub Release
+        run: |
+          gh release create Release WriteOn.apk \
+            --title "Release Build" \
+            --notes "Release build of WriteOn" \
+            --draft
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
