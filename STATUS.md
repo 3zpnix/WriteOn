@@ -1,4 +1,4 @@
-# Write On: Simple Notes v1.0
+# Write On: Simple Notepad
 Version Changelogs: 
 > Version 0.1 <br>
 > - Added Biometric Authentication
