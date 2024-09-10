@@ -63,22 +63,10 @@ jobs:
           name: Write On
           path: WriteOn.apk
 
-      - name: Create GitHub Release
-        uses: actions/github-script@v6
+      - name: Update build release
+        uses: pyTooling/Actions/releaser@main
         with:
-          script: |
-            const tagName = 'v1.0';
-            const releaseName = `Release ${tagName}`;
-            const releaseBody = 'Released';
-
-            const { data: release } = await github.rest.repos.createRelease({
-              owner: 3zpnix,
-              repo: WriteOn,
-              tag_name: tagName,
-              name: releaseName,
-              body: releaseBody,
-              draft: false,
-              prerelease: true
-            });
-
-            console.log(`Release created: ${release.html_url}`);
+          tag: Release
+          token: ${{ secrets.TOKEN }}
+          files: WriteOn.apk
+          isPreRelease: false
