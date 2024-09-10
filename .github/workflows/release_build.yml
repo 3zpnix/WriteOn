@@ -1,9 +1,9 @@
 name: Release Build
 
 on:
-  push: ###Enabled/Disabled
-    branches:
-      - master
+  #push:
+    #branches:
+      #- master
   workflow_dispatch:
     inputs:
       commit:
