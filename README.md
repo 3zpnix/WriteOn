@@ -3,7 +3,7 @@
 <div align="center">
 <img width="192" height="192" src="app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp" align="center" alt="" > 
 
-### Write On: Simple Notes ✅
+### Write On: Simple Notepad ✅
 A clean, intuitive note-taking open source app with Material You design.
 
 [<img src=".github/github.png" alt="Get it on GitHub" height="55">](https://github.com/3zpnix/WriteOn/) &nbsp; 
@@ -49,7 +49,7 @@ A clean, intuitive note-taking open source app with Material You design.
 
 ---
 ## ⚠️ License
-    Write On: Simple Notes
+    Write On: Simple Notepad
 
     Copyright (C)2024 3zpnix
     
