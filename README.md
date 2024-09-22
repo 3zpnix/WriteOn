@@ -7,7 +7,7 @@
 A clean, intuitive note-taking open source app with Material You design.
 
 [<img src=".github/github.png" alt="Get it on GitHub" height="55">](https://github.com/3zpnix/WriteOn/) &nbsp; 
-[<img src=".github/fdroid.png" alt="Get it on F-Droid" height="55">](https://f-droid.org/) &nbsp;
+[<img src=".github/fdroid.png" alt="Get it on F-Droid" height="55">](https://f-droid.org/en/packages/com.ezpnix.writeon/) &nbsp;
 
 ---
 
