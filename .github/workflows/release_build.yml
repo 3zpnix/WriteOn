@@ -58,7 +58,7 @@ jobs:
         run: mv app/build/outputs/apk/release/app-release-signed.apk WriteOn.apk
 
       - name: Upload the APK
-        uses: actions/upload-artifact@v4.3.5
+        uses: actions/upload-artifact@v4.4.0
         with:
           name: Write On
           path: WriteOn.apk
