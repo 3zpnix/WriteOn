@@ -19,6 +19,7 @@ navigationCompose = "2.7.7"
 appcompat = "1.7.0"
 glanceAppwidget = "1.1.0"
 mkcompose = "1.3.0"
+mkcalendar = "1.2.1"
 messageBar = "1.0.5"
 biometricktx = "1.2.0-alpha05"
 runtimeKtx = "2.9.1"
@@ -55,7 +56,7 @@ coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose"
 androidx-glance-appwidget = { group = "androidx.glance", name = "glance-appwidget", version.ref = "glanceAppwidget" }
 
 # Calendar
-compose-calendar = { group = "com.maxkeppeler.sheets-compose-dialogs", name = "calendar", version.ref = "mkcompose" }
+compose-calendar = { group = "com.maxkeppeler.sheets-compose-dialogs", name = "calendar", version.ref = "mkcalendar" }
 compose-core = { group = "com.maxkeppeler.sheets-compose-dialogs", name = "core", version.ref = "mkcompose" }
 
 # MessageBar
