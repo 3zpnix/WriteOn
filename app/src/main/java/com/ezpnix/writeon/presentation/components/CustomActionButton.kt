@@ -171,11 +171,12 @@ fun CalButton() {
     val calendarState = rememberUseCaseState()
     val context = LocalContext.current
     val currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM d, yyyy"))
+    val dayOfWeek = SimpleDateFormat("EEEE", Locale.getDefault()).format(Date())
 
     IconButton(
         modifier = Modifier.size(56.dp),
         onClick = {
-            Toast.makeText(context, "Today's date is: $currentDate", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Today's date is: $dayOfWeek, $currentDate", Toast.LENGTH_SHORT).show()
             calendarState.show()
         }
 
