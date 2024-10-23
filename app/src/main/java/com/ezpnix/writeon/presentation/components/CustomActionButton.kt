@@ -176,7 +176,7 @@ fun CalButton() {
     IconButton(
         modifier = Modifier.size(56.dp),
         onClick = {
-            Toast.makeText(context, "Today's date is: $dayOfWeek, $currentDate", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Today is: $dayOfWeek, $currentDate", Toast.LENGTH_SHORT).show()
             calendarState.show()
         }
 
