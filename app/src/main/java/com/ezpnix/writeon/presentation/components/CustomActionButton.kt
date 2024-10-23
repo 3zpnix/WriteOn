@@ -85,7 +85,7 @@ fun ExitButton(onClick: () -> Unit) {
         modifier = Modifier.size(56.dp),
         shape = RoundedCornerShape(24.dp),
         onClick = {
-            Toast.makeText(activity, "Closed App - See you soon!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity, "...Closing app...\nMade by 3zpnix!", Toast.LENGTH_SHORT).show()
             onClick()
             activity?.finish()
         }
