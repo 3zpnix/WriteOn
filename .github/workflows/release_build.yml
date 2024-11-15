@@ -1,6 +1,6 @@
 name: Release Build
 
-on:
+#on:
   #push:
     #branches:
       #- master
