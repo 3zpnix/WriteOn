@@ -38,7 +38,8 @@ A clean, intuitive note-taking open source app with Material You design.
 ---
 
 ## 📢 Announcements
-- EMPTY FOR NOW (08/26/2024)
+- My laptop is having issues with Android Studio, updates will be delayed a bit, sorry! (11/19/2024)
+- Android release coming soon (08/26/2024)
 
 ---
 
