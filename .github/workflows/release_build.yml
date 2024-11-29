@@ -1,9 +1,9 @@
 name: Release Build
 
-#on:
-  #push:
-    #branches:
-      #- master
+on:
+  push:
+    branches:
+      - master
   workflow_dispatch:
     inputs:
       commit:
@@ -70,6 +70,6 @@ jobs:
         run: |
           gh release create v1.01 WriteOn.apk \
             --title "v1.01" \
-            --notes "Bug Fixes" \
+            --notes "Made small changes" \
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
