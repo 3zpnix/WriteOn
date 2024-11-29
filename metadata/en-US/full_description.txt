@@ -1,11 +1,11 @@
 Write On: Simple Notepad - is a beautifully designed note-taking app that helps you capture your thoughts, ideas, and inspirations in a clean, distraction-free environment. With a focus on simplicity and usability, Write On offers customizable themes that adapt to your preferences, ensuring a comfortable writing experience whether you prefer light or dark modes.
 
-A minimalistic note-taking app with Material You design to create a visually attractive interface.
+A minimalistic note-taking app with Material You design to create a visually comforting interface.
 
 🔐 Key features include:
 
 ★ Biometric Authentication: Secure your notes with biometric authentication, keeping your data safe and private.
-★ Zero Permissions Required: Enjoy peace of mind knowing that Write On doesn't require unnecessary permissions.
+★ No Unwanted Permissions: Enjoy peace of mind knowing that Write On doesn't require unnecessary permissions.
 ★ Backup/Restore: Easily back up your notes and restore them whenever needed.
 ★ Automatic Backup: Ensure your notes are always safe with automatic backup options.
 ★ Screen Protection: Protect your notes from prying eyes with screen protection features.

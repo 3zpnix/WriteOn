@@ -58,7 +58,7 @@ fun AboutScreen(navController: NavController, settingsViewModel: SettingsViewMod
                     icon = Icons.Rounded.Verified,
                     actionType = ActionType.LINK,
                     radius = shapeManager(isFirst = true, radius = settingsViewModel.settings.value.cornerRadius),
-                    linkClicked = { uriHandler.openUri("https://f-droid.org/") }
+                    linkClicked = { uriHandler.openUri("https://f-droid.org/en/packages/com.ezpnix.writeon/") }
                 )
             }
             item {

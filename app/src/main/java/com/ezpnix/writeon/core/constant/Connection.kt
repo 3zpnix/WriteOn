@@ -16,7 +16,7 @@ object ConnectionConst {
 
     val APP_LIST =  listOf(
         Pair("Recycle Bin (Not sure about adding this)", "Suggested last - August 22"),
-        Pair("Sketch directly through notes (Will come later)", "Suggested last -August 23"),
+        Pair("Sketch directly through notes (Will come later)", "Suggested last - August 23"),
         Pair("Display over other apps (Movable floating display)", "Suggested last - August 25"),
         Pair("Alternative app login (Passcode, etc)", "Suggested last - August 23"),
         Pair("Functional Floating Search Button", "Suggested last - August 22"),

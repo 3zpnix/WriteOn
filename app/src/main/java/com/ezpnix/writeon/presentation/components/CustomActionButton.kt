@@ -1,6 +1,8 @@
 package com.ezpnix.writeon.presentation.components
 
 import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,11 +22,17 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.rounded.AddReaction
 import androidx.compose.material.icons.rounded.CalendarMonth
 import androidx.compose.material.icons.rounded.CleaningServices
 import androidx.compose.material.icons.rounded.CopyAll
+import androidx.compose.material.icons.rounded.Face
+import androidx.compose.material.icons.rounded.OpenInNew
+import androidx.compose.material.icons.rounded.Support
+import androidx.compose.material.icons.rounded.YoutubeSearchedFor
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarStyle
@@ -33,6 +41,7 @@ import com.maxkeppeler.sheets.calendar.models.CalendarConfig
 import java.time.LocalDate
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import com.ezpnix.writeon.presentation.screens.edit.model.EditViewModel
 import com.ezpnix.writeon.presentation.screens.settings.widgets.copyToClipboard
@@ -68,7 +77,7 @@ fun CenteredNotesButton(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Spacer(modifier = Modifier.width(46.dp))
-        ExitButton(onClick = onThirdClick)
+        RandomButton(onClick = onThirdClick)
         Spacer(modifier = Modifier.width(16.dp))
         NotesButton(text = onFirstClick, onClick = onSecondClick)
         Spacer(modifier = Modifier.width(16.dp))
@@ -78,21 +87,41 @@ fun CenteredNotesButton(
 }
 
 @Composable
-fun ExitButton(onClick: () -> Unit) {
-    val activity = LocalContext.current as? Activity
+fun RandomButton(onClick: () -> Unit) {
+    val activity = LocalContext.current
+
+    // List of random sentences
+    val randomSentences = listOf(
+        "*pats head* ~o~",
+        "ready to.. study?",
+        "smile for me pwease :)",
+        "i'm hungry ^^",
+        "why did you leave me :(",
+        "hehehe",
+        "..how are you?",
+        "i want to sing a song~",
+        "i feel it coming ~♪ ",
+        "i want to sleep..",
+        "..."
+    )
+
+    var randomSentence by remember { mutableStateOf(randomSentences.random()) }
 
     ExtendedFloatingActionButton(
         modifier = Modifier.size(56.dp),
         shape = RoundedCornerShape(24.dp),
         onClick = {
-            Toast.makeText(activity, "...Closing app...\nMade by 3zpnix!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity, randomSentence, Toast.LENGTH_SHORT).show()
+
+            randomSentence = randomSentences.random()
+
             onClick()
-            activity?.finish()
         }
     ) {
-        Icon(Icons.Rounded.CleaningServices, contentDescription = null)
+        Icon(Icons.Rounded.AddReaction, contentDescription = null)
     }
 }
+
 
 @Composable
 fun NotesButton(
@@ -150,6 +179,24 @@ fun CalendarButton() {
 }
 
 @Composable
+fun BrowserButton() {
+    val context = LocalContext.current
+
+    IconButton(
+        onClick = {
+            val url = "https://www.google.com"
+
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+
+            context.startActivity(intent)
+        }
+    )
+    {
+        Icon(Icons.Rounded.Search, null)
+    }
+}
+
+@Composable
 fun CopyButton(viewModel: EditViewModel, onClick: () -> Unit) {
     val context = LocalContext.current
 
@@ -196,4 +243,22 @@ fun CalButton() {
             selectedDates.value = newDates
         }
     )
+}
+
+@Composable
+fun YtButton() {
+    val context = LocalContext.current
+
+    IconButton(
+        onClick = {
+        val url = "https://www.youtube.com/@3zpnix"
+
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+
+        context.startActivity(intent)
+    }
+    )
+    {
+        Icon(Icons.Rounded.Support, null)
+    }
 }

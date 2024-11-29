@@ -68,7 +68,7 @@ fun NoteCard(
                 MarkdownText(
                     isPreview = true,
                     isEnabled = settingsViewModel.settings.value.isMarkdownEnabled,
-                    markdown = note.name.replaceFirstChar { it.uppercase() },
+                    markdown = note.name,
                     modifier = Modifier
                         .heightIn(max = dimensionResource(R.dimen.max_name_height))
                         .then(
@@ -81,7 +81,7 @@ fun NoteCard(
                     weight = FontWeight.Bold,
                     spacing = 0.dp,
                     onContentChange = { onNoteUpdate(note.copy(name = it)) },
-                    fontSize = 16.sp,
+                    fontSize = 20.sp,
                     radius = settingsViewModel.settings.value.cornerRadius
                 )
             }

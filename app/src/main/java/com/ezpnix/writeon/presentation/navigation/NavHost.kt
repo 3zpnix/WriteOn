@@ -37,8 +37,7 @@ fun AppNavHost(settingsModel: SettingsViewModel,navController: NavHostController
             EditNoteView(
                 settingsViewModel = settingsModel,
                 id = if (noteId == -1) id else noteId,
-                encrypted = encrypted,
-                isWidget = noteId != -1
+                encrypted = encrypted
             ) {
                 if (noteId == -1) {
                     navController.navigateUp()

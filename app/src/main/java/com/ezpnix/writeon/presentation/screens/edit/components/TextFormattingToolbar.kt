@@ -83,13 +83,13 @@ fun TextFormattingToolbar(viewModel: EditViewModel) {
                     currentIndex--
                 },
                 ToolbarItem(Icons.Rounded.FormatBold, "Bold", color = colorIcon) {
-                    viewModel.insertText("****", offset = -2, newLine = false)
+                    viewModel.insertText("**", offset = 2, newLine = false)
                 },
                 ToolbarItem(Icons.Rounded.FormatUnderlined, "Underline", color = colorIcon) {
                     viewModel.insertText("__", -1 , newLine = false)
                 },
                 ToolbarItem(Icons.Rounded.FormatItalic, "Italic", color = colorIcon) {
-                    viewModel.insertText("**", offset = -1, newLine = false)
+                    viewModel.insertText("***", offset = -2, newLine = false)
                 },
                 ToolbarItem(Icons.AutoMirrored.Rounded.ArrowForwardIos,"Bullet List", color = colorArrow) {
                     currentIndex++

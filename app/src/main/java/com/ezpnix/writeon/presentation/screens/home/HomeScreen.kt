@@ -2,8 +2,10 @@ package com.ezpnix.writeon.presentation.screens.home
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
@@ -11,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -176,12 +179,16 @@ private fun SelectedNotesTopAppBar(
         navigationIcon = { CloseButton(onCloseClicked = onCloseClick) },
         actions = {
             Row {
-                PinButton(isPinned = selectedNotes.all { it.pinned }, onClick = onPinClick)
+                Text("Deleting is Irreversible!", modifier = Modifier.align(Alignment.CenterVertically))
+                Spacer(modifier = Modifier.width(5.dp))
                 DeleteButton(onClick = onDeleteClick)
+                Spacer(modifier = Modifier.width(5.dp))
                 SelectAllButton(
                     enabled = selectedNotes.size != allNotes.size,
                     onClick = onSelectAllClick
                 )
+                Spacer(modifier = Modifier.width(5.dp))
+                PinButton(isPinned = selectedNotes.all { it.pinned }, onClick = onPinClick)
             }
         }
     )

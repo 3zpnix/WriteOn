@@ -143,17 +143,6 @@ fun ColorStylesScreen(navController: NavController, settingsViewModel: SettingsV
             }
             item {
                 SettingsBox(
-                    title = if (settingsViewModel.settings.value.viewMode) stringResource(id = R.string.grid_view) else stringResource(id = R.string.column_view),
-                    icon = if (settingsViewModel.settings.value.viewMode) Icons.Rounded.GridView else Icons.Rounded.ViewAgenda,
-                    description = stringResource(id = R.string.view_style_description),
-                    radius = shapeManager(radius = settingsViewModel.settings.value.cornerRadius),
-                    actionType = ActionType.SWITCH,
-                    variable = settingsViewModel.settings.value.viewMode,
-                    switchEnabled = { settingsViewModel.update(settingsViewModel.settings.value.copy(viewMode = it))}
-                )
-            }
-            item {
-                SettingsBox(
                     isBig = true,
                     title = stringResource(id = R.string.homepage),
                     icon = Icons.Rounded.Home,

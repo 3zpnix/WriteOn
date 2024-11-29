@@ -78,6 +78,9 @@ import com.ezpnix.writeon.presentation.screens.settings.widgets.copyToClipboard
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.Locale
+import androidx.compose.foundation.layout.navigationBarsPadding
+import com.ezpnix.writeon.presentation.components.BrowserButton
+import com.ezpnix.writeon.presentation.components.YtButton
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -85,7 +88,6 @@ fun EditNoteView(
     id: Int,
     settingsViewModel: SettingsViewModel,
     encrypted: Boolean = false,
-    isWidget: Boolean = false,
     onClickBack: () -> Unit
 ) {
     val viewModel: EditViewModel = hiltViewModel<EditViewModel>()
@@ -93,7 +95,7 @@ fun EditNoteView(
     viewModel.setupNoteData(id)
     ObserveLifecycleEvents(viewModel)
 
-    val pagerState = rememberPagerState(initialPage = if (id == 0 || isWidget || settingsViewModel.settings.value.editMode) 0 else 1, pageCount = { 2 })
+    val pagerState = rememberPagerState(initialPage = if (id == 0) 0 else 1, pageCount = { 2 })
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -334,6 +336,10 @@ fun EditScreen(viewModel: EditViewModel, coroutineScope: CoroutineScope, setting
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
+            BrowserButton()
+
+            Spacer(modifier = Modifier.width(16.dp))
+
             CopyButton(viewModel, onClick = {copyToClipboard(context, viewModel.noteDescription.value.text)}
         )
 
@@ -344,6 +350,10 @@ fun EditScreen(viewModel: EditViewModel, coroutineScope: CoroutineScope, setting
             Spacer(modifier = Modifier.width(16.dp))
 
             CalButton()
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            YtButton()
         }
 
     }
@@ -390,6 +400,10 @@ fun PreviewScreen(viewModel: EditViewModel, settingsViewModel: SettingsViewModel
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
+            BrowserButton()
+
+            Spacer(modifier = Modifier.width(16.dp))
+
             CopyButton(viewModel, onClick = { copyToClipboard(context, viewModel.noteDescription.value.text) })
 
             Spacer(modifier = Modifier.width(16.dp))
@@ -399,6 +413,10 @@ fun PreviewScreen(viewModel: EditViewModel, settingsViewModel: SettingsViewModel
             Spacer(modifier = Modifier.width(16.dp))
 
             CalButton()
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            YtButton()
         }
     }
 }

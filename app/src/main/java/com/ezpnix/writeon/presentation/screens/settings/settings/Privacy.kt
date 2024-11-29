@@ -114,7 +114,7 @@ val context = LocalContext.current
                     }
                 )
             }
-//            NOT USED FOR NOW
+//            USELESS FOR NOW
 //            item {
 //                SettingsBox(
 //                    title = stringResource(id = R.string.security),

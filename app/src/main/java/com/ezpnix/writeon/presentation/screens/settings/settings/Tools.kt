@@ -7,9 +7,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Sort
 import androidx.compose.material.icons.rounded.DynamicFeed
 import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material.icons.rounded.GridView
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Style
 import androidx.compose.material.icons.rounded.Title
+import androidx.compose.material.icons.rounded.ViewAgenda
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -78,12 +80,23 @@ fun ToolsScreen(navController: NavController, settingsViewModel: SettingsViewMod
             }
             item {
                 SettingsBox(
+                    title = if (settingsViewModel.settings.value.viewMode) stringResource(id = R.string.grid_view) else stringResource(id = R.string.column_view),
+                    icon = if (settingsViewModel.settings.value.viewMode) Icons.Rounded.GridView else Icons.Rounded.ViewAgenda,
+                    description = stringResource(id = R.string.view_style_description),
+                    radius = shapeManager(radius = settingsViewModel.settings.value.cornerRadius, isFirst = true),
+                    actionType = ActionType.SWITCH,
+                    variable = settingsViewModel.settings.value.viewMode,
+                    switchEnabled = { settingsViewModel.update(settingsViewModel.settings.value.copy(viewMode = it))}
+                )
+            }
+            item {
+                SettingsBox(
                     isBig = true,
                     title = stringResource(id = R.string.homepage),
                     icon = Icons.Rounded.Home,
                     actionType = ActionType.CUSTOM,
                     radius = shapeManager(
-                        isBoth = true,
+                        isLast = true,
                         radius = settingsViewModel.settings.value.cornerRadius
                     ),
                     customAction = { navController.navigateUp() }
