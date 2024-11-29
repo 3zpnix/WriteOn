@@ -68,8 +68,8 @@ jobs:
 
       - name: Create GitHub Release
         run: |
-          gh release create v1.01 WriteOn.apk \
-            --title "v1.01" \
-            --notes "Made small changes" \
+          gh release create v1.1 WriteOn.apk \
+            --title "v1.1" \
+            --notes "Made some changes~" \
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
