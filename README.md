@@ -25,7 +25,7 @@ A clean, intuitive note-taking open source app with Material You design.
 
 ## 🎉 Available Features
 - Biometric Authentication: Secure your notes with biometric authentication, keeping your data safe and private.
-- Zero Permissions Required: Enjoy peace of mind knowing that WriteOn doesn't require unnecessary permissions.
+- No Unnecessary Permissions: Enjoy peace of mind knowing that WriteOn doesn't require unnecessary permissions.
 - Backup/Restore: Easily back up your notes and restore them whenever needed.
 - Automatic Backup: Ensure your notes are always safe with automatic backup options.
 - Screen Protection: Protect your notes from prying eyes with screen protection features.
@@ -38,6 +38,8 @@ A clean, intuitive note-taking open source app with Material You design.
 ---
 
 ## 📢 Announcements
+
+- Upcoming version 1.2 will be a new-featured focus and a few bug fix updates (12/3/2024)
 - My laptop is having issues with Android Studio, updates will be delayed a bit, sorry! (11/19/2024)
 - Android release coming soon (08/26/2024)
 
