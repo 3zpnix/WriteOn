@@ -39,7 +39,8 @@ A clean, intuitive note-taking open source app with Material You design.
 
 ## 📢 Announcements
 
-- Upcoming version 1.2 will be a new-featured focus and a few bug fix updates (12/3/2024)
+- Preparing for final uni examinations, updates will be on hold for a moment (12/7/2024)
+- Upcoming version 1.2 will be a new-featured focus & bug fix update (12/3/2024)
 - My laptop is having issues with Android Studio, updates will be delayed a bit, sorry! (11/19/2024)
 - Android release coming soon (08/26/2024)
 
