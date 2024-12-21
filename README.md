@@ -24,25 +24,25 @@ A clean, intuitive note-taking open source app with Material You design.
 ---
 
 ## 🎉 Available Features
-- Biometric Authentication: Secure your notes with biometric authentication, keeping your data safe and private.
-- No Unnecessary Permissions: Enjoy peace of mind knowing that WriteOn doesn't require unnecessary permissions.
-- Backup/Restore: Easily back up your notes and restore them whenever needed.
-- Automatic Backup: Ensure your notes are always safe with automatic backup options.
-- Screen Protection: Protect your notes from prying eyes with screen protection features.
+- Biometric Authentication: Secure your notes from being unlocked by strangers, with your fingerprint locking them out. 
+- Backup/Restore: Easily back up your notes and restore them whenever needed, while having an optional automatic backup feature. 
+- Screen Protection: Protect your notes from prying eyes and unwanted screenshots from suspicious applications.
 - Markdown Support: Format your notes effortlessly with Markdown, allowing you to create rich text notes with ease.
 - Customizable Themes: Choose from a variety of themes to match your style, with options designed to be easy on the eyes.
+- Offline Functionality: Never lose your notes. As it is an ad-free & clutter-free open source application for everyone. 
+- Data Privacy: Your notes are stored securely on your device, ensuring your personal data and stuff remains private.
+- No Unnecessary Permissions: Enjoy peace of mind knowing that WriteOn doesn't require what is not needed.
 - Intuitive UI: A user-friendly interface that keeps your notes organized and accessible.
-- Offline Functionality: Keep your notes with you, even without an internet connection. Basically ad-free & clutter-free.
-- Data Privacy: Your notes are stored securely on your device, ensuring your personal information remains private.
+- Built-In Calendar: Take a quick look at the calendar without switching applications.
 
 ---
 
 ## 📢 Announcements
 
-- Focusing on university stuff for a while, updates will be on hold for a moment (12/7/2024)
-- Upcoming version 1.2 will be a new-featured focus & bug fix update (12/3/2024)
-- My laptop is having issues with Android Studio, updates will be delayed a bit, sorry! (11/19/2024)
-- Android release coming soon (08/26/2024)
+- Focusing on my university and stuff for a while, updates will be on hold for a moment (12/7/2024)
+- Upcoming version 1.2 will contain more bug fixes and features coming in (12/3/2024)
+- Laptop is having issues with Android Studio, updates will be delayed a bit, sorry! (11/19/2024)
+- Android release coming soon to fdroid and github (08/26/2024)
 
 ---
 
