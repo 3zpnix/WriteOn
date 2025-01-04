@@ -1,4 +1,4 @@
-(⁠≧⁠▽⁠≦⁠) DevLog is down below 👇🏻 I post there some sneak peaks about some *delicious* features for the app that hadn't been released yet. 
+(⁠≧⁠▽⁠≦⁠) DevLog is down below 👇🏻 I also post there some sneak peaks about some *delicious* features for the app that hadn't been released yet. 
 
 <div align="center">
     
