@@ -52,6 +52,13 @@ A clean, intuitive note-taking open source app with Material You design.
 -  Twitter : [3zpnix](https://twitter.com/3zpnix)
 
 ---
+
+## Latest Updates (01/05/2025)
+
+<div align="center">
+<img width="192" height="192" src="page/images/Screenshot_20250105-002036.png" align="center" alt="" > 
+
+---
 ## ⚠️ License
     Write On: Simple Notepad
 
