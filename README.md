@@ -62,7 +62,7 @@ A clean, intuitive note-taking open source app with Material You design.
 
 <div align="left">
 
-- Added the ability to make a quick note then export it as a txt file (located beside the 'Create' button)
+- Added the ability to make a quick note then exporting the text inside to a txt file (located beside the 'Create' button)
 - Updated the logic handling of the automatic backup feature a bit
 - Added a way to copy the text from a note then redirecting the user to translating the text right away
 - Now you can head onto your default browser to search the internet quickly by pressing a new button placed within the note
