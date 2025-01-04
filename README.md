@@ -56,7 +56,7 @@ A clean, intuitive note-taking open source app with Material You design.
 ## Latest Updates (01/05/2025)
 
 <div align="center">
-<img width="192" height="192" src="page/images/Screenshot_20250105-002036.png" align="center" alt="" > 
+<img width="30%" height="192" src="page/images/Screenshot_20250105-002036.png" align="center" alt="" > 
 
 ---
 ## ⚠️ License
