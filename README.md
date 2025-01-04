@@ -2,7 +2,7 @@
 
 <div align="center">
     
-### Last Updated: 01/05/2025
+### Version 1.2 Coming Soon!
 <img width="192" height="192" src="app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp" align="center" alt="" > 
 
 ### Write On: Simple Notepad ✅
