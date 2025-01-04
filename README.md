@@ -1,6 +1,6 @@
 (⁠≧⁠▽⁠≦⁠) DevLog is down below 👇🏻 I post there some sneak peaks about the new features for the app that hadn't been released yet. 
 
-## Made with ❤️❤️❤️
+## (https://github.com/3zpnix/WriteOn?tab=readme-ov-file#latest-updates-01052025)
 
 <div align="center">
 <img width="192" height="192" src="app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp" align="center" alt="" > 
@@ -55,7 +55,7 @@ A clean, intuitive note-taking open source app with Material You design.
 
 ---
 
-## Latest Updates (01/05/2025)
+## DevLog (01/05/2025)
 
 <div align="center">
 <img src="page/images/lv_0_20250105004449.gif" width="70%"  alt="" > 
