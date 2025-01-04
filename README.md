@@ -1,4 +1,4 @@
-DevLog is down below 👇🏻 I post there features of the app that hadn't been released yet. More updates coming soon.
+(⁠≧⁠▽⁠≦⁠) DevLog is down below 👇🏻 I post there new features for the app that hadn't been released yet. 
 
 <div align="center">
 <img width="192" height="192" src="app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp" align="center" alt="" > 
