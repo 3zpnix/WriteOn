@@ -1,3 +1,4 @@
+<div align="center">
 (⁠≧⁠▽⁠≦⁠) DevLog is down below 👇🏻 I post there some sneak peaks about the new features for the app that hadn't been released yet. 
 
 <div align="center">
