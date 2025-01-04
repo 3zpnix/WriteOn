@@ -1,5 +1,6 @@
-<div align="center">
 (⁠≧⁠▽⁠≦⁠) DevLog is down below 👇🏻 I post there some sneak peaks about the new features for the app that hadn't been released yet. 
+
+## Made with ❤️❤️❤️
 
 <div align="center">
 <img width="192" height="192" src="app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp" align="center" alt="" > 
@@ -39,7 +40,7 @@ A clean, intuitive note-taking open source app with Material You design.
 ---
 
 ## 📢 Announcements
-
+ 
 - Focusing on university stuff for a while, updates will be on hold for a moment (12/7/2024)
 - Upcoming version 1.2 will contain more bug fixes and features coming in (12/3/2024)
 - Laptop is having issues with Android Studio, updates will be delayed a bit, sorry! (11/19/2024)
