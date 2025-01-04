@@ -60,6 +60,8 @@ A clean, intuitive note-taking open source app with Material You design.
 <div align="center">
 <img src="page/images/lv_0_20250105004449.gif" width="70%"  alt="" > 
 
+<div align="left">
+
 - Added the ability to make a quick note then export it as a txt file (located beside the 'Create' button)
 - Updated the logic handling of the automatic backup feature a bit
 - Added a way to copy the text from a note then redirecting the user to translating the text right away
@@ -70,7 +72,6 @@ A clean, intuitive note-taking open source app with Material You design.
 - More coming soon!
 
 ---
-<div align="left">
     
 ## ⚠️ License
     Write On: Simple Notepad
