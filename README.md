@@ -1,6 +1,6 @@
 (⁠≧⁠▽⁠≦⁠) DevLog is down below 👇🏻 I post there some sneak peaks about the new features for the app that hadn't been released yet. 
 
-## (https://github.com/3zpnix/WriteOn?tab=readme-ov-file#latest-updates-01052025)
+### Last Updated: 01/05/2025
 
 <div align="center">
 <img width="192" height="192" src="app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp" align="center" alt="" > 
