@@ -55,10 +55,19 @@ A clean, intuitive note-taking open source app with Material You design.
 
 ---
 
-## DevLog (01/05/2025)
+## DevLog for v1.2 (01/05/2025)
 
 <div align="center">
 <img src="page/images/lv_0_20250105004449.gif" width="70%"  alt="" > 
+
+- Added the ability to make a quick note then export it as a txt file (located beside the 'Create' button)
+- Updated the logic handling of the automatic backup feature a bit
+- Added a way to copy the text from a note then redirecting the user to translating the text right away
+- Now you can head onto your default browser to search the internet quickly by pressing a new button placed within the note
+- Refurbished some of the codes to avoid any potential crashes that may happen indefinitely
+- Have temporarily removed some useless features that has no use for this app (yet)
+- Renamed some strings and other miscellaneous things
+- More coming soon!
 
 ---
 ## ⚠️ License
