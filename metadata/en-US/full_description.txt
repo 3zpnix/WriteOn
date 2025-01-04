@@ -1,4 +1,4 @@
-A function-based note-taking app with a Material You design to create a visually comforting interface and distraction-free environment. With a focus on simplicity and usability, offering several features.
+A simple note-taking app with a Material You design to create a visually comforting interface and distraction-free environment. With a focus on simplicity and usability, offering several useful features.
 
 🔐 Key features include:
 
