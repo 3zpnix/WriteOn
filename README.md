@@ -70,6 +70,8 @@ A clean, intuitive note-taking open source app with Material You design.
 - More coming soon!
 
 ---
+<div align="left">
+    
 ## ⚠️ License
     Write On: Simple Notepad
 
