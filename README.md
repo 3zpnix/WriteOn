@@ -2,7 +2,7 @@
 (⁠≧⁠▽⁠≦⁠)
     
 ### Version 1.2 Coming Soon! 
-### (Check out my DevLog down below)
+<h3>(Check out my DevLog down below)</h3>
 <img width="192" height="192" src="app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp" align="center" alt="" > 
 
 ### Write On: Simple Notepad ✅
