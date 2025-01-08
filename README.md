@@ -1,8 +1,8 @@
-(⁠≧⁠▽⁠≦⁠) DevLog can be found down below 👇🏻 Correlating to some new features and optimizations I have planned for the app to come with on the next update.
-
 <div align="center">
+(⁠≧⁠▽⁠≦⁠)
     
-### Version 1.2 Coming Soon!
+### Version 1.2 Coming Soon! 
+/n(Check out my DevLog down below)
 <img width="192" height="192" src="app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp" align="center" alt="" > 
 
 ### Write On: Simple Notepad ✅
