@@ -52,10 +52,6 @@ A clean, intuitive note-taking open source app with Material You design.
 ---
 
 ## DevLog for v1.2 (01/05/2025)
-
-<div align="center">
-<img src="page/images/lv_0_20250105004449.gif" width="70%"  alt="" > 
-
 <div align="left">
 
 - Added the ability to make a quick note then exporting the text inside to a txt file (located beside the 'Create' button)
