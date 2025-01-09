@@ -1,6 +1,6 @@
 <div align="center">
 (⁠≧⁠▽⁠≦⁠)
-<h3>Version 1.2 Coming Soon! (⁠≧⁠▽⁠≦⁠)</h3>
+Version 1.2 Coming Soon!
 
 <img width="192" height="192" src="app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp" align="center" alt="" > 
 
