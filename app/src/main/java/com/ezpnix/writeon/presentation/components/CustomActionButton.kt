@@ -1,9 +1,13 @@
 package com.ezpnix.writeon.presentation.components
 
-import android.app.Activity
+import android.annotation.SuppressLint
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -22,16 +26,15 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.rounded.AddReaction
+import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Archive
 import androidx.compose.material.icons.rounded.CalendarMonth
-import androidx.compose.material.icons.rounded.CleaningServices
-import androidx.compose.material.icons.rounded.CopyAll
-import androidx.compose.material.icons.rounded.Face
-import androidx.compose.material.icons.rounded.OpenInNew
-import androidx.compose.material.icons.rounded.Support
-import androidx.compose.material.icons.rounded.YoutubeSearchedFor
+import androidx.compose.material.icons.rounded.Translate
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import com.maxkeppeler.sheets.calendar.CalendarDialog
@@ -42,7 +45,9 @@ import java.time.LocalDate
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.AnnotatedString
 import com.ezpnix.writeon.presentation.screens.edit.model.EditViewModel
 import com.ezpnix.writeon.presentation.screens.settings.widgets.copyToClipboard
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
@@ -77,7 +82,7 @@ fun CenteredNotesButton(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Spacer(modifier = Modifier.width(46.dp))
-        RandomButton(onClick = onThirdClick)
+        TextButton(onClick = onThirdClick)
         Spacer(modifier = Modifier.width(16.dp))
         NotesButton(text = onFirstClick, onClick = onSecondClick)
         Spacer(modifier = Modifier.width(16.dp))
@@ -87,38 +92,76 @@ fun CenteredNotesButton(
 }
 
 @Composable
-fun RandomButton(onClick: () -> Unit) {
+fun TextButton(onClick: () -> Unit) {
     val activity = LocalContext.current
+    val context = LocalContext.current
 
-    // List of random sentences
-    val randomSentences = listOf(
-        "*pats head* ~o~",
-        "ready to.. study?",
-        "smile for me pwease :)",
-        "i'm hungry ^^",
-        "why did you leave me :(",
-        "hehehe",
-        "..how are you?",
-        "i want to sing a song~",
-        "i feel it coming ~♪ ",
-        "i want to sleep..",
-        "..."
+    // State for the dialog
+    var showDialog by remember { mutableStateOf(false) }
+    var textState by remember { mutableStateOf("") }
+
+    // Start the file creation process with an Intent
+    val openFileLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.CreateDocument("text/plain"), // Specify MIME type for text files
+        onResult = { uri ->
+            if (uri != null) {
+                // File URI is obtained, save the text content
+                try {
+                    val outputStream = context.contentResolver.openOutputStream(uri)
+                    outputStream?.write(textState.toByteArray())
+                    outputStream?.close()
+
+                    // Show success message
+                    Toast.makeText(activity, "Text saved successfully", Toast.LENGTH_SHORT).show()
+
+                } catch (e: Exception) {
+                    // Handle exceptions like permission issues
+                    Toast.makeText(activity, "Error saving file: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     )
-
-    var randomSentence by remember { mutableStateOf(randomSentences.random()) }
 
     ExtendedFloatingActionButton(
         modifier = Modifier.size(56.dp),
         shape = RoundedCornerShape(24.dp),
         onClick = {
-            Toast.makeText(activity, randomSentence, Toast.LENGTH_SHORT).show()
-
-            randomSentence = randomSentences.random()
-
+            showDialog = true // Show the dialog when button is clicked
             onClick()
         }
     ) {
-        Icon(Icons.Rounded.AddReaction, contentDescription = null)
+        Icon(Icons.Rounded.Add, contentDescription = null)
+    }
+
+    // Show popup dialog when showDialog is true
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text(text = "Quick Note") },
+            text = {
+                TextField(
+                    value = textState,
+                    onValueChange = { textState = it },
+                    label = { Text("Enter text") }
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        // Open the file picker to let the user choose the location to save
+                        openFileLauncher.launch("rename.txt")
+                        showDialog = false // Close the dialog
+                    }
+                ) {
+                    Text("Save as TXT")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { showDialog = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
     }
 }
 
@@ -179,12 +222,53 @@ fun CalendarButton() {
 }
 
 @Composable
+fun TxtButton(currentText: String) {
+    val context = LocalContext.current
+
+    // Clipboard manager to copy text
+    val clipboardManager = LocalClipboardManager.current
+
+    // Start the file creation process with an Intent
+    val saveToFileLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.CreateDocument("text/plain"),
+        onResult = { uri ->
+            if (uri != null) {
+                try {
+                    // Save the text into the file
+                    context.contentResolver.openOutputStream(uri)?.use { outputStream ->
+                        outputStream.write(currentText.toByteArray())
+                    }
+                    Toast.makeText(context, "Text saved successfully", Toast.LENGTH_SHORT).show()
+                } catch (e: Exception) {
+                    Toast.makeText(context, "Error saving file: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    )
+
+    // Floating action button
+    IconButton(
+        modifier = Modifier.size(56.dp),
+        onClick = {
+            // Copy text to clipboard
+            clipboardManager.setText(AnnotatedString(currentText))
+            Toast.makeText(context, "Exporting...", Toast.LENGTH_SHORT).show()
+
+            // Trigger file saving
+            saveToFileLauncher.launch("rename.txt")
+        }
+    ) {
+        Icon(Icons.Rounded.Archive, contentDescription = "Copy and Save")
+    }
+}
+
+@Composable
 fun BrowserButton() {
     val context = LocalContext.current
 
     IconButton(
         onClick = {
-            val url = "https://www.google.com"
+            val url = "https://www.startpage.com"
 
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
 
@@ -193,18 +277,6 @@ fun BrowserButton() {
     )
     {
         Icon(Icons.Rounded.Search, null)
-    }
-}
-
-@Composable
-fun CopyButton(viewModel: EditViewModel, onClick: () -> Unit) {
-    val context = LocalContext.current
-
-    IconButton(
-        modifier = Modifier.size(56.dp),
-        onClick = { copyToClipboard(context, viewModel.noteDescription.value.text)}
-    ) {
-        Icon(Icons.Rounded.CopyAll, null)
     }
 }
 
@@ -246,19 +318,30 @@ fun CalButton() {
 }
 
 @Composable
-fun YtButton() {
+fun TranslateButton(viewModel: EditViewModel, onClick: () -> Unit) {
     val context = LocalContext.current
 
     IconButton(
+        modifier = Modifier.size(56.dp),
         onClick = {
-        val url = "https://www.youtube.com/@3zpnix"
-
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-
-        context.startActivity(intent)
+            copyToClipboard(context, viewModel.noteDescription.value.text)
+            openTranslateApp(context, viewModel.noteDescription.value.text)
+        }
+    ) {
+        Icon(Icons.Rounded.Translate, null)
     }
-    )
-    {
-        Icon(Icons.Rounded.Support, null)
-    }
+}
+
+@SuppressLint("ServiceCast")
+fun copyToClipboard(context: Context, text: String) {
+    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    val clip = android.content.ClipData.newPlainText("Copied Text", text)
+    clipboard.setPrimaryClip(clip)
+}
+
+fun openTranslateApp(context: Context, text: String) {
+    // Google Translate Intent
+    val uri = Uri.parse("https://translate.google.com/?sl=auto&tl=en&text=${Uri.encode(text)}")
+    val intent = Intent(Intent.ACTION_VIEW, uri)
+    context.startActivity(intent)
 }

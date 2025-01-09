@@ -21,7 +21,6 @@ import androidx.compose.material.icons.filled.RemoveRedEye
 import androidx.compose.material.icons.rounded.ArrowCircleDown
 import androidx.compose.material.icons.rounded.ArrowCircleUp
 import androidx.compose.material.icons.rounded.Backup
-import androidx.compose.material.icons.rounded.EnhancedEncryption
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Security
 import androidx.compose.material3.Button
@@ -54,7 +53,7 @@ import java.time.format.DateTimeFormatter
 
 @Composable
 fun PrivacyScreen(navController: NavController, settingsViewModel: SettingsViewModel) {
-val context = LocalContext.current
+    val context = LocalContext.current
 
     val exportBackupLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CreateDocument("*/.zip"),
@@ -114,27 +113,6 @@ val context = LocalContext.current
                     }
                 )
             }
-//            USELESS FOR NOW
-//            item {
-//                SettingsBox(
-//                    title = stringResource(id = R.string.security),
-//                    description = stringResource(id = R.string.vault_description),
-//                    icon = Icons.Rounded.Security,
-//                    radius = shapeManager(radius = settingsViewModel.settings.value.cornerRadius, isFirst = true),
-//                    actionType = ActionType.SWITCH,
-//                    variable = settingsViewModel.settings.value.vaultSettingEnabled,
-//                    switchEnabled = { isEnabled ->
-//                        settingsViewModel.update(settingsViewModel.settings.value.copy(vaultSettingEnabled = isEnabled))
-//
-//                        val message = if (isEnabled) {
-//                            "Using Advanced Protection"
-//                        } else {
-//                            "Using Basic Protection"
-//                        }
-//                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-//                    }
-//                )
-//            }
             item {
                 SettingsBox(
                     title = stringResource(id = R.string.encrypt_database),
@@ -169,7 +147,7 @@ val context = LocalContext.current
                         settingsViewModel.update(settingsViewModel.settings.value.copy(autoBackupEnabled = isEnabled))
 
                         val message = if (isEnabled) {
-                            "Backup Successful"
+                            "Enabled - Backups per day"
                         } else {
                             "Disabled Auto Backup"
                         }

@@ -13,15 +13,15 @@ android {
         applicationId = "com.ezpnix.writeon"
         minSdk = 26
         targetSdk = 34
-        versionCode = 2
-        versionName = "1.1"
+        versionCode = 3
+        versionName = "1.2"
         vectorDrawables {
             useSupportLibrary = true
         }
 
         // https://developer.android.com/guide/topics/resources/app-languages#gradle-config
         resourceConfigurations.plus(
-            listOf("en", "ar", "de", "es", "fa", "fil", "fr", "hi", "it", "ja", "ru", "sk", "tr")
+            listOf("en")
         )
     }
 
@@ -78,6 +78,7 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
     implementation(libs.androidx.glance.appwidget)
     implementation(libs.androidx.biometric.ktx)
+    implementation(libs.androidx.preference.ktx)
     ksp(libs.androidx.room.compiler)
     ksp(libs.hilt.android.compiler)
     ksp(libs.hilt.compile)

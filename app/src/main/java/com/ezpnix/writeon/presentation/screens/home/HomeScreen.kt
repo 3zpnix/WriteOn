@@ -6,14 +6,15 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -40,6 +41,13 @@ import com.ezpnix.writeon.presentation.screens.home.widgets.NoteFilter
 import com.ezpnix.writeon.presentation.screens.settings.model.SettingsViewModel
 import com.ezpnix.writeon.presentation.screens.settings.settings.PasswordPrompt
 import com.ezpnix.writeon.presentation.screens.settings.settings.shapeManager
+import androidx.compose.runtime.getValue // 3zpnix
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeView (
@@ -130,7 +138,7 @@ fun HomeView (
                 viewMode = settingsModel.settings.value.viewMode,
                 searchText = viewModel.searchQuery.value.ifBlank { null },
                 isDeleteMode = viewModel.isDeleteMode.value,
-                onNoteUpdate = { note -> viewModel.noteUseCase.addNote(note) },
+                onNoteUpdate = { note -> CoroutineScope(Dispatchers.IO).launch {viewModel.noteUseCase.addNote(note) } },
                 onDeleteNote = {
                     viewModel.toggleIsDeleteMode(false)
                     viewModel.noteUseCase.deleteNoteById(it)
@@ -147,7 +155,7 @@ fun getContainerColor(settingsModel: SettingsViewModel): Color {
 
 @Composable
 private fun NewNoteButton(
-    navController: NavController, // FEATURE COMING SOON
+    navController: NavController,
     onNoteClicked: (Int) -> Unit
 ) {
     CenteredNotesButton(
@@ -168,6 +176,27 @@ private fun SelectedNotesTopAppBar(
     onSelectAllClick: () -> Unit,
     onCloseClick: () -> Unit
 ) {
+    var deletelaert by remember {
+        mutableStateOf(false)
+    }
+    AnimatedVisibility(visible = deletelaert) {
+        AlertDialog(onDismissRequest = { deletelaert = false }, title = {
+            Text(
+                text = stringResource(id = R.string.alert_text)
+            )
+        }, confirmButton = {
+            TextButton(onClick = { deletelaert=false
+                onDeleteClick()
+            }) {
+                Text(text = stringResource(id = R.string.yes), color = MaterialTheme.colorScheme.error )
+            }
+        },
+            dismissButton = {
+                TextButton(onClick = { deletelaert = false }) {
+                    Text(text =stringResource(id = R.string.cancel))
+                }
+            })
+    }
     TopAppBar(
         modifier = Modifier.padding(bottom = 36.dp),
         colors = TopAppBarDefaults.topAppBarColors(
@@ -179,16 +208,14 @@ private fun SelectedNotesTopAppBar(
         navigationIcon = { CloseButton(onCloseClicked = onCloseClick) },
         actions = {
             Row {
-                Text("Deleting is Irreversible!", modifier = Modifier.align(Alignment.CenterVertically))
+                DeleteButton(onClick =  {deletelaert = true})
                 Spacer(modifier = Modifier.width(5.dp))
-                DeleteButton(onClick = onDeleteClick)
+                PinButton(isPinned = selectedNotes.all { it.pinned }, onClick = onPinClick)
                 Spacer(modifier = Modifier.width(5.dp))
                 SelectAllButton(
                     enabled = selectedNotes.size != allNotes.size,
                     onClick = onSelectAllClick
                 )
-                Spacer(modifier = Modifier.width(5.dp))
-                PinButton(isPinned = selectedNotes.all { it.pinned }, onClick = onPinClick)
             }
         }
     )

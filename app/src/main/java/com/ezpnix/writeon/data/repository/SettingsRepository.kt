@@ -13,11 +13,11 @@ import com.ezpnix.writeon.domain.repository.SettingsRepository
 import com.ezpnix.writeon.widget.NotesWidgetReceiver
 import kotlinx.coroutines.flow.first
 
-private const val PREFERENCES_NAME = "settings"
+private const val PREFERENCES_NAME = "settings updated"
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
     name = PREFERENCES_NAME,
-    produceMigrations = { context -> listOf(SharedPreferencesMigration(context, "notes")) }
+    produceMigrations = { context -> listOf(SharedPreferencesMigration(context, PREFERENCES_NAME)) }
 )
 
 class SettingsRepositoryImpl (private val context: Context) : SettingsRepository {

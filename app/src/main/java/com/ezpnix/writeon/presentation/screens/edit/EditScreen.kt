@@ -1,6 +1,7 @@
 package com.ezpnix.writeon.presentation.screens.edit
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.icu.text.SimpleDateFormat
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -15,19 +16,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.PushPin
-import androidx.compose.material.icons.rounded.ContentCopy
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Numbers
 import androidx.compose.material.icons.rounded.PushPin
 import androidx.compose.material.icons.rounded.RemoveRedEye
+import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
@@ -57,8 +57,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.ezpnix.writeon.R
+import com.ezpnix.writeon.presentation.components.BrowserButton
 import com.ezpnix.writeon.presentation.components.CalButton
-import com.ezpnix.writeon.presentation.components.CopyButton
 import com.ezpnix.writeon.presentation.components.MoreButton
 import com.ezpnix.writeon.presentation.components.NavigationIcon
 import com.ezpnix.writeon.presentation.components.NotesScaffold
@@ -78,9 +78,9 @@ import com.ezpnix.writeon.presentation.screens.settings.widgets.copyToClipboard
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.Locale
-import androidx.compose.foundation.layout.navigationBarsPadding
-import com.ezpnix.writeon.presentation.components.BrowserButton
-import com.ezpnix.writeon.presentation.components.YtButton
+import com.ezpnix.writeon.presentation.components.TranslateButton
+import com.ezpnix.writeon.presentation.components.TxtButton
+import com.ezpnix.writeon.presentation.components.openTranslateApp
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -136,23 +136,29 @@ fun TopBarActions(pagerState: PagerState, onClickBack: () -> Unit, viewModel: Ed
                             leadingIcon = { Icon(if (viewModel.isPinned.value) Icons.Rounded.PushPin else Icons.Outlined.PushPin, contentDescription = "Pin")},
                             onClick = {
                                 val message = if (isPinned) {
-                                    "Unpinned"
+                                    "Unpinned Note"
                                 } else {
-                                    "Pinned"
+                                    "Pinned Note"
                                 }
                                 viewModel.toggleNotePin(!isPinned)
                                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                             }
                         )
                         DropdownMenuItem(
-                            text = { Text(stringResource(id = R.string.copy)) },
-                            leadingIcon = { Icon(Icons.Rounded.ContentCopy, contentDescription = "Copy")},
+                            text = { Text(stringResource(id = R.string.share)) },
+                            leadingIcon = { Icon(Icons.Rounded.Share, contentDescription = "Share") },
                             onClick = {
-                                copyToClipboard(context, viewModel.noteDescription.value.text)
+                                val sendIntent = Intent().apply {
+                                    action = Intent.ACTION_SEND
+                                    putExtra(Intent.EXTRA_TEXT, viewModel.noteDescription.value.text)
+                                    type = "text/plain"
+                                }
+                                val shareIntent = Intent.createChooser(sendIntent, null)
+                                context.startActivity(shareIntent)
                             }
                         )
                         DropdownMenuItem(
-                            text = { Text(stringResource(R.string.information)) },
+                            text = { Text(stringResource(R.string.information_dropdown)) },
                             leadingIcon = { Icon(Icons.Rounded.Info, contentDescription = "Information")},
                             onClick = {
                                 viewModel.toggleEditMenuVisibility(false)
@@ -211,7 +217,6 @@ fun ObserveLifecycleEvents(viewModel: EditViewModel) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_STOP) {
                 viewModel.saveNote(viewModel.noteId.value)
-                viewModel.fetchLastNoteAndUpdate()
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
@@ -316,10 +321,14 @@ fun EditScreen(viewModel: EditViewModel, coroutineScope: CoroutineScope, setting
         }
         MarkdownBox(
             isExtremeAmoled = settingsViewModel.settings.value.extremeAmoledMode,
-            shape = shapeManager(radius = settingsViewModel.settings.value.cornerRadius, isFirst = true),
+            shape = shapeManager(
+                radius = settingsViewModel.settings.value.cornerRadius,
+                isFirst = true
+            ),
             modifier = Modifier
                 .weight(1f)
-                .onFocusChanged { viewModel.toggleIsDescriptionInFocus(it.isFocused) },
+                .onFocusChanged { viewModel.toggleIsDescriptionInFocus(it.isFocused) }
+                .padding(bottom = 8.dp),
             content = {
                 CustomTextField(
                     value = viewModel.noteDescription.value,
@@ -329,38 +338,35 @@ fun EditScreen(viewModel: EditViewModel, coroutineScope: CoroutineScope, setting
                 )
             }
         )
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            BrowserButton()
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            CopyButton(viewModel, onClick = {copyToClipboard(context, viewModel.noteDescription.value.text)}
-        )
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            ModeButton(pagerState, coroutineScope)
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            CalButton()
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            YtButton()
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                ModeButton(pagerState, coroutineScope)
+            }
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                TxtButton(currentText = viewModel.noteDescription.value.text)
+                CalButton()
+                TranslateButton(viewModel, onClick = {
+                    copyToClipboard(context, viewModel.noteDescription.value.text)
+                    openTranslateApp(context, viewModel.noteDescription.value.text)
+                })
+                BrowserButton()
+            }
         }
-
     }
 }
 
 
-@OptIn(ExperimentalFoundationApi::class)
+        @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PreviewScreen(viewModel: EditViewModel, settingsViewModel: SettingsViewModel, pagerState: PagerState, onClickBack: () -> Unit) {
     if (viewModel.isNoteInfoVisible.value) BottomModal(viewModel, settingsViewModel)
@@ -375,7 +381,10 @@ fun PreviewScreen(viewModel: EditViewModel, settingsViewModel: SettingsViewModel
     ) {
         MarkdownBox(
             isExtremeAmoled = settingsViewModel.settings.value.extremeAmoledMode,
-            shape = shapeManager(radius = settingsViewModel.settings.value.cornerRadius, isFirst = true),
+            shape = shapeManager(
+                radius = settingsViewModel.settings.value.cornerRadius,
+                isFirst = true
+            ),
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth()
@@ -392,37 +401,35 @@ fun PreviewScreen(viewModel: EditViewModel, settingsViewModel: SettingsViewModel
                 )
             }
         )
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            BrowserButton()
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            CopyButton(viewModel, onClick = { copyToClipboard(context, viewModel.noteDescription.value.text) })
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            ModeButton(pagerState, coroutineScope)
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            CalButton()
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            YtButton()
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                ModeButton(pagerState, coroutineScope)
+            }
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                TxtButton(currentText = viewModel.noteDescription.value.text)
+                CalButton()
+                TranslateButton(viewModel, onClick = {
+                    copyToClipboard(context, viewModel.noteDescription.value.text)
+                    openTranslateApp(context, viewModel.noteDescription.value.text)
+                })
+                BrowserButton()
+            }
         }
     }
 }
 
 
-@Composable
+        @Composable
 fun MarkdownBox(
     isExtremeAmoled: Boolean,
     modifier: Modifier = Modifier,

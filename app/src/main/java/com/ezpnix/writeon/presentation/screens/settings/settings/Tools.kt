@@ -1,11 +1,11 @@
 package com.ezpnix.writeon.presentation.screens.settings.settings
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Sort
-import androidx.compose.material.icons.rounded.DynamicFeed
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.GridView
 import androidx.compose.material.icons.rounded.Home
@@ -14,6 +14,7 @@ import androidx.compose.material.icons.rounded.Title
 import androidx.compose.material.icons.rounded.ViewAgenda
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -25,6 +26,7 @@ import com.ezpnix.writeon.presentation.screens.settings.widgets.SettingsBox
 
 @Composable
 fun ToolsScreen(navController: NavController, settingsViewModel: SettingsViewModel) {
+    val context = LocalContext.current
     settingsViewModel.noteUseCase.observe()
     SettingsScaffold(
         settingsViewModel = settingsViewModel,
@@ -52,7 +54,15 @@ fun ToolsScreen(navController: NavController, settingsViewModel: SettingsViewMod
                     actionType = ActionType.SWITCH,
                     radius = shapeManager(radius = settingsViewModel.settings.value.cornerRadius, isFirst = true),
                     variable = settingsViewModel.settings.value.editMode,
-                    switchEnabled = { settingsViewModel.update(settingsViewModel.settings.value.copy(editMode = it))}
+                    switchEnabled = { isEnabled -> settingsViewModel.update(settingsViewModel.settings.value.copy(editMode = isEnabled))
+
+                    val message = if (isEnabled) {
+                        "<Edit Mode>"
+                    } else {
+                        "<View Mode>"
+                    }
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                    }
                 )
             }
             item {
@@ -63,7 +73,14 @@ fun ToolsScreen(navController: NavController, settingsViewModel: SettingsViewMod
                     actionType = ActionType.SWITCH,
                     radius = shapeManager(radius = settingsViewModel.settings.value.cornerRadius),
                     variable = settingsViewModel.settings.value.isMarkdownEnabled,
-                    switchEnabled = { settingsViewModel.update(settingsViewModel.settings.value.copy(isMarkdownEnabled = it))}
+                    switchEnabled = { isEnabled -> settingsViewModel.update(settingsViewModel.settings.value.copy(isMarkdownEnabled = isEnabled))
+                        val message = if (isEnabled) {
+                            "Enabled (Recommended)"
+                        } else {
+                            "Disabled"
+                        }
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                    }
                 )
             }
             item {

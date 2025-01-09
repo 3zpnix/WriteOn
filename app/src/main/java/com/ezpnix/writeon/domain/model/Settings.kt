@@ -22,4 +22,3 @@ data class Settings(
 
     var cornerRadius: Int = 32,
 )
-

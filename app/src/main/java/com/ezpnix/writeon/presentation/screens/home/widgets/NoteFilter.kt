@@ -3,7 +3,7 @@ package com.ezpnix.writeon.presentation.screens.home.widgets
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ViewList
+import androidx.compose.material.icons.automirrored.rounded.Launch
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -79,7 +79,7 @@ private fun getEmptyText(searchText: String?): String {
 @Composable
 private fun getEmptyIcon(searchText: String?): ImageVector {
     return when {
-        searchText.isNullOrEmpty() -> Icons.AutoMirrored.Rounded.ViewList
+        searchText.isNullOrEmpty() -> Icons.AutoMirrored.Rounded.Launch
         else -> Icons.Rounded.Search
     }
 }

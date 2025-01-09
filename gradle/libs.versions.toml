@@ -23,6 +23,7 @@ mkcalendar = "1.2.1"
 messageBar = "1.0.5"
 biometricktx = "1.2.0-alpha05"
 runtimeKtx = "2.9.1"
+preferenceKtx = "1.2.1"
 
 [libraries]
 # Room
@@ -67,6 +68,7 @@ androidx-biometric-ktx = { group = "androidx.biometric", name = "biometric", ver
 
 #AutomaticBackup
 automatic-backup = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "runtimeKtx"}
+androidx-preference-ktx = { group = "androidx.preference", name = "preference-ktx", version.ref = "preferenceKtx" }
 
 [plugins]
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }

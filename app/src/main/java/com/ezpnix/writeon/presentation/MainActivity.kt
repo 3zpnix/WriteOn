@@ -82,12 +82,4 @@ class MainActivity : AppCompatActivity() {
 
         biometricPrompt.authenticate(promptInfo)
     }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        setContent {
-            val settingsViewModel: SettingsViewModel = ViewModelProvider(this).get(SettingsViewModel::class.java)
-            settingsViewModel.update(settingsViewModel.settings.value.copy(vaultEnabled = false))
-        }
-    }
 }

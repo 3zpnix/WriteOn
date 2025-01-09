@@ -26,9 +26,6 @@ class EditViewModel @Inject constructor(
     private val _noteName = mutableStateOf(TextFieldValue())
     val noteName: State<TextFieldValue> get() = _noteName
 
-    private val _isInsertingImage = mutableStateOf(false)
-    val isInsertingImage: State<Boolean> get() = _isInsertingImage
-
     private val _isDescriptionInFocus = mutableStateOf(false)
     val isDescriptionInFocus: State<Boolean> get() = _isDescriptionInFocus
 
@@ -57,16 +54,19 @@ class EditViewModel @Inject constructor(
 
     fun saveNote(id: Int) {
         if (noteName.value.text.isNotEmpty() || noteDescription.value.text.isNotBlank()) {
-            noteUseCase.addNote(
-                Note(
-                    id = id,
-                    name = noteName.value.text,
-                    description = noteDescription.value.text,
-                    pinned = isPinned.value,
-                    encrypted = isEncrypted.value,
-                    createdAt = if (noteCreatedTime.value != 0L) noteCreatedTime.value else System.currentTimeMillis(),
+            viewModelScope.launch {
+                noteUseCase.addNote(
+                    Note(
+                        id = id,
+                        name = noteName.value.text,
+                        description = noteDescription.value.text,
+                        pinned = isPinned.value,
+                        encrypted = isEncrypted.value,
+                        createdAt = if (noteCreatedTime.value != 0L) noteCreatedTime.value else System.currentTimeMillis(),
+                    )
                 )
-            )
+                fetchLastNoteAndUpdate()
+            }
         }
     }
 
@@ -92,15 +92,13 @@ class EditViewModel @Inject constructor(
         if (id != 0) {
             viewModelScope.launch {
                 noteUseCase.getNoteById(id).collectLatest { note ->
-                    if (!isInsertingImage.value) {
-                        syncNote(note)
-                    }
+                    syncNote(note)
                 }
             }
         }
     }
 
-    fun fetchLastNoteAndUpdate() {
+    private fun fetchLastNoteAndUpdate() {
         if (noteName.value.text.isNotEmpty() || noteDescription.value.text.isNotBlank()) {
             if (noteId.value == 0) {
                 viewModelScope.launch {
@@ -112,10 +110,6 @@ class EditViewModel @Inject constructor(
                 }
             }
         }
-    }
-
-    fun toggleIsInsertingImages(value: Boolean) {
-        _isInsertingImage.value = value
     }
 
     fun toggleEditMenuVisibility(value: Boolean) {
@@ -180,7 +174,6 @@ class EditViewModel @Inject constructor(
         return text[selectionStart - 1] == '\n'
     }
 
-
     private fun getIntRangeForCurrentLine(): IntRange {
         val text = _noteDescription.value.text
         val selectionStart = _noteDescription.value.selection.start
@@ -197,6 +190,40 @@ class EditViewModel @Inject constructor(
         }
         return IntRange(lineStart, lineEnd - 1);
     }
+
+    fun insertNumberedText(newLine: Boolean = true) {
+        val text = _noteDescription.value.text
+        val currentCaretPosition = _noteDescription.value.selection.start
+
+        val lastNumber = getLastNumberBeforeCaret(text, currentCaretPosition)
+
+        if (lastNumber != null && isSeparated(text, currentCaretPosition)) {
+            _currentNumber.value = 1
+        } else {
+            _currentNumber.value = lastNumber?.plus(1) ?: 1
+        }
+
+        val textToInsert = "${_currentNumber.value}."
+        insertText(textToInsert, newLine = newLine)
+
+        _currentNumber.value++
+    }
+
+    fun getLastNumberBeforeCaret(text: String, caretPosition: Int): Int? {
+        val regex = Regex("""(\d+)\.""")
+        val matches = regex.findAll(text.substring(0, caretPosition))
+        val numbers = matches.map { it.groupValues[1].toInt() }.toList()
+
+        return numbers.lastOrNull()
+    }
+
+    fun isSeparated(text: String, caretPosition: Int): Boolean {
+        val beforeCaret = text.substring(0, caretPosition)
+        return beforeCaret.endsWith("\n\n") || beforeCaret.trim().isEmpty()
+    }
+
+    private val _currentNumber = mutableStateOf(1)
+    val currentNumber: State<Int> get() = _currentNumber
 
     fun insertText(insertText: String, offset: Int = 1, newLine: Boolean = true) {
         val currentText = _noteDescription.value.text
