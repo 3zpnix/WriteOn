@@ -1,4 +1,4 @@
-A very direct note-taking app with a Material You design to create a visually comforting interface and distraction-free environment. With a focus on simplicity and usability, offering several features.
+A simple note-taking app with a Material You design to create a visually comforting interface and distraction-free environment. With a focus on simplicity and usability, offering several useful features.
 
 🔐 Key features include:
 
@@ -13,9 +13,6 @@ A very direct note-taking app with a Material You design to create a visually co
 ★ Intuitive UI: A user-friendly interface that keeps your notes organized and accessible.
 ★ Built-In Calendar: Take a quick look at the calendar without switching applications.
 
-Whether you're jotting down quick thoughts or crafting detailed notes. Write On is the perfect companion for staying organized and manageable. Attach photos, codes, words, works, quotes, anything that your brain needs to write on. 
-
-<b>For users, it is recommended that you enable the automatic backup feature.</b>
-<b>For now, this application is only available for Android.<b>
+Whether you're jotting down quick thoughts or crafting detailed notes. Write On is the perfect companion for staying organized and manageable. Attach photos, codes, words, quotes, works, anything that your brain needs to write on. 
 
 Open-Source Code: https://github.com/3zpnix/WriteOn
