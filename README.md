@@ -1,12 +1,11 @@
 <div align="center">
-    
-### Write On: Simple Notepad ✅
-A clean, intuitive note-taking open source app with Material You design.
-<img width="192" height="192" src="app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp" align="center" alt="" > 
-
+(⁠≧⁠▽⁠≦⁠)
 <h3>Version 1.2 Coming Soon! (⁠≧⁠▽⁠≦⁠)</h3>
 
-<div align="center">
+<img width="192" height="192" src="app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp" align="center" alt="" > 
+
+### Write On: Simple Notepad ✅
+A clean, intuitive note-taking open source app with Material You design.
 
 [<img src=".github/github.png" alt="Get it on GitHub" height="55">](https://github.com/3zpnix/WriteOn/releases/tag/v1.0) &nbsp; 
 [<img src=".github/fdroid.png" alt="Get it on F-Droid" height="55">](https://f-droid.org/en/packages/com.ezpnix.writeon/) &nbsp;
