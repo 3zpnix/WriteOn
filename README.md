@@ -21,17 +21,17 @@ A clean, intuitive note-taking open source app with Material You design.
 
 ---
 
-## 🎉 Available Features
-- Biometric Authentication: Secure your notes from being unlocked by strangers, with your fingerprint locking them out.
-- Backup/Restore: Easily back up your notes and restore them whenever needed, while having an optional automatic backup feature.
-- Screen Protection: Protect your notes from prying eyes and unwanted screenshots from suspicious applications.
-- Markdown Support: Format your notes effortlessly with Markdown, allowing you to create rich text notes with ease.
-- Customizable Themes: Choose from a variety of themes to match your style, with options designed to be easy on the eyes.
-- Offline Functionality: Never lose your notes. As it is an ad-free & clutter-free open source application for everyone.
-- Data Privacy: Your notes are stored securely on your device, ensuring your personal data and stuff remains private.
-- No Unnecessary Permissions: Enjoy peace of mind knowing that WriteOn doesn't require what is not needed.
-- Intuitive UI: A user-friendly interface that keeps your notes organized and accessible.
-- Built-In Calendar: Take a quick look at the calendar without switching applications.
+## 🎉 DevLog v1.2 (01/10/2025)
+- [x] More markdown formats
+- [x] Quick note export to txt
+- [x] Updated auto-backup logic
+- [x] Direct to translate button
+- [x] Dropdown share button
+- [x] Fixed partial image bug
+- [x] Updated user interface
+- [x] Internet search button
+- [x] Updated resource strings
+- [x] More optimizations
 
 ---
 
@@ -51,18 +51,11 @@ A clean, intuitive note-taking open source app with Material You design.
 
 ---
 
-## DevLog for v1.2 (01/05/2025)
+## 👋 Active Features
 
 <div align="left">
 
-- Added the ability to make a quick note then exporting the text inside to a txt file (located beside the 'Create' button)
-- Updated the logic handling of the automatic backup feature a bit
-- Added a way to copy the text from a note then redirecting the user to translating the text right away
-- Now you can head onto your default browser to search the internet quickly by pressing a new button placed within the note
-- Refurbished some of the codes to avoid any potential crashes that may happen indefinitely
-- Have temporarily removed some useless features that has no use for this app (yet)
-- Renamed some strings and other miscellaneous things
-- More coming soon!
+★ Biometric Authentication ★ Backup/Restore ★ Screen Protection ★ Markdown Support ★ Customizable Themes ★ Offline Functionality ★ Data Privacy ★ No Unnecessary Permissions ★ Intuitive UI ★ Built-In Calendar ★ Quick note export to txt ★ Direct to translate button ★ Dropdown share button ★ Internet search button ★ Attach Images 
 
 ---
 
