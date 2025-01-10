@@ -4,7 +4,7 @@
 ### Write On: Simple Notepad ✅
 A clean, intuitive note-taking open source app with Material You design.
 
-[<img src=".github/github.png" alt="Get it on GitHub" height="55">](https://github.com/3zpnix/WriteOn/releases/tag/v1.0) &nbsp;
+[<img src=".github/github.png" alt="Get it on GitHub" height="55">](https://github.com/3zpnix/WriteOn/releases) &nbsp;
 [<img src=".github/fdroid.png" alt="Get it on F-Droid" height="55">](https://f-droid.org/en/packages/com.ezpnix.writeon/) &nbsp;
 
 ---
@@ -53,8 +53,6 @@ A clean, intuitive note-taking open source app with Material You design.
 
 ## 👋 Active Features
 
-<div align="left">
-
 ★ Biometric Authentication ★ Backup/Restore ★ Screen Protection ★ Markdown Support ★ Customizable Themes ★ Offline Functionality ★ Data Privacy ★ No Unnecessary Permissions ★ Intuitive UI ★ Built-In Calendar ★ Quick note export to txt ★ Direct to translate button ★ Dropdown share button ★ Internet search button ★ Attach Images 
 
 ---
@@ -75,4 +73,3 @@ A clean, intuitive note-taking open source app with Material You design.
     The above copyright notice, this permission notice, and the license must be included in all copies or substantial portions of the software.
 
     You can find a copy of the GNU General Public License v3 [here](https://www.gnu.org/licenses/)</p>
-</div>
