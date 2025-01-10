@@ -1,15 +1,15 @@
 name: Nightly Build
 
 on:
-  #push:
-    #branches:
-      #- master
+  push:
+    branches:
+      - master
   workflow_dispatch:
     inputs:
       commit:
         description: 'Commit hash to build'
         required: false
-        default: '16315c9081a267f852b83400db58b7818786720d'
+        default: '989745c89cb7b58f522597b221000d5c6496dcb2'
         type: string
 
 concurrency:
