@@ -1,9 +1,9 @@
 name: Release Build
 
 on:
-  #push:
-    #branches:
-      #- master
+  push:
+    branches:
+      - master
   workflow_dispatch:
     inputs:
       commit:
@@ -39,23 +39,20 @@ jobs:
       - name: Grant execution permission to Gradle Wrapper
         run: chmod +x gradlew
 
-      - name: Build Release APK
-        run: ./gradlew assembleRelease
+      - name: Decode JKS
+        run: |
+          echo "$SIGNING_KEY" | base64 --decode > Appkey.jks
 
-      - name: Sign app APK
-        uses: r0adkll/sign-android-release@v1
-        id: sign_app
-        with:
-          releaseDirectory: app/build/outputs/apk/release
-          signingKeyBase64: ${{ secrets.KEY_BASE64 }}
-          alias: ${{ secrets.KEY_ALIAS }}
-          keyStorePassword: ${{ secrets.KEYSTORE_PASS }}
-          keyPassword: ${{ secrets.KEYSTORE_PASS }}
+      - name: Build and Sign
+        run: |
+          ./gradlew assembleRelease
         env:
-          BUILD_TOOLS_VERSION: "34.0.0"
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
       - name: Rename APK
-        run: mv app/build/outputs/apk/release/app-release-signed.apk WriteOn.apk
+        run: mv app/build/outputs/apk/release/app-release.apk WriteOn.apk
 
       - name: Upload the APK
         uses: actions/upload-artifact@v4.3.5
@@ -68,8 +65,8 @@ jobs:
 
       - name: Create GitHub Release
         run: |
-          gh release create v1.1 WriteOn.apk \
-            --title "v1.1" \
-            --notes "November Update~" \
+          gh release create v1.2 WriteOn.apk \
+            --title "v1.2" \
+            --notes "January Update~" \
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
