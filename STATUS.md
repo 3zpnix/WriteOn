@@ -12,6 +12,7 @@
 - [x] Internet search button
 - [x] Updated resource strings
 - [x] More optimizations
-- [ ] Font Size Changeable 
+- [ ] Font Size Changeable
+- [ ] Cross Platform Client
 
 Contact me if you have any suggestions or feedbacks about the current/upcoming changes. For inquiries, email ezpnix@proton.me
