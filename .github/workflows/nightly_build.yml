@@ -9,7 +9,7 @@ on:
       commit:
         description: 'Commit hash to build'
         required: false
-        default: '16315c9081a267f852b83400db58b7818786720d'
+        default: '989745c89cb7b58f522597b221000d5c6496dcb2'
         type: string
 
 concurrency:
@@ -47,12 +47,15 @@ jobs:
         run: |
           ./gradlew assembleRelease
         env:
-          STORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
+      - name: List APK directory
+        run: ls -la app/build/outputs/apk/release/
+
       - name: Rename APK
-        run: mv app/build/outputs/apk/release/app-release-signed.apk WriteOn-nightly.apk
+        run: mv app/build/outputs/apk/release/app-release.apk WriteOn-nightly.apk
 
       - name: Upload the APK
         uses: actions/upload-artifact@v4.3.5
