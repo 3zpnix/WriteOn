@@ -35,8 +35,8 @@ android {
             )
             signingConfig = signingConfigs.create("release") {
                 storeFile = file("Appkey.jks")
-                storePassword = System.getenv("KEYSTORE_PASSWORD")
-                keyAlias = "EzPhoenixYT"
+                storePassword = "@Ezstore7450"
+                keyAlias = System.getenv("KEY_ALIAS")
                 keyPassword = System.getenv("KEY_PASSWORD")
             }
         }
