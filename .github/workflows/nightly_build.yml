@@ -9,7 +9,7 @@ on:
       commit:
         description: 'Commit hash to build'
         required: false
-        default: '0e3eaa523942604dc3df1de4de4ce72ce0ab105a'
+        default: '16315c9081a267f852b83400db58b7818786720d'
         type: string
 
 concurrency:
