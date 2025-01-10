@@ -51,6 +51,9 @@ jobs:
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
+      - name: List APK directory
+        run: ls -la app/build/outputs/apk/release/
+
       - name: Rename APK
         run: mv app/build/outputs/apk/release/app-release-signed.apk WriteOn-nightly.apk
 
