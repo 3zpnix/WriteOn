@@ -19,7 +19,6 @@ android {
             useSupportLibrary = true
         }
 
-        // https://developer.android.com/guide/topics/resources/app-languages#gradle-config
         resourceConfigurations.plus(
             listOf("en")
         )
@@ -34,7 +33,12 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.create("release") {
+                storeFile = file("Appkey.jks")
+                storePassword = System.getenv("KEYSTORE_PASSWORD")
+                keyAlias = "EzPhoenixYT"
+                keyPassword = System.getenv("KEY_PASSWORD")
+            }
         }
 
         debug {
@@ -48,22 +52,27 @@ android {
             applicationIdSuffix = ".debug"
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+
     kotlinOptions {
         jvmTarget = "17"
     }
+
     buildFeatures {
         compose = true
         buildConfig = true
     }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
     buildToolsVersion = "34.0.0"
 
     dependenciesInfo {
