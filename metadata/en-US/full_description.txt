@@ -2,16 +2,7 @@ A simple note-taking app with a Material You design to create a visually comfort
 
 🔐 Key features include:
 
-★ Biometric Authentication: Secure your notes from being unlocked by strangers, with your fingerprint locking them out. 
-★ Backup/Restore: Easily back up your notes and restore them whenever needed, while having an optional automatic backup feature. 
-★ Screen Protection: Protect your notes from prying eyes and unwanted screenshots from suspicious applications.
-★ Markdown Support: Format your notes effortlessly with Markdown, allowing you to create rich text notes with ease.
-★ Customizable Themes: Choose from a variety of themes to match your style, with options designed to be easy on the eyes.
-★ Offline Functionality: Never lose your notes. As it is an ad-free & clutter-free open source application for everyone. 
-★ Data Privacy: Your notes are stored securely on your device, ensuring your personal data and stuff remains private.
-★ No Unnecessary Permissions: Enjoy peace of mind knowing that WriteOn doesn't require what is not needed.
-★ Intuitive UI: A user-friendly interface that keeps your notes organized and accessible.
-★ Built-In Calendar: Take a quick look at the calendar without switching applications.
+★ Biometric Authentication ★ Backup/Restore ★ Screen Protection ★ Markdown Support ★ Customizable Themes ★ Offline Functionality ★ Data Privacy ★ No Unnecessary Permissions ★ Intuitive UI ★ Built-In Calendar ★ Quick note export to txt ★ Direct to translate button ★ Dropdown share button ★ Internet search button ★ Attach Images ★
 
 Whether you're jotting down quick thoughts or crafting detailed notes. Write On is the perfect companion for staying organized and manageable. Attach photos, codes, words, quotes, works, anything that your brain needs to write on. 
 
