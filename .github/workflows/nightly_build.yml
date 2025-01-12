@@ -39,17 +39,8 @@ jobs:
       - name: Grant execution permission to Gradle Wrapper
         run: chmod +x gradlew
 
-      - name: Decode JKS
-        run: |
-          echo "$SIGNING_KEY" | base64 --decode > Appkey.jks
-
-      - name: Build and Sign
-        run: |
-          ./gradlew assembleRelease
-        env:
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+      - name: Build APK
+        run: ./gradlew assembleDebug
 
       - name: List APK directory
         run: ls -la app/build/outputs/apk/release/
