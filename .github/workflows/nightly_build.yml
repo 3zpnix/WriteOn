@@ -42,15 +42,18 @@ jobs:
       - name: Build Release APK
         run: ./gradlew assembleRelease
 
+      - name: Decode the Keystore from Base64
+        run: echo "${{ secrets.KEY_BASE64 }}" | base64 --decode > signingKey.jks
+
       - name: Sign app APK
         uses: r0adkll/sign-android-release@v1
         id: sign_app
         with:
           releaseDirectory: app/build/outputs/apk/release
-          signingKeyBase64: ${{ secrets.KEY_BASE64 }}
+          signingKey: signingKey.jks
           alias: ${{ secrets.KEY_ALIAS }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
-          keyPassword: ${{ secrets.KEYSTORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}  
         env:
           BUILD_TOOLS_VERSION: "34.0.0"
 
@@ -66,6 +69,6 @@ jobs:
       - name: Update nightly release
         uses: pyTooling/Actions/releaser@main
         with:
-         tag: Nightly
-         token: ${{ secrets.TOKEN }}
-         files: WriteOn-nightly.apk
+          tag: Nightly
+          token: ${{ secrets.TOKEN }}
+          files: WriteOn-nightly.apk
