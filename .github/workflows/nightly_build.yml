@@ -1,9 +1,9 @@
 name: Nightly Build
 
 on:
-  push:
-    branches:
-      - master
+  #push:
+    #branches:
+      #- master
   workflow_dispatch:
     inputs:
       commit:
@@ -49,8 +49,8 @@ jobs:
           releaseDirectory: app/build/outputs/apk/release
           signingKeyBase64: ${{ secrets.KEY_BASE64 }}
           alias: ${{ secrets.KEY_ALIAS }}
-          keyStorePassword: ${{ secrets.KEYSTORE_PASS }}
-          keyPassword: ${{ secrets.KEYSTORE_PASS }}
+          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
         env:
           BUILD_TOOLS_VERSION: "34.0.0"
 
@@ -58,7 +58,7 @@ jobs:
         run: mv app/build/outputs/apk/release/app-release-signed.apk WriteOn-nightly.apk
 
       - name: Upload the APK
-        uses: actions/upload-artifact@v4.4.3
+        uses: actions/upload-artifact@v4.3.5
         with:
           name: WriteOn-Nightly
           path: WriteOn-nightly.apk
