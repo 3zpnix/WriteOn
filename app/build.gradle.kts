@@ -19,6 +19,7 @@ android {
             useSupportLibrary = true
         }
 
+        // https://developer.android.com/guide/topics/resources/app-languages#gradle-config
         resourceConfigurations.plus(
             listOf("en")
         )
@@ -33,12 +34,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.create("release") {
-                storeFile = file("Appkey.jks")
-                storePassword = System.getenv("KEYSTORE_PASSWORD")
-                keyAlias = System.getenv("KEY_ALIAS")
-                keyPassword = System.getenv("KEY_PASSWORD")
-            }
+            signingConfig = signingConfigs.getByName("debug")
         }
 
         debug {
@@ -52,27 +48,22 @@ android {
             applicationIdSuffix = ".debug"
         }
     }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-
     kotlinOptions {
         jvmTarget = "17"
     }
-
     buildFeatures {
         compose = true
         buildConfig = true
     }
-
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-
     buildToolsVersion = "34.0.0"
 
     dependenciesInfo {
@@ -87,7 +78,6 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
     implementation(libs.androidx.glance.appwidget)
     implementation(libs.androidx.biometric.ktx)
-    implementation(libs.androidx.preference.ktx)
     ksp(libs.androidx.room.compiler)
     ksp(libs.hilt.android.compiler)
     ksp(libs.hilt.compile)

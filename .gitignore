@@ -63,6 +63,7 @@ render.experimental.xml
 
 # Keystore files
 *.keystore
+*.jks
 
 # Android Profiling
 *.hprof
