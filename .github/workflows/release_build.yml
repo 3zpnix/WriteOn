@@ -1,9 +1,9 @@
 name: Release Build
 
 on:
-  #push:
-    #branches:
-      #- master
+  push:
+    branches:
+      - master
   workflow_dispatch:
     inputs:
       commit:
@@ -39,20 +39,23 @@ jobs:
       - name: Grant execution permission to Gradle Wrapper
         run: chmod +x gradlew
 
-      - name: Decode JKS
-        run: |
-          echo "$SIGNING_KEY" | base64 --decode > Appkey.jks
+      - name: Decode the Keystore from Base64
+        run: echo "${{ secrets.KEY_BASE64 }}" | base64 --decode > signingKey.jks
 
-      - name: Build and Sign
-        run: |
-          ./gradlew assembleRelease
+      - name: Sign app APK
+        uses: r0adkll/sign-android-release@v1
+        id: sign_app
+        with:
+          releaseDirectory: app/build/outputs/apk/release
+          signingKeyBase64: ${{ secrets.KEY_BASE64 }}
+          alias: ${{ secrets.KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEYSTORE_PASSWORD }}  
         env:
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          BUILD_TOOLS_VERSION: "34.0.0"
 
       - name: Rename APK
-        run: mv app/build/outputs/apk/release/app-release.apk WriteOn.apk
+        run: mv app/build/outputs/apk/release/app-release-signed.apk WriteOn.apk
 
       - name: Upload the APK
         uses: actions/upload-artifact@v4.3.5
