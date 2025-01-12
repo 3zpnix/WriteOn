@@ -39,6 +39,9 @@ jobs:
       - name: Grant execution permission to Gradle Wrapper
         run: chmod +x gradlew
 
+      - name: Build Release APK
+        run: ./gradlew assembleRelease
+        
       - name: Decode the Keystore from Base64
         run: echo "${{ secrets.KEY_BASE64 }}" | base64 --decode > signingKey.jks
 
