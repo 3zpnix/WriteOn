@@ -9,7 +9,7 @@ on:
       commit:
         description: 'Commit hash to build'
         required: false
-        default: '989745c89cb7b58f522597b221000d5c6496dcb2'
+        default: '13235d467ccf36691311e14e63e57ac350e3c930'
         type: string
 
 concurrency:
@@ -39,17 +39,26 @@ jobs:
       - name: Grant execution permission to Gradle Wrapper
         run: chmod +x gradlew
 
-      - name: Build APK
-        run: ./gradlew assembleDebug
+      - name: Build Release APK
+        run: ./gradlew assembleRelease
 
-      - name: List APK directory
-        run: ls -la app/build/outputs/apk/release/
+      - name: Sign app APK
+        uses: r0adkll/sign-android-release@v1
+        id: sign_app
+        with:
+          releaseDirectory: app/build/outputs/apk/release
+          signingKeyBase64: ${{ secrets.KEY_BASE64 }}
+          alias: ${{ secrets.KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.KEYSTORE_PASS }}
+          keyPassword: ${{ secrets.KEYSTORE_PASS }}
+        env:
+          BUILD_TOOLS_VERSION: "34.0.0"
 
       - name: Rename APK
-        run: mv app/build/outputs/apk/release/app-release.apk WriteOn-nightly.apk
+        run: mv app/build/outputs/apk/release/app-release-signed.apk WriteOn-nightly.apk
 
       - name: Upload the APK
-        uses: actions/upload-artifact@v4.3.5
+        uses: actions/upload-artifact@v4.4.3
         with:
           name: WriteOn-Nightly
           path: WriteOn-nightly.apk
@@ -57,6 +66,6 @@ jobs:
       - name: Update nightly release
         uses: pyTooling/Actions/releaser@main
         with:
-          tag: Nightly
-          token: ${{ secrets.TOKEN }}
-          files: WriteOn-nightly.apk
+         tag: Nightly
+         token: ${{ secrets.TOKEN }}
+         files: WriteOn-nightly.apk
