@@ -1,1 +1,1 @@
-A clean function-based intuitive note-taking app that makes day-to-day feel like a breeze
+A clean function-based intuitive note-taking app with Material You design.
