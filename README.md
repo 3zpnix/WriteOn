@@ -21,7 +21,8 @@ A clean, intuitive note-taking open source app with Material You design.
 
 ---
 
-## 🔥 DevLog v1.3 (Coming Soon)
+## 🔥 DevLog v1.3 (XX/XX/2025)
+- [x] (Coming Soon)
 
 ## 🎉 DevLog v1.2 (01/10/2025)
 - [x] More markdown formats
