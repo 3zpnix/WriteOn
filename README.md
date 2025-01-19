@@ -21,6 +21,8 @@ A clean, intuitive note-taking open source app with Material You design.
 
 ---
 
+## 🔥 DevLog v1.3 (Coming Soon)
+
 ## 🎉 DevLog v1.2 (01/10/2025)
 - [x] More markdown formats
 - [x] Quick note export to txt
@@ -37,9 +39,10 @@ A clean, intuitive note-taking open source app with Material You design.
 
 ## 📢 Announcements
 
-- Focusing on university stuff for a while, updates will be on hold for a moment (12/7/2024)
-- Upcoming version 1.2 will contain more bug fixes and features coming in (12/3/2024)
-- Laptop is having issues with Android Studio, updates will be delayed a bit, sorry! (11/19/2024)
+- I have to focus on my other projects, gotta earn some income online. Version 1.3 will have its updates soon (1/19/2025)
+- Updates are being delayed because of work-related University stuff, I apologize! (12/7/2024)
+- Upcoming version 1.2 will contain bug fixes and more features (12/3/2024)
+- Laptop is having issues with Android Studio, the new version will be delayed a bit, sorry! (11/19/2024)
 - Android release coming soon to fdroid and github (08/26/2024)
 
 ---
