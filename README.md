@@ -21,10 +21,12 @@ A clean, intuitive note-taking open source app with Material You design.
 
 ---
 
-## 🔥 DevLog v1.3 (01/28/2025)
+## 🔥 DevLog v1.3 (02/21/2025)
 - [x] Made some changes with the edit/preview screen ui buttons from below
-- [x] Added a visibility button when user is in edit mode
-- [ ] Updated home user interface
+- [x] Added a visibility button when user is in edit mode for a wider screen view
+- [ ] Clean up the home user interface code
+- [ ] Added a built-in calculator like the calendar
+- [ ] Make the buttons below scrollable horizontally with more features
 - [ ] More coming soon
 
 ## 🎉 DevLog v1.2 (01/10/2025)
