@@ -263,7 +263,9 @@ fun ToolsScreen(navController: NavController, settingsViewModel: SettingsViewMod
                 confirmButton = {
                     Button(onClick = {
                         showFontSizeDialog = false
-                        repeat(1) { navController.popBackStack() }
+                        repeat(2) { navController.popBackStack() }
+                        Toast.makeText(context, "Saved!", Toast.LENGTH_SHORT)
+                            .show()
                     }) {
                         Text(stringResource(id = R.string.save_and_exit))
                     }
