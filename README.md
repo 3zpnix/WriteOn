@@ -48,9 +48,10 @@ A clean, intuitive note-taking open source app with Material You design.
 
 ## 📢 Announcements
 
-- I have to focus on my other projects, gotta earn some income online. Version 1.3 will have its updates soon (1/19/2025)
-- Updates are being delayed because of work-related University stuff, I apologize! (12/7/2024)
-- Upcoming version 1.2 will contain bug fixes and more features (12/3/2024)
+- Managed to find time to update for version 1.3, Might find it difficult for the next version though because of my part time job taking up my whole schedule 對不起! (02/25/2025)
+- I have to focus on my other projects, I'm going broke right now haha. Version 1.3 will have its updates soon (1/19/2025)
+- Updates are being delayed because of university school stuff, I apologize! (12/7/2024)
+- Upcoming version 1.2 will contain mostly bug fixes but with more features (12/3/2024)
 - Laptop is having issues with Android Studio, the new version will be delayed a bit, sorry! (11/19/2024)
 - Android release coming soon to fdroid and github (08/26/2024)
 
@@ -65,7 +66,7 @@ A clean, intuitive note-taking open source app with Material You design.
 
 ## 👋 Active Features
 
-★ Biometric Authentication ★ Backup/Restore ★ Screen Protection ★ Markdown Support ★ Customizable Themes ★ Offline Functionality ★ Data Privacy ★ No Unnecessary Permissions ★ Intuitive UI ★ Built-In Calendar ★ Quick note export to txt ★ Direct to translate button ★ Dropdown share button ★ Internet search button ★ Attach Images 
+★ Biometric Authentication ★ Backup/Restore ★ Screen Protection ★ Markdown Support ★ Customizable Themes ★ Offline Functionality ★ Data Privacy ★ No Unnecessary Permissions ★ Intuitive UI ★ Built-In Calendar ★ Quick note export to txt ★ Direct to translate button ★ Dropdown share button ★ Internet search button ★ Attach Images ★ Calculator ★
 
 ---
 
