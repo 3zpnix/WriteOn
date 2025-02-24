@@ -2,7 +2,7 @@ A simple note-taking app with a Material You design to create a visually comfort
 
 🔐 Key features include:
 
-★ Biometric Authentication ★ Backup/Restore ★ Screen Protection ★ Markdown Support ★ Customizable Themes ★ Offline Functionality ★ Data Privacy ★ No Unnecessary Permissions ★ Intuitive UI ★ Built-In Calendar ★ Quick note export to txt ★ Direct to translate button ★ Dropdown share button ★ Internet search button ★ Attach Images ★
+★ Biometric Authentication ★ Backup/Restore ★ Screen Protection ★ Markdown Support ★ Customizable Themes ★ Offline Functionality ★ Data Privacy ★ No Unnecessary Permissions ★ Intuitive UI ★ Built-In Calendar ★ Quick note export to txt ★ Direct to translate button ★ Dropdown share button ★ Internet search button ★ Attach Images ★ Calculator ★
 
 Whether you're jotting down quick thoughts or crafting detailed notes. Write On is the perfect companion for staying organized and manageable. Attach photos, codes, words, quotes, works, anything that your brain needs to write on. 
 
