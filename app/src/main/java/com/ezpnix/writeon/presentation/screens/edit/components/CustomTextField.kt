@@ -3,6 +3,7 @@ package com.ezpnix.writeon.presentation.screens.edit.components
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -14,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
@@ -29,7 +31,8 @@ fun CustomTextField(
     singleLine: Boolean = false,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    hideContent: Boolean = false
+    hideContent: Boolean = false,
+    textStyle: TextStyle = LocalTextStyle.current
 ) {
     val visualTransformation = if (hideContent) {
         PasswordVisualTransformation()
@@ -42,6 +45,7 @@ fun CustomTextField(
         visualTransformation = visualTransformation,
         onValueChange = onValueChange,
         interactionSource = interactionSource,
+        textStyle = textStyle,
         enabled = enabled,
         modifier = modifier
             .fillMaxWidth()

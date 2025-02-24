@@ -21,8 +21,16 @@ A clean, intuitive note-taking open source app with Material You design.
 
 ---
 
-## 🔥 DevLog v1.3 (XX/XX/2025)
-- [x] (Coming Soon)
+## 🔥 DevLog v1.3 (02/25/2025)
+- [x] Updated home user interface
+- [x] Searchbar placeholder feature
+- [x] Fixed custom size dimensions
+- [x] Directly calculate within the app
+- [x] Ability to change font size
+- [x] Added more featured buttons
+- [x] Calendar date issue fixed
+- [x] Renamed some strings
+- [x] Squished some bugs
 
 ## 🎉 DevLog v1.2 (01/10/2025)
 - [x] More markdown formats

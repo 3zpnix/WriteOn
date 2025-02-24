@@ -35,6 +35,25 @@ fun AboutScreen(navController: NavController, settingsViewModel: SettingsViewMod
         LazyColumn {
             item {
                 SettingsBox(
+                    title = stringResource(id = R.string.latest_release),
+                    icon = Icons.Rounded.Verified,
+                    actionType = ActionType.LINK,
+                    radius = shapeManager(isFirst = true, radius = settingsViewModel.settings.value.cornerRadius),
+                    linkClicked = { uriHandler.openUri("https://f-droid.org/en/packages/com.ezpnix.writeon/") }
+                )
+            }
+            item {
+                SettingsBox(
+                    title = stringResource(id = R.string.source_code),
+                    icon = Icons.Rounded.Download,
+                    actionType = ActionType.LINK,
+                    radius = shapeManager(isLast = true, radius = settingsViewModel.settings.value.cornerRadius),
+                    linkClicked = { uriHandler.openUri("https://github.com/3zpnix/WriteOn/") }
+                )
+                Spacer(modifier = Modifier.height(18.dp))
+            }
+            item {
+                SettingsBox(
                     title = stringResource(id = R.string.build_type),
                     description = settingsViewModel.build,
                     icon = Icons.Rounded.Build,
@@ -54,30 +73,11 @@ fun AboutScreen(navController: NavController, settingsViewModel: SettingsViewMod
             }
             item {
                 SettingsBox(
-                    title = stringResource(id = R.string.latest_release),
-                    icon = Icons.Rounded.Verified,
-                    actionType = ActionType.LINK,
-                    radius = shapeManager(isFirst = true, radius = settingsViewModel.settings.value.cornerRadius),
-                    linkClicked = { uriHandler.openUri("https://f-droid.org/en/packages/com.ezpnix.writeon/") }
-                )
-            }
-            item {
-                SettingsBox(
-                    title = stringResource(id = R.string.source_code),
-                    icon = Icons.Rounded.Download,
-                    actionType = ActionType.LINK,
-                    radius = shapeManager(isLast = true, radius = settingsViewModel.settings.value.cornerRadius),
-                    linkClicked = { uriHandler.openUri("https://github.com/3zpnix/WriteOn/") }
-                )
-                Spacer(modifier = Modifier.height(18.dp))
-            }
-
-            item {
-                SettingsBox(
                     title = stringResource(id = R.string.email),
+                    description = stringResource(id = R.string.email_description),
                     icon = Icons.Rounded.Email,
-                    clipboardText = ConnectionConst.SUPPORT_MAIL,
-                    actionType = ActionType.CLIPBOARD,
+                    actionType = ActionType.LINK,
+                    linkClicked = { uriHandler.openUri("https://github.com/3zpnix/WriteOn/issues/new") },
                     radius = shapeManager(isFirst = true, radius = settingsViewModel.settings.value.cornerRadius),
                 )
             }
@@ -94,6 +94,7 @@ fun AboutScreen(navController: NavController, settingsViewModel: SettingsViewMod
         }
     }
 }
+
 
 @Composable
 fun ContributorsClicked(

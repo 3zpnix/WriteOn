@@ -7,6 +7,7 @@ import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.automirrored.rounded.Redo
 import androidx.compose.material.icons.automirrored.rounded.Undo
 import androidx.compose.material.icons.outlined.PushPin
+import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material.icons.rounded.BubbleChart
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Delete
@@ -112,18 +113,6 @@ fun PrivacyButton(onSettingsClicked: () -> Unit) {
     }
 }
 
-// NOT GOING TO USE FOR NOW
-// @Composable
-//fun VaultButton(vaultEnabled: Boolean,onVaultButtonClicked: () -> Unit) {
-//    IconButton(onClick = onVaultButtonClicked) {
-//        Icon(
-//            imageVector = if (vaultEnabled) Icons.Rounded.Lock else Icons.Rounded.LockOpen,
-//            contentDescription = "Vault",
-//            tint = MaterialTheme.colorScheme.onBackground
-//        )
-//    }
-//}
-
 @Composable
 fun TitleText(titleText: String) {
     Row(
@@ -167,5 +156,16 @@ fun SelectAllButton(enabled: Boolean, onClick: () -> Unit) {
                 contentDescription = "Select All",
             )
         }
+    }
+}
+
+@Composable
+fun MainButton(onSettingsClicked: () -> Unit) {
+    IconButton(onClick = onSettingsClicked) {
+        Icon(
+            imageVector =  Icons.Rounded.AccountCircle,
+            contentDescription = "Settings",
+            tint = MaterialTheme.colorScheme.onBackground
+        )
     }
 }

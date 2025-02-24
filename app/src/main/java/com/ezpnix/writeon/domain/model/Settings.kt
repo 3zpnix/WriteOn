@@ -19,6 +19,7 @@ data class Settings(
     var termsOfService: Boolean = false,
     val isBiometricEnabled: Boolean = false,
     val autoBackupEnabled: Boolean = false,
+    val fontSize: Float = 16f,
 
     var cornerRadius: Int = 32,
 )

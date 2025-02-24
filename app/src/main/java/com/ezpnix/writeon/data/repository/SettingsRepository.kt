@@ -6,6 +6,7 @@ import androidx.datastore.preferences.SharedPreferencesMigration
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -56,6 +57,19 @@ class SettingsRepositoryImpl (private val context: Context) : SettingsRepository
 
     override suspend fun getBoolean(key: String): Boolean? {
         val preferencesKey = booleanPreferencesKey(key)
+        val preferences = context.dataStore.data.first()
+        return preferences[preferencesKey]
+    }
+
+    override suspend fun putFloat(key: String, value: Float) {
+        val preferencesKey = floatPreferencesKey(key)
+        context.dataStore.edit { preferences ->
+            preferences[preferencesKey] = value
+        }
+    }
+
+    override suspend fun getFloat(key: String): Float? {
+        val preferencesKey = floatPreferencesKey(key)
         val preferences = context.dataStore.data.first()
         return preferences[preferencesKey]
     }

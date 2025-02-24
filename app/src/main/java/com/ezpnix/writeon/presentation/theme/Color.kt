@@ -40,7 +40,7 @@ val surfaceContainerHighestLight = Color(0xFFE0E0E0) // Light gray
 
 val primaryDark = Color(0xFFB9F6CA) // Soft mint green
 val onPrimaryDark = Color(0xFF004D40) // Dark teal
-val primaryContainerDark = Color(0xFF00796B) // Medium teal
+val primaryContainerDark = Color(0xFF004D40) // Medium teal
 val onPrimaryContainerDark = Color(0xFFE0F2F1) // Light teal background
 val secondaryDark = Color(0xFFBBDEFB) // Light sky blue
 val onSecondaryDark = Color(0xFF0D47A1) // Dark blue

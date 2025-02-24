@@ -2,9 +2,9 @@
     <string name="app_name">Write On</string>
     <string name="new_note">Create</string>
     <string name="press_create">"Write On: Simple Notepad"</string>
-    <string name="created_time">Time Created</string>
-    <string name="grid_view">Grid view</string>
-    <string name="column_view">Column view</string>
+    <string name="created_time">Note Created</string>
+    <string name="grid_view">Grid View</string>
+    <string name="column_view">Column View</string>
     <string name="words">Total Words</string>
     <string name="characters">Characters</string>
     <string name="no_title">No title</string>
@@ -28,7 +28,7 @@
     <string name="latest_release">Check Latest Release</string>
     <string name="restore">Restore</string>
     <string name="support">(✔) Write On: Simple Notepad</string>
-    <string name="color_styles"><![CDATA[Colors & Styles]]></string>
+    <string name="color_styles"><![CDATA[Color & Styles]]></string>
     <string name="language">Language</string>
     <string name="markdown">Additional Customizations</string>
     <string name="tools">Tools</string>
@@ -36,7 +36,7 @@
     <string name="description_color_styles">Style • Theme • Sizes</string>
     <string name="cloud">Cloud</string>
     <string name="description_language">Font • Language</string>
-    <string name="description_about">Version • Github • Email</string>
+    <string name="description_about">Github • Version •  Email</string>
     <string name="description_widgets">Widgets • Markdown</string>
     <string name="description_history">History • Revert</string>
     <string name="description_tools">Sort • Customization</string>
@@ -55,9 +55,9 @@
     <string name="dark_theme_description">Toggles between light and dark theme</string>
     <string name="dynamic_colors_description">Adjusts colors to match your wallpaper</string>
     <string name="amoled_colors_description">Use a deep dark colored background</string>
-    <string name="extreme_amoled_mode_description">Recommended for Low-End Devices</string>
+    <string name="extreme_amoled_mode_description">Works perfectly for AMOLED Devices</string>
     <string name="radius_description">Customize border radius</string>
-    <string name="view_style_description">Select preview styles for notes</string>
+    <string name="view_style_description">Select sorting style for notes</string>
     <string name="minimalistic_mode_description">Changes the way the notes look</string>
     <string name="backup_description">Store all notes to a zip file</string>
     <string name="restore_description">Restore notes from a zip file</string>
@@ -66,7 +66,7 @@
     <string name="build_type">Build Type</string>
     <string name="source_code">Open Source Code</string>
     <string name="app_list">Version Catalogue</string>
-    <string name="email">Need Assistance?</string>
+    <string name="email">Issue/Feedback/Feature-Request</string>
     <string name="discord">Discord</string>
     <string name="feature">Hello there</string>
     <string name="homepage">Go Back to Homepage</string>
@@ -128,4 +128,12 @@
     <string name="alert_text"> Are you sure you want to delete it permanently?</string>
     <string name="yes"> Confirm</string>
     <string name="cancel"> Cancel</string>
+    <string name="announcements">Release Notes (02/25/2025)</string>
+    <string name="enter_placeholder">Searchbar Placeholder</string>
+    <string name="enter_placeholder_description">Input any text to your liking</string>
+    <string name="font_size">Adjust Font Size</string>
+    <string name="select_font_size">Select Font Size</string>
+    <string name="save_and_exit">Save and Exit</string>
+    <string name="enter_font_size_description">Affects edit and preview text size</string>
+    <string name="email_description">ezpnix@proton.me</string>
 </resources>

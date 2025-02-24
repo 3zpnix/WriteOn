@@ -99,7 +99,7 @@ fun MarkdownText(
     isEnabled: Boolean,
     modifier: Modifier = Modifier.fillMaxWidth(),
     weight: FontWeight = FontWeight.Normal,
-    fontSize: TextUnit = 16.sp,
+    fontSize: TextUnit,
     spacing: Dp = 2.dp,
     onContentChange: (String) -> Unit = {}
 ) {

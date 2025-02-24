@@ -15,6 +15,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -32,7 +33,6 @@ import com.ezpnix.writeon.presentation.components.PinButton
 import com.ezpnix.writeon.presentation.components.SelectAllButton
 import com.ezpnix.writeon.presentation.components.SettingsButton
 import com.ezpnix.writeon.presentation.components.TitleText
-import com.ezpnix.writeon.presentation.components.PrivacyButton
 import com.ezpnix.writeon.presentation.components.defaultScreenEnterAnimation
 import com.ezpnix.writeon.presentation.components.defaultScreenExitAnimation
 import com.ezpnix.writeon.presentation.navigation.NavRoutes
@@ -45,6 +45,7 @@ import androidx.compose.runtime.getValue // 3zpnix
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.ezpnix.writeon.presentation.components.MainButton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -105,6 +106,7 @@ fun HomeView (
                 enter = defaultScreenEnterAnimation(),
                 exit = defaultScreenExitAnimation()
             ) {
+                val dynamicPlaceholder by settingsModel.dynamicPlaceholder.collectAsState()
                 NotesSearchBar(
                     settingsModel = settingsModel,
                     query = viewModel.searchQuery.value,
@@ -113,6 +115,7 @@ fun HomeView (
                     onClearClick = { viewModel.changeSearchQuery("") },
                     viewModel = viewModel,
                     navController = navController,
+                    placeholderText = dynamicPlaceholder,
                     onVaultClicked = {
                         if (!viewModel.isVaultMode.value) {
                             viewModel.toggleIsPasswordPromptVisible(true)
@@ -159,7 +162,7 @@ private fun NewNoteButton(
     onNoteClicked: (Int) -> Unit
 ) {
     CenteredNotesButton(
-        onFirstClick = "Create",
+        onFirstClick = "New",
         onSecondClick = { onNoteClicked(0) },
         onThirdClick = {},
     )
@@ -231,15 +234,20 @@ private fun NotesSearchBar(
     onSettingsClick: () -> Unit,
     onVaultClicked: () -> Unit, // AA3
     onClearClick: () -> Unit,
-    navController: NavController
+    navController: NavController,
+    placeholderText: String
 ) {
     SearchBar(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 42.dp, vertical = 10.dp),
         query = query,
-        placeholder = { Text(stringResource(R.string.search)) },
-        leadingIcon = { PrivacyButton{ navController.navigate(NavRoutes.Privacy.route) } },
+        placeholder = { Text(placeholderText) },
+        leadingIcon = {
+            Row {
+                MainButton { navController.navigate(NavRoutes.Privacy.route) }
+            }
+        },
         trailingIcon = {
             Row {
                 if (query.isNotBlank()) {

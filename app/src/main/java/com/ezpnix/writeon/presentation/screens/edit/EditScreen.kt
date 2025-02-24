@@ -5,8 +5,10 @@ import android.content.Intent
 import android.icu.text.SimpleDateFormat
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,31 +18,47 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.ChevronLeft
+import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.outlined.PushPin
+import androidx.compose.material.icons.rounded.Description
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Numbers
 import androidx.compose.material.icons.rounded.PushPin
 import androidx.compose.material.icons.rounded.RemoveRedEye
 import androidx.compose.material.icons.rounded.Share
+import androidx.compose.material.icons.rounded.Visibility
+import androidx.compose.material.icons.rounded.VisibilityOff
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,14 +69,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.ezpnix.writeon.R
 import com.ezpnix.writeon.presentation.components.BrowserButton
 import com.ezpnix.writeon.presentation.components.CalButton
+import com.ezpnix.writeon.presentation.components.CalculatorButton
+import com.ezpnix.writeon.presentation.components.CopyButton
 import com.ezpnix.writeon.presentation.components.MoreButton
 import com.ezpnix.writeon.presentation.components.NavigationIcon
 import com.ezpnix.writeon.presentation.components.NotesScaffold
@@ -303,70 +325,104 @@ fun MinimalisticMode(
     }
 }
 
-
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun EditScreen(viewModel: EditViewModel, coroutineScope: CoroutineScope, settingsViewModel: SettingsViewModel, pagerState: PagerState, onClickBack: () -> Unit) {
-
+fun EditScreen(
+    viewModel: EditViewModel,
+    coroutineScope: CoroutineScope,
+    settingsViewModel: SettingsViewModel,
+    pagerState: PagerState,
+    onClickBack: () -> Unit
+) {
     val context = LocalContext.current
+    val showButtons = remember { mutableStateOf(false) }
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
     ) {
-        if (viewModel.isDescriptionInFocus.value && settingsViewModel.settings.value.isMarkdownEnabled) {
-            TextFormattingToolbar(viewModel)
-        }
-        MarkdownBox(
-            isExtremeAmoled = settingsViewModel.settings.value.extremeAmoledMode,
-            shape = shapeManager(
-                radius = settingsViewModel.settings.value.cornerRadius,
-                isFirst = true
-            ),
-            modifier = Modifier
-                .weight(1f)
-                .onFocusChanged { viewModel.toggleIsDescriptionInFocus(it.isFocused) }
-                .padding(bottom = 8.dp),
-            content = {
-                CustomTextField(
-                    value = viewModel.noteDescription.value,
-                    onValueChange = { viewModel.updateNoteDescription(it) },
-                    modifier = Modifier.fillMaxSize(),
-                    placeholder = stringResource(R.string.description),
-                )
-            }
-        )
+        // Main content (input field and toolbar)
         Column(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            if (viewModel.isDescriptionInFocus.value && settingsViewModel.settings.value.isMarkdownEnabled) {
+                TextFormattingToolbar(viewModel)
+            }
+            MarkdownBox(
+                isExtremeAmoled = settingsViewModel.settings.value.extremeAmoledMode,
+                shape = shapeManager(
+                    radius = settingsViewModel.settings.value.cornerRadius,
+                    isFirst = true
+                ),
+                modifier = Modifier
+                    .weight(1f)
+                    .onFocusChanged { viewModel.toggleIsDescriptionInFocus(it.isFocused) }
+                    .padding(bottom = 8.dp),
+                content = {
+                    CustomTextField(
+                        value = viewModel.noteDescription.value,
+                        onValueChange = { viewModel.updateNoteDescription(it) },
+                        modifier = Modifier.fillMaxSize(),
+                        placeholder = stringResource(R.string.description),
+                        textStyle = TextStyle(fontSize = settingsViewModel.settings.value.fontSize.sp)
+                    )
+                }
+            )
+        }
+
+        // Floating buttons layer (fully detached from content)
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomCenter) // Positioned at the bottom-center
+                .padding(16.dp), // Adjust spacing from screen edges
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            // Toggle button to show/hide other buttons
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                ModeButton(pagerState, coroutineScope)
+                FloatingActionButton(
+                    onClick = { showButtons.value = !showButtons.value },
+                    containerColor = MaterialTheme.colorScheme.surface, // Background color
+                    contentColor = MaterialTheme.colorScheme.primary // Icon color
+                ) {
+                    Icon(
+                        imageVector = if (showButtons.value) Icons.Rounded.VisibilityOff else Icons.Rounded.Visibility,
+                        contentDescription = "Toggle Buttons"
+                    )
+                }
             }
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                TxtButton(currentText = viewModel.noteDescription.value.text)
-                CalButton()
-                TranslateButton(viewModel, onClick = {
-                    copyToClipboard(context, viewModel.noteDescription.value.text)
-                    openTranslateApp(context, viewModel.noteDescription.value.text)
-                })
-                BrowserButton()
+
+            // Conditionally display the buttons based on showButtons state
+            if (showButtons.value) {
+                // First row with CalButton, ModeButton, TranslateButton
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.surface, shape = CircleShape) // Background color for row
+                        .padding(8.dp) // Padding around the buttons
+                ) {
+                    TranslateButton(viewModel, onClick = {
+                        copyToClipboard(context, viewModel.noteDescription.value.text)
+                        openTranslateApp(context, viewModel.noteDescription.value.text)
+                    })
+                    CopyButton(viewModel, onClick = {
+                        copyToClipboard(context, viewModel.noteDescription.value.text)})
+                    ModeButton(pagerState, coroutineScope)
+                    CalButton()
+                    CalculatorButton()
+                }
             }
         }
     }
 }
 
-
-        @OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PreviewScreen(viewModel: EditViewModel, settingsViewModel: SettingsViewModel, pagerState: PagerState, onClickBack: () -> Unit) {
     if (viewModel.isNoteInfoVisible.value) BottomModal(viewModel, settingsViewModel)
@@ -397,39 +453,74 @@ fun PreviewScreen(viewModel: EditViewModel, settingsViewModel: SettingsViewModel
                     modifier = Modifier
                         .padding(16.dp)
                         .weight(1f),
+                    fontSize = settingsViewModel.settings.value.fontSize.sp,
                     onContentChange = { viewModel.updateNoteDescription(TextFieldValue(text = it)) }
                 )
             }
         )
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+        val listState = rememberLazyListState()
+        val coroutineScope = rememberCoroutineScope()
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
+            // Left Scroll Button
+            IconButton(
+                onClick = {
+                    coroutineScope.launch {
+                        val firstVisibleItemIndex = listState.firstVisibleItemIndex
+                        listState.animateScrollToItem(maxOf(0, firstVisibleItemIndex - 1)) // Move left
+                    }
+                },
+                modifier = Modifier.size(40.dp)
             ) {
-                ModeButton(pagerState, coroutineScope)
+                Icon(imageVector = Icons.Filled.ChevronLeft, contentDescription = "Scroll Left")
             }
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
+
+            LazyRow(
+                state = listState,
+                horizontalArrangement = Arrangement.spacedBy(3.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.surface, shape = CircleShape)
+                    .padding(8.dp)
+                    .weight(1f) // Makes sure it expands properly
             ) {
-                TxtButton(currentText = viewModel.noteDescription.value.text)
-                CalButton()
-                TranslateButton(viewModel, onClick = {
+                item { ModeButton(pagerState, coroutineScope) }
+                item { CalButton() }
+                item { CalculatorButton() }
+                item {
+                    TranslateButton(viewModel, onClick = {
+                        copyToClipboard(context, viewModel.noteDescription.value.text)
+                        openTranslateApp(context, viewModel.noteDescription.value.text)
+                    })
+                }
+                item { CopyButton(viewModel, onClick = {
                     copyToClipboard(context, viewModel.noteDescription.value.text)
-                    openTranslateApp(context, viewModel.noteDescription.value.text)
-                })
-                BrowserButton()
+                }) }
+                item { BrowserButton() }
+                item { TxtButton(currentText = viewModel.noteDescription.value.text) }
+            }
+
+            // Right Scroll Button
+            IconButton(
+                onClick = {
+                    coroutineScope.launch {
+                        val firstVisibleItemIndex = listState.firstVisibleItemIndex
+                        listState.animateScrollToItem(minOf(listState.layoutInfo.totalItemsCount - 1, firstVisibleItemIndex + 1)) // Move right
+                    }
+                },
+                modifier = Modifier.size(40.dp)
+            ) {
+                Icon(imageVector = Icons.Filled.ChevronRight, contentDescription = "Scroll Right")
             }
         }
     }
 }
 
-
-        @Composable
+@Composable
 fun MarkdownBox(
     isExtremeAmoled: Boolean,
     modifier: Modifier = Modifier,
@@ -477,12 +568,12 @@ fun ModeButton(
                 isExtremeAmoled
             )
             RenderButton(
-                    pagerState,
-            coroutineScope,
-            1,
-            Icons.Rounded.RemoveRedEye,
-            false,
-            isExtremeAmoled
+                pagerState,
+                coroutineScope,
+                1,
+                Icons.Rounded.Description,
+                false,
+                isExtremeAmoled
             )
         } else {
             val currentPage = pagerState.currentPage

@@ -10,5 +10,8 @@ interface SettingsRepository {
     suspend fun putBoolean(key: String, value: Boolean)
     suspend fun getBoolean(key: String): Boolean?
 
+    suspend fun putFloat(key: String, value: Float)
+    suspend fun getFloat(key: String): Float?
+
     suspend fun getEveryNotesWidget(): List<Pair<Int, Int>>
 }

@@ -4,7 +4,9 @@ import android.content.Context
 import android.net.Uri
 import android.widget.Toast
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -24,6 +26,9 @@ import com.ezpnix.writeon.presentation.screens.settings.BackupWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.xmlpull.v1.XmlPullParser
@@ -38,7 +43,8 @@ class SettingsViewModel @Inject constructor(
     private val settingsUseCase: SettingsUseCase,
     val noteUseCase: NoteUseCase,
     private val importExportUseCase: ImportExportUseCase, // AA1
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val settingsPreferences: SettingsPreferences,
 ) : ViewModel() {
     val databaseUpdate = mutableStateOf(false)
     var password : String? = null
@@ -46,12 +52,37 @@ class SettingsViewModel @Inject constructor(
     private val _settings = mutableStateOf(Settings())
     var settings: State<Settings> = _settings
 
+    private val _dynamicPlaceholder = MutableStateFlow("Search notepad ⌕")
+    val dynamicPlaceholder: StateFlow<String> = _dynamicPlaceholder.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            settingsPreferences.dynamicPlaceholder.collect { placeholder ->
+                _dynamicPlaceholder.value = placeholder
+            }
+        }
+    }
+
+    fun updatePlaceholder(newText: String) {
+        viewModelScope.launch {
+            settingsPreferences.savePlaceholder(newText)
+            _dynamicPlaceholder.value = newText
+        }
+    }
+
     init {
         viewModelScope.launch {
             loadSettings()
             if (_settings.value.autoBackupEnabled) run {
                 startAutoBackup(context)
             }
+        }
+    }
+
+    fun updateFontSize(size: Float) {
+        _settings.value = _settings.value.copy(fontSize = size)
+        viewModelScope.launch {
+            settingsUseCase.saveSettingsToRepository(_settings.value)
         }
     }
 
