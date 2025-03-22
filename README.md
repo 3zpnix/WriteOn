@@ -21,6 +21,10 @@ A clean, intuitive note-taking open source app with Material You design.
 
 ---
 
+## ✴️ DevLog v1.4 (03/22/2025)
+- [x] Modified homescreen content
+- [ ] coming soon...
+
 ## 🔥 DevLog v1.3 (02/25/2025)
 - [x] Updated home user interface
 - [x] Searchbar placeholder feature
@@ -48,7 +52,7 @@ A clean, intuitive note-taking open source app with Material You design.
 
 ## 📢 Announcements
 
-- Managed to find time to update for version 1.3, Might find it difficult for the next version though because of my part time job taking up my whole schedule 對不起! (02/25/2025)
+- Managed to find time to update for version 1.3, Might find it difficult for the next version though because of my part time job taking up my whole schedule! (02/25/2025)
 - I have to focus on my other projects, I'm going broke right now haha. Version 1.3 will have its updates soon (1/19/2025)
 - Updates are being delayed because of university school stuff, I apologize! (12/7/2024)
 - Upcoming version 1.2 will contain mostly bug fixes but with more features (12/3/2024)
