@@ -31,7 +31,6 @@ A clean, intuitive note-taking open source app with Material You design.
 - [x] Added app stability for custom dpi dimensions
 - [x] Modified note preview screen user interface
 - [x] Revamped the alert dialog logic pop back
-- [ ] coming soon...
 
 ## 🔥 DevLog v1.3 (02/25/2025)
 - [x] Updated home user interface
