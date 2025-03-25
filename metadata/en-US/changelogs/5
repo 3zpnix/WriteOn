@@ -1,0 +1,10 @@
+• Updated home user interface
+• Fixed some underlying issues with the edit model and view model
+• Centered home screen buttons have been replaced with a set of row icon buttons
+• Added Help & Feedback section for all questions and answers
+• Pin/unpin status changes can now be saved independently
+• Calculator parenthesis typo issue has been fixed
+• Settings screen has now two new section content
+• Added app stability for custom dpi dimensions
+• Modified note preview screen user interface
+• Revamped the alert dialog logic pop back
