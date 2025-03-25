@@ -1,9 +1,9 @@
 name: Release Build
 
 on:
-  #push:
-    #branches:
-      #- master
+  push:
+    branches:
+      - master
   workflow_dispatch:
     inputs:
       commit:
@@ -71,8 +71,8 @@ jobs:
 
       - name: Create GitHub Release
         run: |
-          gh release create v1.3 WriteOn.apk \
-            --title "v1.3" \
+          gh release create v1.4 WriteOn.apk \
+            --title "v1.4" \
             --notes "February Update~" \
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}

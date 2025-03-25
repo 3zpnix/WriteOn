@@ -53,8 +53,12 @@ class EditViewModel @Inject constructor(
     private val undoRedoState = UndoRedoState()
 
     fun saveNote(id: Int) {
-        if (noteName.value.text.isNotEmpty() || noteDescription.value.text.isNotBlank()) {
-            viewModelScope.launch {
+        viewModelScope.launch {
+            if (isPinned.value != _isPinned.value) {
+                noteUseCase.updatePinStatus(id, isPinned.value)
+            }
+
+            if (noteName.value.text.isNotEmpty() || noteDescription.value.text.isNotBlank()) {
                 noteUseCase.addNote(
                     Note(
                         id = id,
@@ -65,8 +69,13 @@ class EditViewModel @Inject constructor(
                         createdAt = if (noteCreatedTime.value != 0L) noteCreatedTime.value else System.currentTimeMillis(),
                     )
                 )
-                fetchLastNoteAndUpdate()
+            } else {
+                if (!isPinned.value) {
+                    noteUseCase.deleteNoteById(id)
+                }
             }
+
+            fetchLastNoteAndUpdate()
         }
     }
 
@@ -126,6 +135,9 @@ class EditViewModel @Inject constructor(
 
     fun toggleNotePin(value: Boolean) {
         _isPinned.value = value
+        viewModelScope.launch {
+            noteUseCase.updatePinStatus(noteId.value, value)
+        }
     }
 
     fun updateNoteName(newName: TextFieldValue) {
@@ -152,6 +164,10 @@ class EditViewModel @Inject constructor(
 
     fun updateNoteId(newId: Int) {
         _noteId.intValue = newId
+    }
+
+    fun deleteNote(id: Int) {
+        noteUseCase.deleteNoteById(id = id)
     }
 
     fun undo() {

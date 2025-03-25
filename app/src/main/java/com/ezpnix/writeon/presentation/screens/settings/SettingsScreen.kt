@@ -69,6 +69,15 @@ import android.os.Environment
 import java.text.DecimalFormat
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.automirrored.rounded.Help
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.rounded.Games
+import androidx.compose.material.icons.rounded.Help
+import androidx.compose.material.icons.rounded.HelpOutline
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.TextButton
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalContext
 
@@ -110,6 +119,7 @@ fun TopBar(
 
 @Composable
 fun MainSettings(settingsViewModel: SettingsViewModel, navController: NavController) {
+    var showDialog by remember { mutableStateOf(false) }
     SettingsScaffold(
         settingsViewModel = settingsViewModel,
         title = stringResource(id = R.string.screen_settings),
@@ -156,26 +166,81 @@ fun MainSettings(settingsViewModel: SettingsViewModel, navController: NavControl
             }
             item {
                 SettingCategory(
+                    title = stringResource(id = R.string.experimental),
+                    subTitle = stringResource(R.string.description_experimental),
+                    icon = Icons.Rounded.Games,
+                    shape = shapeManager(radius = settingsViewModel.settings.value.cornerRadius, isFirst = true),
+                    action = { showDialog = true } // Show pop-up instead of navigation
+                )
+            }
+            item {
+                SettingCategory(
+                    title = stringResource(id = R.string.guide),
+                    subTitle = stringResource(R.string.description_guide),
+                    icon = Icons.AutoMirrored.Rounded.Help,
+                    shape = shapeManager(radius = settingsViewModel.settings.value.cornerRadius, isFirst = false),
+                    action = { navController.navigate(NavRoutes.Guide.route) }
+                )
+            }
+            item {
+                SettingCategory(
                     title = stringResource(id = R.string.about),
                     subTitle = stringResource(R.string.description_about),
                     icon = Icons.Rounded.Info,
-                    shape = shapeManager(radius = settingsViewModel.settings.value.cornerRadius, isBoth = true),
+                    shape = shapeManager(radius = settingsViewModel.settings.value.cornerRadius, isLast = true),
+                    isLast = true,
                     action = { navController.navigate(NavRoutes.About.route) }
                 )
             }
             item {
-                AnnouncementsSection(settingsViewModel, context = LocalContext.current)
+                AndroidDevice()
             }
         }
+        ExperimentalFeatureLockedDialog(showDialog = showDialog, onDismiss = { showDialog = false })
     }
 }
 
 @Composable
-fun AnnouncementsSection(settingsViewModel: SettingsViewModel, context: Context) {
-    val preferences = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-    val savedState = remember { mutableStateOf(loadState(preferences)) }
+fun ExperimentalFeatureLockedDialog(showDialog: Boolean, onDismiss: () -> Unit) {
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = onDismiss,
+            title = {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Lock,
+                        contentDescription = "Locked",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(48.dp)
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "This section is currently locked by the developer.. apologies!",
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                }
+            },
+            confirmButton = {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    TextButton(onClick = onDismiss) {
+                        Text("> Okay, I understand <")
+                    }
+                }
+            }
+        )
+    }
+}
 
-    val isExpanded = savedState.value
+
+@Composable
+fun AndroidDevice() {
 
     val deviceInfo = "Device: ${Build.MANUFACTURER} ${Build.MODEL}"
     val androidVersion = "Android ${Build.VERSION.RELEASE}"
@@ -185,79 +250,15 @@ fun AnnouncementsSection(settingsViewModel: SettingsViewModel, context: Context)
     val availableStorage = formatStorage(stat.availableBytes)
     val storageInfo = "Storage: $availableStorage free / $totalStorage total"
 
-    Column(modifier = Modifier.fillMaxWidth()) {
-        val isLightMode = !MaterialTheme.colorScheme.primaryContainer.luminance().isNaN() &&
-                MaterialTheme.colorScheme.primaryContainer.luminance() > 0.5
-
-        val alphaValue = if (isLightMode) 1.0f else 0.2f
-
-        Box(
-            modifier = Modifier
-                .padding(16.dp)
-                .background(
-                    color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = alphaValue),
-                    shape = shapeManager(radius = settingsViewModel.settings.value.cornerRadius, isBoth = true)
-                )
-                .padding(16.dp)
-        ) {
-            Column {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    TitleText(
-                        titleText = stringResource(id = R.string.announcements),
-                        textStyle = TextStyle(
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold
-                        ),
-                        modifier = Modifier.weight(1f)
-                    )
-
-                    IconButton(onClick = {
-                        val newState = !isExpanded
-                        savedState.value = newState
-                        saveState(preferences, newState)
-                    }) {
-                        Icon(
-                            imageVector = if (isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                            contentDescription = if (isExpanded) "Collapse" else "Expand"
-                        )
-                    }
-                }
-
-                AnimatedVisibility(visible = isExpanded) {
-                    Column(
-                        modifier = Modifier
-                            .height(150.dp)
-                            .verticalScroll(rememberScrollState())
-                    ) {
-                        Spacer(modifier = Modifier.height(8.dp))
-                        TitleText(titleText = "- Updated home user interface")
-                        TitleText(titleText = "- Searchbar placeholder feature")
-                        TitleText(titleText = "- Fixed custom size dimensions")
-                        TitleText(titleText = "- Directly calculate within the app")
-                        TitleText(titleText = "- Ability to change font size")
-                        TitleText(titleText = "- Added more featured buttons")
-                        TitleText(titleText = "- Calendar date issue fixed")
-                        TitleText(titleText = "- Renamed some strings")
-                        TitleText(titleText = "- Squished some bugs")
-
-
-                    }
-                }
-            }
-        }
-        Text(
-            text = "\n$storageInfo\n$deviceInfo\n$androidVersion",
-            style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Medium),
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp, bottom = 16.dp),
-            textAlign = TextAlign.Center
-        )
-    }
+    Text(
+        text = "\n$storageInfo\n$deviceInfo\n$androidVersion",
+        style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Medium),
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp, bottom = 16.dp),
+        textAlign = TextAlign.Center
+    )
 }
 
 fun loadState(preferences: SharedPreferences): Boolean {

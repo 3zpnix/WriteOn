@@ -33,6 +33,7 @@ import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.outlined.PushPin
+import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Description
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Info
@@ -81,6 +82,7 @@ import com.ezpnix.writeon.presentation.components.BrowserButton
 import com.ezpnix.writeon.presentation.components.CalButton
 import com.ezpnix.writeon.presentation.components.CalculatorButton
 import com.ezpnix.writeon.presentation.components.CopyButton
+import com.ezpnix.writeon.presentation.components.EditButton
 import com.ezpnix.writeon.presentation.components.MoreButton
 import com.ezpnix.writeon.presentation.components.NavigationIcon
 import com.ezpnix.writeon.presentation.components.NotesScaffold
@@ -372,23 +374,23 @@ fun EditScreen(
             )
         }
 
-        // Floating buttons layer (fully detached from content)
+
         Column(
             modifier = Modifier
-                .align(Alignment.BottomCenter) // Positioned at the bottom-center
-                .padding(16.dp), // Adjust spacing from screen edges
+                .align(Alignment.BottomCenter)
+                .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // Toggle button to show/hide other buttons
+
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 FloatingActionButton(
                     onClick = { showButtons.value = !showButtons.value },
-                    containerColor = MaterialTheme.colorScheme.surface, // Background color
-                    contentColor = MaterialTheme.colorScheme.primary // Icon color
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    contentColor = MaterialTheme.colorScheme.primary
                 ) {
                     Icon(
                         imageVector = if (showButtons.value) Icons.Rounded.VisibilityOff else Icons.Rounded.Visibility,
@@ -397,15 +399,13 @@ fun EditScreen(
                 }
             }
 
-            // Conditionally display the buttons based on showButtons state
             if (showButtons.value) {
-                // First row with CalButton, ModeButton, TranslateButton
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .background(MaterialTheme.colorScheme.surface, shape = CircleShape) // Background color for row
-                        .padding(8.dp) // Padding around the buttons
+                        .background(MaterialTheme.colorScheme.surface, shape = CircleShape)
+                        .padding(8.dp)
                 ) {
                     TranslateButton(viewModel, onClick = {
                         copyToClipboard(context, viewModel.noteDescription.value.text)
@@ -466,12 +466,11 @@ fun PreviewScreen(viewModel: EditViewModel, settingsViewModel: SettingsViewModel
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
-            // Left Scroll Button
             IconButton(
                 onClick = {
                     coroutineScope.launch {
                         val firstVisibleItemIndex = listState.firstVisibleItemIndex
-                        listState.animateScrollToItem(maxOf(0, firstVisibleItemIndex - 1)) // Move left
+                        listState.animateScrollToItem(maxOf(0, firstVisibleItemIndex - 1))
                     }
                 },
                 modifier = Modifier.size(40.dp)
@@ -486,25 +485,24 @@ fun PreviewScreen(viewModel: EditViewModel, settingsViewModel: SettingsViewModel
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.surface, shape = CircleShape)
                     .padding(8.dp)
-                    .weight(1f) // Makes sure it expands properly
+                    .weight(1f)
             ) {
-                item { ModeButton(pagerState, coroutineScope) }
                 item { CalButton() }
                 item { CalculatorButton() }
+                item { EditButton(pagerState, coroutineScope) }
+                item { CopyButton(viewModel, onClick = {
+                    copyToClipboard(context, viewModel.noteDescription.value.text)
+                }) }
+                item { BrowserButton() }
                 item {
                     TranslateButton(viewModel, onClick = {
                         copyToClipboard(context, viewModel.noteDescription.value.text)
                         openTranslateApp(context, viewModel.noteDescription.value.text)
                     })
                 }
-                item { CopyButton(viewModel, onClick = {
-                    copyToClipboard(context, viewModel.noteDescription.value.text)
-                }) }
-                item { BrowserButton() }
                 item { TxtButton(currentText = viewModel.noteDescription.value.text) }
             }
 
-            // Right Scroll Button
             IconButton(
                 onClick = {
                     coroutineScope.launch {

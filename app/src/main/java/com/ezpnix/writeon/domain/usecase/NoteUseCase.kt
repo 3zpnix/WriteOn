@@ -5,6 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.glance.appwidget.updateAll
+import androidx.lifecycle.viewModelScope
 import com.ezpnix.writeon.data.repository.NoteRepositoryImpl
 import com.ezpnix.writeon.domain.model.Note
 import com.ezpnix.writeon.presentation.components.DecryptionResult
@@ -122,5 +123,11 @@ class NoteUseCase @Inject constructor(
                 onResult(lastNoteId)
             }
         }
+    }
+
+    suspend fun updatePinStatus(noteId: Int, pinned: Boolean) {
+        val noteToUpdate = noteRepository.getNoteById(noteId).first()
+        val updatedNote = noteToUpdate.copy(pinned = pinned)
+        noteRepository.updateNote(updatedNote)
     }
 }

@@ -20,7 +20,7 @@ class SettingsPreferences @Inject constructor(
 
     val dynamicPlaceholder: Flow<String> = context.dataStore.data
         .map { preferences ->
-            preferences[PLACEHOLDER_KEY] ?: "Search notepad ⌕"
+            preferences[PLACEHOLDER_KEY] ?: "Search"
         }
 
     suspend fun savePlaceholder(placeholder: String) {

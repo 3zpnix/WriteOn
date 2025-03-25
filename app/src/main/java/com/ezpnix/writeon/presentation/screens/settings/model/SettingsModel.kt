@@ -1,6 +1,7 @@
 package com.ezpnix.writeon.presentation.screens.settings.model
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.net.Uri
 import android.widget.Toast
 import androidx.compose.runtime.State
@@ -46,14 +47,18 @@ class SettingsViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val settingsPreferences: SettingsPreferences,
 ) : ViewModel() {
+    private val _savedNote = MutableStateFlow("")
+    val savedNote: String get() = _savedNote.value
     val databaseUpdate = mutableStateOf(false)
     var password : String? = null
 
     private val _settings = mutableStateOf(Settings())
     var settings: State<Settings> = _settings
 
-    private val _dynamicPlaceholder = MutableStateFlow("Search notepad ⌕")
+    private val _dynamicPlaceholder = MutableStateFlow("Search")
     val dynamicPlaceholder: StateFlow<String> = _dynamicPlaceholder.asStateFlow()
+    private val sharedPreferences: SharedPreferences =
+        context.getSharedPreferences("notes_prefs", Context.MODE_PRIVATE)
 
     init {
         viewModelScope.launch {
@@ -61,6 +66,14 @@ class SettingsViewModel @Inject constructor(
                 _dynamicPlaceholder.value = placeholder
             }
         }
+    }
+
+    fun saveNote(note: String) {
+        sharedPreferences.edit().putString("note", note).apply()
+    }
+
+    fun loadNote(): String {
+        return sharedPreferences.getString("note", "") ?: ""
     }
 
     fun updatePlaceholder(newText: String) {

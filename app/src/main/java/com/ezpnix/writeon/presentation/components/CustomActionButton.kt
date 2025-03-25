@@ -8,6 +8,7 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -28,6 +29,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.AddComment
@@ -41,6 +43,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -56,11 +59,12 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.sp
 import com.ezpnix.writeon.presentation.screens.edit.model.EditViewModel
 import com.ezpnix.writeon.presentation.screens.settings.widgets.copyToClipboard
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.time.format.DateTimeFormatter
 import java.util.Date
@@ -80,150 +84,19 @@ fun AgreeButton(
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CenteredNotesButton(
-    onFirstClick: String,
-    onSecondClick: () -> Unit,
-    onThirdClick: () -> Unit,
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Spacer(modifier = Modifier.width(35.dp))
-        TextButton(onClick = onThirdClick)
-        Spacer(modifier = Modifier.width(15.dp))
-        NotesButton(text = onFirstClick, onClick = onSecondClick)
-        Spacer(modifier = Modifier.width(15.dp))
-        CalendarButton()
-        Spacer(modifier = Modifier.width(15.dp))
-        CalculatorExtend()
-        Spacer(modifier = Modifier.width(15.dp))
-    }
-}
-
-@Composable
-fun TextButton(onClick: () -> Unit) {
-    val activity = LocalContext.current
-    val context = LocalContext.current
-
-    var showDialog by remember { mutableStateOf(false) }
-    var textState by remember { mutableStateOf("") }
-
-    val openFileLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.CreateDocument("text/plain"),
-        onResult = { uri ->
-            if (uri != null) {
-                try {
-                    val outputStream = context.contentResolver.openOutputStream(uri)
-                    outputStream?.write(textState.toByteArray())
-                    outputStream?.close()
-
-                    Toast.makeText(activity, "Text saved successfully", Toast.LENGTH_SHORT).show()
-
-                } catch (e: Exception) {
-                    Toast.makeText(activity, "Error saving file: ${e.message}", Toast.LENGTH_SHORT).show()
-                }
+fun EditButton(pagerState: PagerState, coroutineScope: CoroutineScope) {
+    IconButton(
+        modifier = Modifier.size(56.dp),
+        onClick = {
+            coroutineScope.launch {
+                pagerState.animateScrollToPage(0)
             }
         }
-    )
-
-    ExtendedFloatingActionButton(
-        modifier = Modifier.imePadding(),
-        shape = RoundedCornerShape(24.dp),
-        onClick = {
-            showDialog = true
-            onClick()
-        }
     ) {
-        Icon(Icons.Rounded.AddComment, contentDescription = null)
+        Icon(Icons.Rounded.Edit, contentDescription = "Edit", tint = MaterialTheme.colorScheme.primary)
     }
-
-    if (showDialog) {
-        AlertDialog(
-            onDismissRequest = { showDialog = false },
-            title = { Text(text = "Quick Note") },
-            text = {
-                TextField(
-                    value = textState,
-                    onValueChange = { textState = it },
-                    label = { Text("Enter text") }
-                )
-            },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        openFileLauncher.launch("rename.txt")
-                        showDialog = false
-                    }
-                ) {
-                    Text("Save as TXT")
-                }
-            },
-            dismissButton = {
-                Button(onClick = { showDialog = false }) {
-                    Text("Cancel")
-                }
-            }
-        )
-    }
-}
-
-
-@Composable
-fun NotesButton(
-    text: String,
-    onClick: () -> Unit
-) {
-    val context = LocalContext.current
-
-    ExtendedFloatingActionButton(
-        modifier = Modifier.imePadding(),
-        shape = RoundedCornerShape(24.dp),
-        onClick = { Toast.makeText(context, "Welcome back!", Toast.LENGTH_SHORT).show()
-            onClick() },
-        icon = { Icon(Icons.Rounded.Edit, null) },
-        text = { Text(text = text) },
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun CalendarButton() {
-    val selectedDates = remember { mutableStateOf<List<LocalDate>>(listOf()) }
-    val disabledDates = listOf(
-        LocalDate.now().minusDays(0),
-    )
-    val calendarState = rememberUseCaseState()
-    val context = LocalContext.current
-    val currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM d, yyyy"))
-    val dayOfWeek = SimpleDateFormat("EEEE", Locale.getDefault()).format(Date())
-
-    ExtendedFloatingActionButton(
-        modifier = Modifier.imePadding(),
-        shape = RoundedCornerShape(24.dp),
-        onClick = {
-            Toast.makeText(context, "Today is: $dayOfWeek, $currentDate", Toast.LENGTH_SHORT).show()
-            calendarState.show()
-        }
-
-    ) {
-        Icon(Icons.Rounded.CalendarMonth, contentDescription = "Calendar")
-    }
-
-    CalendarDialog(
-        state = calendarState,
-        config = CalendarConfig(
-            yearSelection = true,
-            monthSelection = true,
-            style = CalendarStyle.MONTH,
-            disabledDates = disabledDates
-        ),
-        selection = CalendarSelection.Dates { newDates ->
-            selectedDates.value = newDates
-        }
-    )
 }
 
 @Composable
@@ -360,34 +233,34 @@ fun openTranslateApp(context: Context, text: String) {
     context.startActivity(intent)
 }
 
-@Composable
-fun CalculatorExtend() {
-    val showDialog = remember { mutableStateOf(false) }
-
-    ExtendedFloatingActionButton(
-        modifier = Modifier.imePadding(),
-        shape = RoundedCornerShape(24.dp),
-        onClick = { showDialog.value = true }
-
-    ) {
-        Icon(Icons.Rounded.Calculate, contentDescription = null)
-    }
-
-    if (showDialog.value) {
-        AlertDialog(
-            onDismissRequest = { showDialog.value = false },
-            title = { Text("Calculator") },
-            text = {
-                CalculatorUI()
-            },
-            confirmButton = {
-                Button(onClick = { showDialog.value = false }) {
-                    Text("Close")
-                }
-            }
-        )
-    }
-}
+//@Composable
+//fun CalculatorExtend() {
+//    val showDialog = remember { mutableStateOf(false) }
+//
+//    ExtendedFloatingActionButton(
+//        modifier = Modifier.imePadding(),
+//        shape = RoundedCornerShape(24.dp),
+//        onClick = { showDialog.value = true }
+//
+//    ) {
+//        Icon(Icons.Rounded.Calculate, contentDescription = null)
+//    }
+//
+//    if (showDialog.value) {
+//        AlertDialog(
+//            onDismissRequest = { showDialog.value = false },
+//            title = { Text("Calculator") },
+//            text = {
+//                CalculatorUI()
+//            },
+//            confirmButton = {
+//                Button(onClick = { showDialog.value = false }) {
+//                    Text("Close")
+//                }
+//            }
+//        )
+//    }
+//}
 
 @Composable
 fun CalculatorButton() {
@@ -468,11 +341,10 @@ fun CalculatorUI() {
                                     }
                                 }
                                 "( )" -> {
-                                    if (expression.endsWith(")")) {
-                                        expression += "("
-                                    } else {
-                                        expression += ")"
-                                    }
+                                    val openCount = expression.count { it == '(' }
+                                    val closeCount = expression.count { it == ')' }
+
+                                    expression += if (openCount > closeCount) ")" else "("
                                 }
                                 "." -> {
                                     if (!expression.endsWith(".")) {

@@ -1,25 +1,56 @@
 package com.ezpnix.writeon.presentation.screens.settings.settings
 
+import android.content.Context
+import android.os.Build
+import android.os.Environment
+import android.os.StatFs
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.rounded.Build
 import androidx.compose.material.icons.rounded.Download
 import androidx.compose.material.icons.rounded.Email
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Verified
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.ezpnix.writeon.R
 import com.ezpnix.writeon.core.constant.ConnectionConst
+import com.ezpnix.writeon.presentation.components.TitleText
 import com.ezpnix.writeon.presentation.screens.settings.SettingsScaffold
+import com.ezpnix.writeon.presentation.screens.settings.TitleText
+import com.ezpnix.writeon.presentation.screens.settings.formatStorage
+import com.ezpnix.writeon.presentation.screens.settings.loadState
 import com.ezpnix.writeon.presentation.screens.settings.model.SettingsViewModel
+import com.ezpnix.writeon.presentation.screens.settings.saveState
 import com.ezpnix.writeon.presentation.screens.settings.widgets.ActionType
 import com.ezpnix.writeon.presentation.screens.settings.widgets.ListDialog
 import com.ezpnix.writeon.presentation.screens.settings.widgets.SettingsBox
@@ -91,6 +122,9 @@ fun AboutScreen(navController: NavController, settingsViewModel: SettingsViewMod
                     customAction = { navController.navigateUp() }
                 )
             }
+            item {
+                AnnouncementsSection(settingsViewModel, context = LocalContext.current, navController)
+            }
         }
     }
 }
@@ -116,6 +150,82 @@ fun ContributorsClicked(
             actionType = ActionType.TEXT,
             customText = "✅"
         )
+    }
+}
+
+@Composable
+fun AnnouncementsSection(settingsViewModel: SettingsViewModel, context: Context, navController: NavController) {
+    val preferences = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+    val savedState = remember { mutableStateOf(loadState(preferences)) }
+
+    val isExpanded = savedState.value
+
+    Column(modifier = Modifier.fillMaxWidth()) {
+        val isLightMode = !MaterialTheme.colorScheme.primaryContainer.luminance().isNaN() &&
+                MaterialTheme.colorScheme.primaryContainer.luminance() > 0.5
+
+        val alphaValue = if (isLightMode) 1.0f else 0.2f
+
+        Box(
+            modifier = Modifier
+                .padding(16.dp)
+                .background(
+                    color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = alphaValue),
+                    shape = shapeManager(
+                        radius = settingsViewModel.settings.value.cornerRadius,
+                        isBoth = true
+                    )
+                )
+                .padding(16.dp)
+        ) {
+            Column {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    TitleText(
+                        titleText = stringResource(id = R.string.announcements),
+                        textStyle = TextStyle(
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold
+                        ),
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    IconButton(onClick = {
+                        val newState = !isExpanded
+                        savedState.value = newState
+                        saveState(preferences, newState)
+                    }) {
+                        Icon(
+                            imageVector = if (isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                            contentDescription = if (isExpanded) "Collapse" else "Expand"
+                        )
+                    }
+                }
+
+                AnimatedVisibility(visible = isExpanded) {
+                    Column(
+                        modifier = Modifier
+                            .height(150.dp)
+                            .verticalScroll(rememberScrollState())
+                    ) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        TitleText(titleText = "- Updated home user interface")
+                        TitleText(titleText = "- Searchbar placeholder feature")
+                        TitleText(titleText = "- Fixed custom size dimensions")
+                        TitleText(titleText = "- Directly calculate within the app")
+                        TitleText(titleText = "- Ability to change font size")
+                        TitleText(titleText = "- Added more featured buttons")
+                        TitleText(titleText = "- Calendar date issue fixed")
+                        TitleText(titleText = "- Renamed some strings")
+                        TitleText(titleText = "- Squished some bugs")
+
+
+                    }
+                }
+            }
+        }
     }
 }
 

@@ -52,7 +52,7 @@ import com.ezpnix.writeon.presentation.screens.settings.widgets.SettingsBox
 fun ToolsScreen(navController: NavController, settingsViewModel: SettingsViewModel) {
     val context = LocalContext.current
     settingsViewModel.noteUseCase.observe()
-    var showDialog by remember { mutableStateOf(false) }
+    var showSearchDialog by remember { mutableStateOf(false) }
     var showFontSizeDialog by remember { mutableStateOf(false) }
     var dynamicPlaceholderInput by remember { mutableStateOf("Search") }
     SettingsScaffold(
@@ -163,7 +163,7 @@ fun ToolsScreen(navController: NavController, settingsViewModel: SettingsViewMod
                         radius = settingsViewModel.settings.value.cornerRadius
                     ),
                     customAction = {
-                        showFontSizeDialog = true // Show a dialog for font size selection
+                        showFontSizeDialog = true
                     }
                 )
             }
@@ -178,7 +178,7 @@ fun ToolsScreen(navController: NavController, settingsViewModel: SettingsViewMod
                         isLast = false
                     ),
                     customAction = {
-                        showDialog = true // Open popup when clicked
+                        showSearchDialog = true
                     }
                 )
             }
@@ -196,10 +196,9 @@ fun ToolsScreen(navController: NavController, settingsViewModel: SettingsViewMod
                 )
             }
         }
-        // Popup Dialog UI
-        if (showDialog) {
+        if (showSearchDialog) {
             AlertDialog(
-                onDismissRequest = { showDialog = false },
+                onDismissRequest = { showSearchDialog = true },
                 title = { Text("Salutations/Greeting") },
                 text = {
                     TextField(
@@ -214,7 +213,7 @@ fun ToolsScreen(navController: NavController, settingsViewModel: SettingsViewMod
                     Button(onClick = {
                         settingsViewModel.updatePlaceholder(dynamicPlaceholderInput)
                         repeat(2) { navController.popBackStack() }
-                        Toast.makeText(context, "Searchbar Updated!", Toast.LENGTH_SHORT)
+                        Toast.makeText(context, "Searchbar updated!", Toast.LENGTH_SHORT)
                             .show()
                     }) {
                         Text("Save")
@@ -222,8 +221,8 @@ fun ToolsScreen(navController: NavController, settingsViewModel: SettingsViewMod
                 },
                 dismissButton = {
                     Button(onClick = {
-                        repeat(1) { navController.popBackStack() }
-                        Toast.makeText(context, "Cancelled By User", Toast.LENGTH_SHORT)
+                        repeat(2) { navController.popBackStack() }
+                        Toast.makeText(context, "Searchbar not updated!", Toast.LENGTH_SHORT)
                             .show()
                     }) {
                         Text("Exit")
@@ -233,7 +232,7 @@ fun ToolsScreen(navController: NavController, settingsViewModel: SettingsViewMod
         }
         if (showFontSizeDialog) {
             AlertDialog(
-                onDismissRequest = { showFontSizeDialog = false },
+                onDismissRequest = { showFontSizeDialog = true },
                 title = { Text(stringResource(id = R.string.select_font_size)) },
                 text = {
                     Column {

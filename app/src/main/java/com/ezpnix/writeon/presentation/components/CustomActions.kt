@@ -163,7 +163,7 @@ fun SelectAllButton(enabled: Boolean, onClick: () -> Unit) {
 fun MainButton(onSettingsClicked: () -> Unit) {
     IconButton(onClick = onSettingsClicked) {
         Icon(
-            imageVector =  Icons.Rounded.AccountCircle,
+            imageVector =  Icons.Rounded.BubbleChart,
             contentDescription = "Settings",
             tint = MaterialTheme.colorScheme.onBackground
         )
