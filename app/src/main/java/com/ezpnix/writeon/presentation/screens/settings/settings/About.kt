@@ -211,15 +211,15 @@ fun AnnouncementsSection(settingsViewModel: SettingsViewModel, context: Context,
                             .verticalScroll(rememberScrollState())
                     ) {
                         Spacer(modifier = Modifier.height(8.dp))
-                        TitleText(titleText = "- Updated home user interface")
-                        TitleText(titleText = "- Searchbar placeholder feature")
-                        TitleText(titleText = "- Fixed custom size dimensions")
-                        TitleText(titleText = "- Directly calculate within the app")
-                        TitleText(titleText = "- Ability to change font size")
-                        TitleText(titleText = "- Added more featured buttons")
-                        TitleText(titleText = "- Calendar date issue fixed")
-                        TitleText(titleText = "- Renamed some strings")
-                        TitleText(titleText = "- Squished some bugs")
+                        TitleText(titleText = "- Fixed some underlying issues with the edit model and view model")
+                        TitleText(titleText = "- Centered home screen buttons have been replaced with a set of row icon buttons")
+                        TitleText(titleText = "- Added Help & Feedback section for all questions and answers")
+                        TitleText(titleText = "- Pin/unpin status changes can now be saved independently")
+                        TitleText(titleText = "- Calculator parenthesis typo issue has been fixed")
+                        TitleText(titleText = "- Settings screen has now two new section content")
+                        TitleText(titleText = "- Added app stability for custom dpi dimensions")
+                        TitleText(titleText = "- Modified note preview screen user interface")
+                        TitleText(titleText = "- Revamped the alert dialog logic pop back")
 
 
                     }
