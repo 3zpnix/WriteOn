@@ -21,7 +21,7 @@ A clean, intuitive note-taking open source app with Material You design.
 
 ---
 
-## 💥 DevLog v1.5 (03/25/2025)
+## 💥 DevLog v1.5 (05/09/2025)
 - [x] Homescreen buttons to surface lazyrow
 - [x] Removed savenote else function issue
 - [x] Modified edit buttons to bottom modal
