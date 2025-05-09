@@ -27,7 +27,7 @@
     <string name="version">App Version</string>
     <string name="latest_release">Check Latest Release</string>
     <string name="restore">Restore</string>
-    <string name="support">(^-^) Write On: Simple Notepad</string>
+    <string name="support">(✦) Write On: Simple Notepad</string>
     <string name="color_styles"><![CDATA[Color & Styles]]></string>
     <string name="language">Language</string>
     <string name="markdown">Additional Customizations</string>
@@ -128,7 +128,7 @@
     <string name="alert_text"> Are you sure you want to delete it permanently?</string>
     <string name="yes"> Confirm</string>
     <string name="cancel"> Cancel</string>
-    <string name="announcements">Release Notes (03/25/2025)</string>
+    <string name="announcements">Stuff that involves licenses... yeah</string>
     <string name="enter_placeholder">Searchbar Placeholder</string>
     <string name="enter_placeholder_description">Input any text to your liking</string>
     <string name="font_size">Adjust Font Size</string>

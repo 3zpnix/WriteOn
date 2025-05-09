@@ -1,6 +1,8 @@
 package com.ezpnix.writeon.presentation.screens.settings.settings
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.os.StatFs
@@ -15,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -37,8 +40,11 @@ import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -211,17 +217,81 @@ fun AnnouncementsSection(settingsViewModel: SettingsViewModel, context: Context,
                             .verticalScroll(rememberScrollState())
                     ) {
                         Spacer(modifier = Modifier.height(8.dp))
-                        TitleText(titleText = "- Fixed some underlying issues with the edit model and view model")
-                        TitleText(titleText = "- Centered home screen buttons have been replaced with a set of row icon buttons")
-                        TitleText(titleText = "- Added Help & Feedback section for all questions and answers")
-                        TitleText(titleText = "- Pin/unpin status changes can now be saved independently")
-                        TitleText(titleText = "- Calculator parenthesis typo issue has been fixed")
-                        TitleText(titleText = "- Settings screen has now two new section content")
-                        TitleText(titleText = "- Added app stability for custom dpi dimensions")
-                        TitleText(titleText = "- Modified note preview screen user interface")
-                        TitleText(titleText = "- Revamped the alert dialog logic pop back")
-
-
+                        val context = LocalContext.current
+                        ClickableText(
+                            text = AnnotatedString(
+                                        "AndroidX Libraries:\n" +
+                                        "\n" +
+                                        "androidx.datastore:datastore-preferences\n" +
+                                        "\n" +
+                                        "androidx.glance:glance\n" +
+                                        "\n" +
+                                        "androidx.room:room-compiler\n" +
+                                        "\n" +
+                                        "androidx.room:room-runtime\n" +
+                                        "\n" +
+                                        "androidx.room:room-ktx\n" +
+                                        "\n" +
+                                        "androidx.appcompat:appcompat\n" +
+                                        "\n" +
+                                        "androidx.core:core-ktx\n" +
+                                        "\n" +
+                                        "androidx.core:core-splashscreen\n" +
+                                        "\n" +
+                                        "androidx.activity:activity-compose\n" +
+                                        "\n" +
+                                        "androidx.compose.material:material-icons-extended\n" +
+                                        "\n" +
+                                        "androidx.compose.material3:material3\n" +
+                                        "\n" +
+                                        "androidx.navigation:navigation-compose\n" +
+                                        "\n" +
+                                        "androidx.hilt:hilt-compiler\n" +
+                                        "\n" +
+                                        "androidx.hilt:hilt-navigation-compose\n" +
+                                        "\n" +
+                                        "androidx.glance:glance-appwidget\n" +
+                                        "\n" +
+                                        "androidx.biometric:biometric\n" +
+                                        "\n" +
+                                        "androidx.work:work-runtime-ktx\n" +
+                                        "\n" +
+                                        "androidx.preference:preference-ktx\n" +
+                                        "Android Developers\n" +
+                                        "Android Developers\n" +
+                                        "+2\n" +
+                                        "Android Developers\n" +
+                                        "+2\n" +
+                                        "Android Developers\n" +
+                                        "+2\n" +
+                                        "\n" +
+                                        "Google Dagger Hilt:\n" +
+                                        "\n" +
+                                        "com.google.dagger:hilt-android\n" +
+                                        "\n" +
+                                        "com.google.dagger:hilt-android-compiler\n" +
+                                        "\n" +
+                                        "Third-Party Libraries:\n" +
+                                        "\n" +
+                                        "io.coil-kt:coil-compose\n" +
+                                        "\n" +
+                                        "com.maxkeppeler.sheets-compose-dialogs:calendar\n" +
+                                        "\n" +
+                                        "com.maxkeppeler.sheets-compose-dialogs:core\n" +
+                                        "\n" +
+                                        "com.stevdza-san:messagebarkmp\n" +
+                                        "\n" +
+                                        "Most of the libraries listed are licensed under the Apache License 2.0, a permissive open-source license that allows you to freely use, modify, and distribute the software.\n",
+                                spanStyle = SpanStyle(
+                                    color = MaterialTheme.colorScheme.primary,
+                                    textDecoration = TextDecoration.Underline
+                                        )
+                                    ),
+                                    onClick = {
+                                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/3zpnix/WriteOn"))
+                                        context.startActivity(intent)
+                                    }
+                        )
                     }
                 }
             }

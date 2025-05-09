@@ -1,5 +1,7 @@
 package com.ezpnix.writeon.presentation.screens.home
 
+import android.content.Intent
+import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -7,8 +9,10 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,8 +21,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddComment
 import androidx.compose.material.icons.filled.Calculate
@@ -26,6 +32,7 @@ import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.NoteAlt
 import androidx.compose.material.icons.filled.RestoreFromTrash
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -33,6 +40,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -69,6 +77,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import com.ezpnix.writeon.presentation.components.CalculatorUI
 import com.ezpnix.writeon.presentation.components.MainButton
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
@@ -212,208 +221,173 @@ fun getContainerColor(settingsModel: SettingsViewModel): Color {
 fun BottomButtons(
     navController: NavController,
     onNoteClicked: (Int) -> Unit,
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
+    val activity = LocalContext.current
 
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surface, shape = CircleShape)
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-            .horizontalScroll(rememberScrollState())
-    ) {
-        val activity = LocalContext.current
-        var textState by remember { mutableStateOf("") }
-        var showDialog by remember { mutableStateOf(false) }
+    var textState by remember { mutableStateOf("") }
+    var showDialog by remember { mutableStateOf(false) }
+    var showCalculator by remember { mutableStateOf(false) }
 
-        val openFileLauncher = rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.CreateDocument("text/plain"),
-            onResult = { uri ->
-                if (uri != null) {
-                    try {
-                        val outputStream = activity.contentResolver.openOutputStream(uri)
-                        outputStream?.write(textState.toByteArray())
-                        outputStream?.close()
-
-                        Toast.makeText(activity, "Text saved successfully", Toast.LENGTH_SHORT).show()
-                    } catch (e: Exception) {
-                        Toast.makeText(activity, "Error saving file: ${e.message}", Toast.LENGTH_SHORT).show()
+    val openFileLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.CreateDocument("text/plain"),
+        onResult = { uri ->
+            uri?.let {
+                try {
+                    activity.contentResolver.openOutputStream(it)?.use { stream ->
+                        stream.write(textState.toByteArray())
                     }
+                    Toast.makeText(activity, "Text saved successfully", Toast.LENGTH_SHORT).show()
+                } catch (e: Exception) {
+                    Toast.makeText(activity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
-        )
-        IconButton(
-            onClick = { showDialog = true },
-            modifier = Modifier
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.secondary.copy(alpha = 0.12f))
-                .padding(1.dp),
-            content = {
-                Icon(
-                    imageVector = Icons.Default.AddComment,
-                    contentDescription = "Save as TXT",
-                    modifier = Modifier.size(32.dp),
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
-        )
-        if (showDialog) {
-            AlertDialog(
-                onDismissRequest = { showDialog = false },
-                title = { Text(text = "Quick Note") },
-                text = {
-                    TextField(
-                        value = textState,
-                        onValueChange = { textState = it },
-                        label = { Text("Enter text") }
-                    )
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            openFileLauncher.launch("rename.txt")
-                            showDialog = false
-                        }
-                    ) {
-                        Text("Save as TXT")
-                    }
-                },
-                dismissButton = {
-                    Button(onClick = { showDialog = false }) {
-                        Text("Cancel")
-                    }
-                }
-            )
         }
-        Spacer(modifier = Modifier.width(16.dp))
+    )
 
-        IconButton(
-            onClick = { onNoteClicked(0);Toast.makeText(context, "Note Created!", Toast.LENGTH_SHORT).show() },
-            modifier = Modifier
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.secondary.copy(alpha = 0.12f))
-                .padding(1.dp),
-            content = {
-                Icon(
-                    imageVector = Icons.Default.Edit,
-                    contentDescription = "Edit Note",
-                    modifier = Modifier.size(32.dp),
-                    tint = MaterialTheme.colorScheme.primary
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text("Quick Note") },
+            text = {
+                TextField(
+                    value = textState,
+                    onValueChange = { textState = it },
+                    label = { Text("Enter text") }
                 )
-            }
-        )
-        Spacer(modifier = Modifier.width(16.dp))
-
-        val selectedDates = remember { mutableStateOf<List<LocalDate>>(listOf()) }
-        val disabledDates = listOf(
-            LocalDate.now().minusDays(0),
-        )
-        val calendarState = rememberUseCaseState()
-
-        IconButton(
-            onClick = {
-                val currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM d, yyyy"))
-                val dayOfWeek = SimpleDateFormat("EEEE", Locale.getDefault()).format(Date())
-
-                Toast.makeText(context, "Today is: $dayOfWeek, $currentDate", Toast.LENGTH_SHORT).show()
-                calendarState.show()
             },
-            modifier = Modifier
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.secondary.copy(alpha = 0.12f))
-                .padding(1.dp),
-            content = {
-                Icon(
-                    imageVector = Icons.Default.CalendarMonth,
-                    contentDescription = "Calendar",
-                    modifier = Modifier.size(32.dp),
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
-        )
-        CalendarDialog(
-            state = calendarState,
-            config = CalendarConfig(
-                yearSelection = true,
-                monthSelection = true,
-                style = CalendarStyle.MONTH,
-                disabledDates = disabledDates
-            ),
-            selection = CalendarSelection.Dates { newDates ->
-                selectedDates.value = newDates
-            }
-        )
-        Spacer(modifier = Modifier.width(16.dp))
-
-        val showCalculator = remember { mutableStateOf(false) }
-
-        IconButton(
-            onClick = {
-                showCalculator.value = true },
-            modifier = Modifier
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.secondary.copy(alpha = 0.12f))
-                .padding(1.dp),
-            content = {
-                Icon(
-                    imageVector = Icons.Default.Calculate,
-                    contentDescription = "Calculate",
-                    modifier = Modifier.size(32.dp),
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
-        )
-        if (showCalculator.value) {
-            AlertDialog(
-                onDismissRequest = { showCalculator.value = false },
-                title = { Text("Calculator") },
-                text = {
-                    CalculatorUI()
-                },
-                confirmButton = {
-                    Button(onClick = { showCalculator.value = false }) {
-                        Text("Close")
-                    }
+            confirmButton = {
+                Button(onClick = {
+                    openFileLauncher.launch("rename.txt")
+                    showDialog = false
+                }) {
+                    Text("Save as TXT")
                 }
-            )
-        }
-        Spacer(modifier = Modifier.width(16.dp))
-
-        IconButton(
-            onClick = { navController.navigate(NavRoutes.OneNote.route) },
-            modifier = Modifier
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.secondary.copy(alpha = 0.12f))
-                .padding(1.dp),
-            content = {
-                Icon(
-                    imageVector = Icons.Default.NoteAlt,
-                    contentDescription = "NoteAlt",
-                    modifier = Modifier.size(32.dp),
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
-        )
-        Spacer(modifier = Modifier.width(16.dp))
-
-        IconButton(
-            onClick = { navController.navigate(NavRoutes.Trash.route) },
-            modifier = Modifier
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.secondary.copy(alpha = 0.12f))
-                .padding(1.dp),
-            content = {
-                Icon(
-                    imageVector = Icons.Default.RestoreFromTrash,
-                    contentDescription = "Trash",
-                    modifier = Modifier.size(32.dp),
-                    tint = MaterialTheme.colorScheme.primary
-                )
+            },
+            dismissButton = {
+                Button(onClick = { showDialog = false }) {
+                    Text("Cancel")
+                }
             }
         )
     }
+
+    if (showCalculator) {
+        AlertDialog(
+            onDismissRequest = { showCalculator = false },
+            title = { Text("Calculator") },
+            text = { CalculatorUI() },
+            confirmButton = {
+                Button(onClick = { showCalculator = false }) {
+                    Text("Close")
+                }
+            }
+        )
+    }
+
+    val calendarState = rememberUseCaseState()
+    val selectedDates = remember { mutableStateOf<List<LocalDate>>(listOf()) }
+    val disabledDates = listOf(LocalDate.now())
+
+    CalendarDialog(
+        state = calendarState,
+        config = CalendarConfig(
+            yearSelection = true,
+            monthSelection = true,
+            style = CalendarStyle.MONTH,
+            disabledDates = disabledDates
+        ),
+        selection = CalendarSelection.Dates {
+            selectedDates.value = it
+        }
+    )
+
+    Surface(
+        tonalElevation = 1.dp,
+        shape = RoundedCornerShape(32.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(4.dp)
+            .clip(RoundedCornerShape(32.dp))
+            .background(MaterialTheme.colorScheme.surface)
+    ) {
+        LazyRow(
+            modifier = Modifier
+                .padding(vertical = 4.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            contentPadding = PaddingValues(horizontal = 20.dp)
+        ) {
+    item {
+                IconCircleButton(Icons.Default.AddComment, "Save as TXT") {
+                    showDialog = true
+                }
+            }
+            item {
+                IconCircleButton(Icons.Default.Edit, "Edit Note") {
+                    onNoteClicked(0)
+                    Toast.makeText(context, "Note Created!", Toast.LENGTH_SHORT).show()
+                }
+            }
+            item {
+                IconCircleButton(Icons.Default.CalendarMonth, "Calendar") {
+                    val currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM d, yyyy"))
+                    val dayOfWeek = SimpleDateFormat("EEEE", Locale.getDefault()).format(Date())
+                    Toast.makeText(context, "Today is: $dayOfWeek, $currentDate", Toast.LENGTH_SHORT).show()
+                    calendarState.show()
+                }
+            }
+            item {
+                IconCircleButton(Icons.Default.Calculate, "Calculator") {
+                    showCalculator = true
+                }
+            }
+            item {
+                IconCircleButton(Icons.Default.NoteAlt, "All Notes") {
+                    navController.navigate(NavRoutes.OneNote.route)
+                }
+            }
+            item {
+                IconCircleButton(Icons.Default.RestoreFromTrash, "Trash") {
+                    navController.navigate(NavRoutes.Trash.route)
+                }
+            }
+            item {
+                IconCircleButton(Icons.Default.Search, "Calculator") {
+                    val url = "https://www.startpage.com"
+
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+
+                    context.startActivity(intent)
+                    Toast.makeText(context, "Opening Default Browser...", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
 }
+
+@Composable
+private fun IconCircleButton(
+    icon: ImageVector,
+    contentDescription: String,
+    onClick: () -> Unit
+) {
+    IconButton(
+        onClick = onClick,
+        modifier = Modifier
+            .size(54.dp)
+            .clip(CircleShape)
+            .background(MaterialTheme.colorScheme.secondary.copy(alpha = 0.12f))
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = contentDescription,
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.size(28.dp)
+        )
+    }
+}
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

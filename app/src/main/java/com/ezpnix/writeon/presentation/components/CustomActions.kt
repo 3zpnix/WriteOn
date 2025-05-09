@@ -82,6 +82,7 @@ fun RedoButton(onRedoClicked: () -> Unit) {
 
 @Composable
 fun NavigationIcon(onBackNavClicked: () -> Unit) {
+
     IconButton(onClick = onBackNavClicked) {
         Icon(
             imageVector = Icons.AutoMirrored.Rounded.ArrowBack,

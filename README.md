@@ -21,6 +21,16 @@ A clean, intuitive note-taking open source app with Material You design.
 
 ---
 
+## 💥 DevLog v1.5 (03/25/2025)
+- [x] Homescreen buttons to surface lazyrow
+- [x] Removed savenote else function issue
+- [x] Modified edit buttons to bottom modal
+- [x] Calculator manual edits now functional
+- [x] Replaced ann-section with sources
+- [x] Results are now visible down below
+- [x] Adjusted position for most of the buttons
+- [x] Fixed the crashing issue from the previous version
+
 ## ✴️ DevLog v1.4 (03/25/2025)
 - [x] Fixed some underlying issues with the edit model and view model
 - [x] Centered home screen buttons have been replaced with a set of row icon buttons
@@ -59,6 +69,7 @@ A clean, intuitive note-taking open source app with Material You design.
 
 ## 📢 Announcements
 
+- Releasing a small update for v1.5, my job and university stuff has been taking up my whole schedule lol, updates will come out slower than I initially expected. I apologize in advance to everyone (05/09/2025)
 - Managed to find time to update for version 1.3, Might find it difficult for the next version though because of my part time job taking up my whole schedule! (02/25/2025)
 - I have to focus on my other projects, I'm going broke right now haha. Version 1.3 will have its updates soon (1/19/2025)
 - Updates are being delayed because of university school stuff, I apologize! (12/7/2024)

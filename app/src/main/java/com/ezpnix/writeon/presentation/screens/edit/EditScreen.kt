@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.icu.text.SimpleDateFormat
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -86,6 +87,7 @@ import com.ezpnix.writeon.presentation.components.EditButton
 import com.ezpnix.writeon.presentation.components.MoreButton
 import com.ezpnix.writeon.presentation.components.NavigationIcon
 import com.ezpnix.writeon.presentation.components.NotesScaffold
+import com.ezpnix.writeon.presentation.components.PreviewButton
 import com.ezpnix.writeon.presentation.components.RedoButton
 import com.ezpnix.writeon.presentation.components.SaveButton
 import com.ezpnix.writeon.presentation.components.UndoButton
@@ -327,7 +329,7 @@ fun MinimalisticMode(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun EditScreen(
     viewModel: EditViewModel,
@@ -338,12 +340,13 @@ fun EditScreen(
 ) {
     val context = LocalContext.current
     val showButtons = remember { mutableStateOf(false) }
+    val listState = rememberLazyListState()
 
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .imePadding()
     ) {
-        // Main content (input field and toolbar)
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -352,6 +355,7 @@ fun EditScreen(
             if (viewModel.isDescriptionInFocus.value && settingsViewModel.settings.value.isMarkdownEnabled) {
                 TextFormattingToolbar(viewModel)
             }
+
             MarkdownBox(
                 isExtremeAmoled = settingsViewModel.settings.value.extremeAmoledMode,
                 shape = shapeManager(
@@ -374,48 +378,90 @@ fun EditScreen(
             )
         }
 
-
-        Column(
+        FloatingActionButton(
+            onClick = { showButtons.value = true },
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+                .padding(24.dp),
+            containerColor = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.primary
         ) {
+            Icon(
+                imageVector = Icons.Rounded.Visibility,
+                contentDescription = "Show Options"
+            )
+        }
 
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically,
+        if (showButtons.value) {
+            ModalBottomSheet(
+                onDismissRequest = { showButtons.value = false },
+                containerColor = MaterialTheme.colorScheme.surfaceContainerLow
             ) {
-                FloatingActionButton(
-                    onClick = { showButtons.value = !showButtons.value },
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    contentColor = MaterialTheme.colorScheme.primary
-                ) {
-                    Icon(
-                        imageVector = if (showButtons.value) Icons.Rounded.VisibilityOff else Icons.Rounded.Visibility,
-                        contentDescription = "Toggle Buttons"
-                    )
-                }
-            }
-
-            if (showButtons.value) {
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier
-                        .background(MaterialTheme.colorScheme.surface, shape = CircleShape)
-                        .padding(8.dp)
+                        .fillMaxWidth()
+                        .padding(16.dp)
                 ) {
-                    TranslateButton(viewModel, onClick = {
-                        copyToClipboard(context, viewModel.noteDescription.value.text)
-                        openTranslateApp(context, viewModel.noteDescription.value.text)
-                    })
-                    CopyButton(viewModel, onClick = {
-                        copyToClipboard(context, viewModel.noteDescription.value.text)})
-                    ModeButton(pagerState, coroutineScope)
-                    CalButton()
-                    CalculatorButton()
+                    IconButton(
+                        onClick = {
+                            coroutineScope.launch {
+                                val firstVisibleItem = listState.firstVisibleItemIndex
+                                listState.animateScrollToItem(maxOf(0, firstVisibleItem - 1))
+                            }
+                        },
+                        modifier = Modifier.size(40.dp)
+                    ) {
+                        Icon(Icons.Filled.ChevronLeft, contentDescription = "Scroll Left")
+                    }
+
+                    LazyRow(
+                        state = listState,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .weight(1f)
+                            .background(
+                                color = MaterialTheme.colorScheme.surface,
+                                shape = RoundedCornerShape(24.dp)
+                            )
+                            .padding(horizontal = 12.dp, vertical = 8.dp)
+                    ) {
+                        item {
+                            CopyButton(viewModel, onClick = {
+                                copyToClipboard(context, viewModel.noteDescription.value.text)
+                            })
+                        }
+                        item { CalButton() }
+                        item {
+                            PreviewButton(pagerState, coroutineScope, onClick = {
+                                showButtons.value = false
+                            })
+                        }
+                        item { CalculatorButton() }
+                        item { TxtButton(currentText = viewModel.noteDescription.value.text) }
+
+                        item { BrowserButton() }
+                        item {
+                            TranslateButton(viewModel, onClick = {
+                                copyToClipboard(context, viewModel.noteDescription.value.text)
+                                openTranslateApp(context, viewModel.noteDescription.value.text)
+                            })
+                        }
+                    }
+
+                    IconButton(
+                        onClick = {
+                            coroutineScope.launch {
+                                val firstVisibleItem = listState.firstVisibleItemIndex
+                                listState.animateScrollToItem(firstVisibleItem + 1)
+                            }
+                        },
+                        modifier = Modifier.size(40.dp)
+                    ) {
+                        Icon(Icons.Filled.ChevronRight, contentDescription = "Scroll Right")
+                    }
                 }
             }
         }
@@ -487,12 +533,13 @@ fun PreviewScreen(viewModel: EditViewModel, settingsViewModel: SettingsViewModel
                     .padding(8.dp)
                     .weight(1f)
             ) {
-                item { CalButton() }
-                item { CalculatorButton() }
-                item { EditButton(pagerState, coroutineScope) }
                 item { CopyButton(viewModel, onClick = {
                     copyToClipboard(context, viewModel.noteDescription.value.text)
                 }) }
+                item { CalButton() }
+                item { EditButton(pagerState, coroutineScope) }
+                item { CalculatorButton() }
+                item { TxtButton(currentText = viewModel.noteDescription.value.text) }
                 item { BrowserButton() }
                 item {
                     TranslateButton(viewModel, onClick = {
@@ -500,7 +547,6 @@ fun PreviewScreen(viewModel: EditViewModel, settingsViewModel: SettingsViewModel
                         openTranslateApp(context, viewModel.noteDescription.value.text)
                     })
                 }
-                item { TxtButton(currentText = viewModel.noteDescription.value.text) }
             }
 
             IconButton(

@@ -38,6 +38,7 @@ import androidx.compose.material.icons.rounded.Bolt
 import androidx.compose.material.icons.rounded.Calculate
 import androidx.compose.material.icons.rounded.CalendarMonth
 import androidx.compose.material.icons.rounded.CopyAll
+import androidx.compose.material.icons.rounded.Description
 import androidx.compose.material.icons.rounded.Translate
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -69,6 +70,14 @@ import java.text.SimpleDateFormat
 import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
+import java.util.Stack
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Card
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.material3.CardDefaults
+
 
 @Composable
 fun AgreeButton(
@@ -98,6 +107,26 @@ fun EditButton(pagerState: PagerState, coroutineScope: CoroutineScope) {
         Icon(Icons.Rounded.Edit, contentDescription = "Edit", tint = MaterialTheme.colorScheme.primary)
     }
 }
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun PreviewButton(
+    pagerState: PagerState,
+    coroutineScope: CoroutineScope,
+    onClick: () -> Unit
+) {
+    IconButton(
+        onClick = {
+            onClick() // Dismiss the sheet first
+            coroutineScope.launch {
+                pagerState.animateScrollToPage(1) // or navigate however you do it
+            }
+        }
+    ) {
+        Icon(Icons.Rounded.Description, contentDescription = "Preview", tint = MaterialTheme.colorScheme.primary)
+    }
+}
+
 
 @Composable
 fun TxtButton(currentText: String) {
@@ -300,14 +329,19 @@ fun CalculatorUI() {
     ) {
         TextField(
             value = expression,
-            onValueChange = { expression = it },
-            label = { Text("Enter expression") },
-            readOnly = true
+            onValueChange = { input ->
+                // Optional: sanitize input to allow only valid characters
+                val sanitized = input.filter { it.isDigit() || it in "+-*/().%" }
+                expression = sanitized
+            },
+            //label = { Text("Enter expression") },
+            // Removed: readOnly = true
         )
+
         Spacer(modifier = Modifier.height(8.dp))
 
         val buttons = listOf(
-            listOf("C", "( )", "%", "/"),
+            listOf("C", "()", "%", "/"),
             listOf("7", "8", "9", "*"),
             listOf("4", "5", "6", "-"),
             listOf("1", "2", "3", "+"),
@@ -371,53 +405,101 @@ fun CalculatorUI() {
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
-        Text("Result: $result")
+        Card(
+            modifier = Modifier
+                .padding(top = 12.dp)
+                .fillMaxWidth()
+                .border(2.dp, Color(0xFF4CAF50), RoundedCornerShape(12.dp)),
+            colors = CardDefaults.cardColors(
+                containerColor = Color(0xFFE8F5E9) // Light green background
+            ),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+            shape = RoundedCornerShape(12.dp)
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Result",
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color(0xFF388E3C)
+                    )
+                )
+                Text(
+                    text = result,
+                    style = TextStyle(
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF1B5E20)
+                    )
+                )
+            }
+        }
+
     }
 }
 
-
 fun evalExpression(expression: String): Double {
     return try {
-        val sanitizedExpression = expression.replace("÷", "/").replace("×", "*")
-        val regex = Regex("(-?\\d+(?:\\.\\d+)?|[+*/-])")
-        val tokens = regex.findAll(sanitizedExpression).map { it.value }.toList()
+        val outputQueue = mutableListOf<String>()
+        val operatorStack = Stack<Char>()
+        val tokens = Regex("""\d+(\.\d+)?|[()+\-*/]""").findAll(expression.replace(" ", "")).map { it.value }.toList()
 
-        if (tokens.isEmpty()) return Double.NaN
+        val precedence = mapOf('+' to 1, '-' to 1, '*' to 2, '/' to 2)
 
-        val numbers = mutableListOf<Double>()
-        val operators = mutableListOf<Char>()
-
-        tokens.forEach { token ->
+        for (token in tokens) {
             when {
-                token.toDoubleOrNull() != null -> numbers.add(token.toDouble())
-                token in listOf("+", "-", "*", "/") -> operators.add(token[0])
+                token.toDoubleOrNull() != null -> outputQueue.add(token)
+                token.singleOrNull() in precedence -> {
+                    while (operatorStack.isNotEmpty() &&
+                        operatorStack.peek() != '(' &&
+                        precedence[operatorStack.peek()]!! >= precedence[token[0]]!!
+                    ) {
+                        outputQueue.add(operatorStack.pop().toString())
+                    }
+                    operatorStack.push(token[0])
+                }
+                token == "(" -> operatorStack.push('(')
+                token == ")" -> {
+                    while (operatorStack.isNotEmpty() && operatorStack.peek() != '(') {
+                        outputQueue.add(operatorStack.pop().toString())
+                    }
+                    if (operatorStack.isNotEmpty() && operatorStack.peek() == '(') {
+                        operatorStack.pop()
+                    }
+                }
             }
         }
 
-        while (operators.isNotEmpty()) {
-            val index = operators.indexOfFirst { it == '*' || it == '/' }
-            val i = if (index != -1) index else 0
-
-            val num1 = numbers[i]
-            val num2 = numbers[i + 1]
-            val op = operators[i]
-
-            val newValue = when (op) {
-                '+' -> num1 + num2
-                '-' -> num1 - num2
-                '*' -> num1 * num2
-                '/' -> if (num2 != 0.0) num1 / num2 else Double.NaN
-                else -> Double.NaN
-            }
-
-            numbers[i] = newValue
-            numbers.removeAt(i + 1)
-            operators.removeAt(i)
+        while (operatorStack.isNotEmpty()) {
+            outputQueue.add(operatorStack.pop().toString())
         }
 
-        numbers.firstOrNull() ?: Double.NaN
+        // Evaluate RPN
+        val evalStack = Stack<Double>()
+        for (token in outputQueue) {
+            when {
+                token.toDoubleOrNull() != null -> evalStack.push(token.toDouble())
+                token.length == 1 && token[0] in precedence -> {
+                    val b = evalStack.pop()
+                    val a = evalStack.pop()
+                    val result = when (token[0]) {
+                        '+' -> a + b
+                        '-' -> a - b
+                        '*' -> a * b
+                        '/' -> if (b != 0.0) a / b else return Double.NaN
+                        else -> return Double.NaN
+                    }
+                    evalStack.push(result)
+                }
+            }
+        }
+
+        return evalStack.pop()
     } catch (e: Exception) {
         Double.NaN
     }
 }
-

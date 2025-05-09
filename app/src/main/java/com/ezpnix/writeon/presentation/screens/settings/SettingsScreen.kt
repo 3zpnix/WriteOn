@@ -244,14 +244,14 @@ fun AndroidDevice() {
 
     val deviceInfo = "Device: ${Build.MANUFACTURER} ${Build.MODEL}"
     val androidVersion = "Android ${Build.VERSION.RELEASE}"
-
+    val dev = "✦ Made by 3zpnix"
     val stat = StatFs(Environment.getDataDirectory().absolutePath)
     val totalStorage = formatStorage(stat.totalBytes)
     val availableStorage = formatStorage(stat.availableBytes)
     val storageInfo = "Storage: $availableStorage free / $totalStorage total"
 
     Text(
-        text = "\n$storageInfo\n$deviceInfo\n$androidVersion",
+        text = "\n$storageInfo\n$deviceInfo\n$androidVersion\n\n$dev",
         style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Medium),
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         modifier = Modifier

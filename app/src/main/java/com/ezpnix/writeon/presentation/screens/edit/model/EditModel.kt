@@ -69,13 +69,9 @@ class EditViewModel @Inject constructor(
                         createdAt = if (noteCreatedTime.value != 0L) noteCreatedTime.value else System.currentTimeMillis(),
                     )
                 )
-            } else {
-                if (!isPinned.value) {
-                    noteUseCase.deleteNoteById(id)
-                }
             }
 
-            fetchLastNoteAndUpdate()
+        fetchLastNoteAndUpdate()
         }
     }
 
