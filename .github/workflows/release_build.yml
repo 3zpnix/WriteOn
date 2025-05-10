@@ -73,6 +73,6 @@ jobs:
         run: |
           gh release create v1.5 WriteOn.apk \
             --title "v1.5" \
-            --notes "May Update~" \
+            --notes "Crash Fix Update~" \
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
