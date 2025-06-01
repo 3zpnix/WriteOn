@@ -71,8 +71,8 @@ jobs:
 
       - name: Create GitHub Release
         run: |
-          gh release create v1.5 WriteOn.apk \
-            --title "v1.5" \
-            --notes "Crash Fix Update~" \
+          gh release create v1.6 WriteOn.apk \
+            --title "v1.6" \
+            --notes "Jun Update~" \
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
