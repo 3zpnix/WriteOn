@@ -1,6 +1,7 @@
 package com.ezpnix.writeon.presentation.screens.home.widgets
 
 import android.content.Context
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -21,8 +22,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import com.ezpnix.writeon.R
 import com.ezpnix.writeon.domain.model.Note
@@ -68,7 +71,6 @@ fun NoteFilter(
                         onRestore = onRestore
                     )
                     EmptyRightButton(
-                        onRightAction = onSearch,
                         shape = shape
                     )
                 }
@@ -184,11 +186,16 @@ fun EmptyLeftButton(
 
 @Composable
 fun EmptyRightButton(
-    onRightAction: () -> Unit,
     shape: RoundedCornerShape
 ) {
+    val clipboardManager = LocalClipboardManager.current
+    val context = LocalContext.current
+
     Button(
-        onClick = onRightAction,
+        onClick = {
+            clipboardManager.setText(AnnotatedString("(^-^) Your support would be appreciated! https://github.com/3zpnix/WriteOn/"))
+            Toast.makeText(context, "Link copied to clipboard!", Toast.LENGTH_SHORT).show()
+        },
         shape = shape,
         modifier = Modifier
             .size(80.dp)

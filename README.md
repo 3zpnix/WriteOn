@@ -101,7 +101,8 @@ A clean, intuitive note-taking app with *Material You* design — open source an
 
 ## 📢 Announcements
 
-- *2025-05-09:* Small v1.5 update released — life’s hectic with job & university, so expect slower updates.
+- *2025-06-01:* Thankfully, I had time to continue the v1.6 update, had fun with this version, thank you!
+- *2025-05-09:* Small v1.5 update released — life’s hectic with job & university, so expect some slow updates.
 - *2025-02-25:* Found time for v1.3 update — future updates might be delayed due to part-time job.
 - *2025-01-19:* Taking a break to focus on other projects. Still planning v1.3!
 - *2024-12-07:* University workload delaying updates — sorry!
@@ -120,11 +121,11 @@ A clean, intuitive note-taking app with *Material You* design — open source an
 
 ## 👋 Features
 
-**Biometric Auth** • **Backup/Restore** • **Custom Layout** • **Markdown**  
-**Built-In Calendar**  • **Offline Access** • **Privacy-Friendly**  
-**No Bloat Permissions** • **Material You UI** • **Custom Themes**
-**Multiple Export Options** • **Quick Translate** • **Share Text**  
-**Web Search** • **Image Attachments** • **Calculator** • **Fonts**
+**Biometric Auth** • **Backup/Restore** • **Custom Layout** • **Markdown** •
+**Built-In Calendar**  • **Offline Access** • **Privacy-Friendly** •
+**No Bloat Permissions** • **Material You UI** • **Custom Themes** •
+**Multiple Export Options** • **Scratchpad** • **Share Text** •
+**Flashcard** • **Image Attachments** • **Calculator** • **Fonts**
 
 ---
 
