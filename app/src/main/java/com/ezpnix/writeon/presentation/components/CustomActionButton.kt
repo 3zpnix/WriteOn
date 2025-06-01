@@ -117,9 +117,9 @@ fun PreviewButton(
 ) {
     IconButton(
         onClick = {
-            onClick() // Dismiss the sheet first
+            onClick()
             coroutineScope.launch {
-                pagerState.animateScrollToPage(1) // or navigate however you do it
+                pagerState.animateScrollToPage(1)
             }
         }
     ) {
@@ -262,35 +262,6 @@ fun openTranslateApp(context: Context, text: String) {
     context.startActivity(intent)
 }
 
-//@Composable
-//fun CalculatorExtend() {
-//    val showDialog = remember { mutableStateOf(false) }
-//
-//    ExtendedFloatingActionButton(
-//        modifier = Modifier.imePadding(),
-//        shape = RoundedCornerShape(24.dp),
-//        onClick = { showDialog.value = true }
-//
-//    ) {
-//        Icon(Icons.Rounded.Calculate, contentDescription = null)
-//    }
-//
-//    if (showDialog.value) {
-//        AlertDialog(
-//            onDismissRequest = { showDialog.value = false },
-//            title = { Text("Calculator") },
-//            text = {
-//                CalculatorUI()
-//            },
-//            confirmButton = {
-//                Button(onClick = { showDialog.value = false }) {
-//                    Text("Close")
-//                }
-//            }
-//        )
-//    }
-//}
-
 @Composable
 fun CalculatorButton() {
     val showDialog = remember { mutableStateOf(false) }
@@ -330,12 +301,9 @@ fun CalculatorUI() {
         TextField(
             value = expression,
             onValueChange = { input ->
-                // Optional: sanitize input to allow only valid characters
                 val sanitized = input.filter { it.isDigit() || it in "+-*/().%" }
                 expression = sanitized
             },
-            //label = { Text("Enter expression") },
-            // Removed: readOnly = true
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -411,7 +379,7 @@ fun CalculatorUI() {
                 .fillMaxWidth()
                 .border(2.dp, Color(0xFF4CAF50), RoundedCornerShape(12.dp)),
             colors = CardDefaults.cardColors(
-                containerColor = Color(0xFFE8F5E9) // Light green background
+                containerColor = MaterialTheme.colorScheme.surface
             ),
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
             shape = RoundedCornerShape(12.dp)
@@ -433,7 +401,7 @@ fun CalculatorUI() {
                     style = TextStyle(
                         fontSize = 28.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1B5E20)
+                        color = MaterialTheme.colorScheme.primary
                     )
                 )
             }

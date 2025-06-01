@@ -13,8 +13,8 @@ android {
         applicationId = "com.ezpnix.writeon"
         minSdk = 26
         targetSdk = 34
-        versionCode = 6
-        versionName = "1.5"
+        versionCode = 7
+        versionName = "1.6"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -78,6 +78,7 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
     implementation(libs.androidx.glance.appwidget)
     implementation(libs.androidx.biometric.ktx)
+    implementation(libs.firebase.crashlytics.buildtools)
     ksp(libs.androidx.room.compiler)
     ksp(libs.hilt.android.compiler)
     ksp(libs.hilt.compile)
@@ -96,4 +97,5 @@ dependencies {
     implementation(libs.compose.core)
     implementation(libs.message.bar)
     implementation(libs.automatic.backup)
+    implementation(libs.gson)
 }

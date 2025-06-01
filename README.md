@@ -1,94 +1,130 @@
 <div align="center">
-<img width="192" height="192" src="app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp" align="center" alt="" > 
+  <img src="app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp" width="192" height="192" alt="App Icon" />
 
-### Write On: Simple Notepad ✅
-A clean, intuitive note-taking open source app with Material You design.
+# Write On: Simple Notepad ✅
+A clean, intuitive note-taking app with *Material You* design — open source and privacy-respecting.
 
-[<img src=".github/github.png" alt="Get it on GitHub" height="55">](https://github.com/3zpnix/WriteOn/releases) &nbsp;
-[<img src=".github/fdroid.png" alt="Get it on F-Droid" height="55">](https://f-droid.org/en/packages/com.ezpnix.writeon/) &nbsp;
+[<img src=".github/github.png" alt="Get it on GitHub" height="55">](https://github.com/3zpnix/WriteOn/releases)
+&nbsp;
+[<img src=".github/fdroid.png" alt="Get it on F-Droid" height="55">](https://f-droid.org/en/packages/com.ezpnix.writeon/)
+</div>
 
 ---
-
-</div>
-<div align="left">
 
 <div align="center">
-    <img src="metadata/en-US/images/phoneScreenshots/1.png" width="30%"  alt=""/>
-    <img src="metadata/en-US/images/phoneScreenshots/2.png" width="30%"  alt=""/>
-    <img src="metadata/en-US/images/phoneScreenshots/3.png" width="30%"  alt=""/>
-</div>
+  <img src="metadata/en-US/images/phoneScreenshots/1.png" width="30%" alt="Screenshot 1"/>
+  <img src="metadata/en-US/images/phoneScreenshots/2.png" width="30%" alt="Screenshot 2"/>
+  <img src="metadata/en-US/images/phoneScreenshots/3.png" width="30%" alt="Screenshot 3"/>
 </div>
 
 ---
 
-## 💥 DevLog v1.5 (05/09/2025)
-- [x] Homescreen buttons to surface lazyrow
-- [x] Removed savenote else function issue
-- [x] Modified edit buttons to bottom modal
-- [x] Calculator manual edits now functional
-- [x] Replaced ann-section with sources
-- [x] Results are now visible down below
-- [x] Adjusted position for most of the buttons
-- [x] Fixed the crashing issue from the previous version
+## 💥 Personal DevLog (^~^)
 
-## ✴️ DevLog v1.4 (03/25/2025)
-- [x] Fixed some underlying issues with the edit model and view model
-- [x] Centered home screen buttons have been replaced with a set of row icon buttons
-- [x] Added Help & Feedback section for all questions and answers
-- [x] Pin/unpin status changes can now be saved independently
-- [x] Calculator parenthesis typo issue has been fixed
-- [x] Settings screen has now two new section content
-- [x] Added app stability for custom dpi dimensions
-- [x] Modified note preview screen user interface
-- [x] Revamped the alert dialog logic pop back
+<details>
+<summary><strong>💥 v1.6 (2025-06-01)</strong></summary>
 
-## 🔥 DevLog v1.3 (02/25/2025)
-- [x] Updated home user interface
-- [x] Searchbar placeholder feature
-- [x] Fixed custom size dimensions
-- [x] Directly calculate within the app
-- [x] Ability to change font size
-- [x] Added more featured buttons
-- [x] Calendar date issue fixed
-- [x] Renamed some strings
-- [x] Squished some bugs
+- [x] New homepage user interface
+- [x] More visibility on your notes
+- [x] FAB has returned but cleaner now
+- [x] Added new Flashcard screen feature
+- [x] Column view count is now adjustable
+- [x] Improvements to Scratchpad screen
+- [x] Quick shortcut button redirects to Styles
+- [x] Home greeting placeholder repositioned
+- [x] Issue feedback now on the settings screen
+- [x] Feedback screen cards now fully clickable
+- [x] Added some minor animation improvements
+- [x] Get info on your device found in about
+- [x] Some icons were replaced to be cleaner
+- [x] Bug fixes and optimizations
+</details>
 
-## 🎉 DevLog v1.2 (01/10/2025)
-- [x] More markdown formats
-- [x] Quick note export to txt
-- [x] Updated auto-backup logic
-- [x] Direct to translate button
-- [x] Dropdown share button
+<details>
+<summary><strong>💥 v1.5 (2025-05-09)</strong></summary>
+
+- [x] Removed savenote else-function bug
+- [x] Homescreen buttons surface lazyrow
+- [x] Edit buttons moved to bottom modal
+- [x] Calculator supports manual edits
+- [x] Listed-section improvements
+- [x] Fixed major crash issue
+</details>
+
+<details>
+<summary><strong>💥 v1.4 (2025-03-25)</strong></summary>
+
+- [x] Refactored edit/view models
+- [x] Row icon buttons replace centered buttons
+- [x] Added Help & Feedback section
+- [x] Pin/unpin status saves properly
+- [x] Fixed calculator parenthesis bug
+- [x] New sections in Settings screen
+- [x] DPI support improved
+- [x] Updated note preview UI
+- [x] Alert dialog logic revamped
+</details>
+
+<details>
+<summary><strong>💥 v1.3 (2025-02-25)</strong></summary>
+
+- [x] Home UI updated
+- [x] Searchbar placeholder added
+- [x] Custom dimensions fixed
+- [x] Calculator built-in
+- [x] Adjustable font size
+- [x] More buttons/features
+- [x] Calendar bug squashed
+- [x] Renamed strings
+- [x] Minor bug fixes
+</details>
+
+<details>
+<summary><strong>💥 v1.2 (2025-01-10)</strong></summary>
+
+- [x] More markdown support
+- [x] TXT export for quick notes
+- [x] Improved auto-backup logic
+- [x] Translate and share buttons added
 - [x] Fixed partial image bug
-- [x] Updated user interface
-- [x] Internet search button
-- [x] Updated resource strings
-- [x] More optimizations
+- [x] UI updates and optimizations
+</details>
+
+<details>
+<summary><strong>💥 v1.1 (2024-11-30)</strong></summary>
+
+- [x] UI Changes
+- [x] Bug Fixes
+</details>
 
 ---
 
 ## 📢 Announcements
 
-- Releasing a small update for v1.5, my job and university stuff has been taking up my whole schedule lol, updates will come out slower than I initially expected. I apologize in advance to everyone (05/09/2025)
-- Managed to find time to update for version 1.3, Might find it difficult for the next version though because of my part time job taking up my whole schedule! (02/25/2025)
-- I have to focus on my other projects, I'm going broke right now haha. Version 1.3 will have its updates soon (1/19/2025)
-- Updates are being delayed because of university school stuff, I apologize! (12/7/2024)
-- Upcoming version 1.2 will contain mostly bug fixes but with more features (12/3/2024)
-- Laptop is having issues with Android Studio, the new version will be delayed a bit, sorry! (11/19/2024)
-- Android release coming soon to fdroid and github (08/26/2024)
+- *2025-05-09:* Small v1.5 update released — life’s hectic with job & university, so expect slower updates.
+- *2025-02-25:* Found time for v1.3 update — future updates might be delayed due to part-time job.
+- *2025-01-19:* Taking a break to focus on other projects. Still planning v1.3!
+- *2024-12-07:* University workload delaying updates — sorry!
+- *2024-12-03:* v1.2 will be mostly bug fixes + features.
+- *2024-11-19:* Android Studio issues — delays expected.
+- *2024-08-26:* Android release coming soon to GitHub and F-Droid!
 
 ---
 
-## 💬 For Inquiries
+## 💬 Contact
 
--  Email : ezpnix@proton.me
--  Twitter : [3zpnix](https://twitter.com/3zpnix)
+- *Email:* ezpnix@proton.me
+- *Twitter:* [@3zpnix](https://twitter.com/3zpnix)
 
 ---
 
-## 👋 Active Features
+## 👋 Features
 
-★ Biometric Authentication ★ Backup/Restore ★ Screen Protection ★ Markdown Support ★ Customizable Themes ★ Offline Functionality ★ Data Privacy ★ No Unnecessary Permissions ★ Intuitive UI ★ Built-In Calendar ★ Quick note export to txt ★ Direct to translate button ★ Dropdown share button ★ Internet search button ★ Attach Images ★ Calculator ★
+**Biometric Auth** • **Backup/Restore** • **Custom Layout** • **Markdown**  
+**Built-In Calendar**  • **Offline Access** • **Privacy-Friendly**  
+**No Bloat Permissions** • **Material You UI** • **Custom Themes**
+**Multiple Export Options** • **Quick Translate** • **Share Text**  
+**Web Search** • **Image Attachments** • **Calculator** • **Fonts**
 
 ---
 

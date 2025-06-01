@@ -44,6 +44,7 @@ import com.ezpnix.writeon.presentation.screens.settings.model.SettingsViewModel
 import com.ezpnix.writeon.presentation.screens.settings.settings.ContributorsClicked
 import com.ezpnix.writeon.presentation.screens.settings.settings.shapeManager
 import com.ezpnix.writeon.presentation.screens.settings.widgets.ActionType
+import com.ezpnix.writeon.presentation.screens.settings.widgets.SettingActionType
 import com.ezpnix.writeon.presentation.screens.settings.widgets.SettingCategory
 import com.ezpnix.writeon.presentation.screens.settings.widgets.SettingsBox
 import androidx.compose.foundation.rememberScrollState
@@ -73,6 +74,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.automirrored.rounded.Help
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.rounded.BuildCircle
 import androidx.compose.material.icons.rounded.Games
 import androidx.compose.material.icons.rounded.Help
 import androidx.compose.material.icons.rounded.HelpOutline
@@ -119,6 +121,7 @@ fun TopBar(
 
 @Composable
 fun MainSettings(settingsViewModel: SettingsViewModel, navController: NavController) {
+    val uriHandler = LocalUriHandler.current
     var showDialog by remember { mutableStateOf(false) }
     SettingsScaffold(
         settingsViewModel = settingsViewModel,
@@ -166,11 +169,13 @@ fun MainSettings(settingsViewModel: SettingsViewModel, navController: NavControl
             }
             item {
                 SettingCategory(
-                    title = stringResource(id = R.string.experimental),
-                    subTitle = stringResource(R.string.description_experimental),
-                    icon = Icons.Rounded.Games,
+                    title = stringResource(id = R.string.issue),
+                    subTitle = stringResource(R.string.issue_description),
+                    icon = Icons.Rounded.BuildCircle,
                     shape = shapeManager(radius = settingsViewModel.settings.value.cornerRadius, isFirst = true),
-                    action = { showDialog = true } // Show pop-up instead of navigation
+                    actionType = SettingActionType.LINK,
+                    linkClicked = { uriHandler.openUri("https://github.com/3zpnix/WriteOn/issues/new") },
+                    // action = { showDialog = true } // Show pop-up instead of navigation
                 )
             }
             item {
@@ -191,9 +196,6 @@ fun MainSettings(settingsViewModel: SettingsViewModel, navController: NavControl
                     isLast = true,
                     action = { navController.navigate(NavRoutes.About.route) }
                 )
-            }
-            item {
-                AndroidDevice()
             }
         }
         ExperimentalFeatureLockedDialog(showDialog = showDialog, onDismiss = { showDialog = false })
@@ -239,27 +241,6 @@ fun ExperimentalFeatureLockedDialog(showDialog: Boolean, onDismiss: () -> Unit) 
 }
 
 
-@Composable
-fun AndroidDevice() {
-
-    val deviceInfo = "Device: ${Build.MANUFACTURER} ${Build.MODEL}"
-    val androidVersion = "Android ${Build.VERSION.RELEASE}"
-    val dev = "✦ Made by 3zpnix"
-    val stat = StatFs(Environment.getDataDirectory().absolutePath)
-    val totalStorage = formatStorage(stat.totalBytes)
-    val availableStorage = formatStorage(stat.availableBytes)
-    val storageInfo = "Storage: $availableStorage free / $totalStorage total"
-
-    Text(
-        text = "\n$storageInfo\n$deviceInfo\n$androidVersion\n\n$dev",
-        style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Medium),
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 8.dp, bottom = 16.dp),
-        textAlign = TextAlign.Center
-    )
-}
 
 fun loadState(preferences: SharedPreferences): Boolean {
     return preferences.getBoolean("announcement_expanded", true)
@@ -267,19 +248,6 @@ fun loadState(preferences: SharedPreferences): Boolean {
 
 fun saveState(preferences: SharedPreferences, isExpanded: Boolean) {
     preferences.edit().putBoolean("announcement_expanded", isExpanded).apply()
-}
-
-// Function to format storage size (e.g., 128GB, 512MB)
-fun formatStorage(bytes: Long): String {
-    val df = DecimalFormat("#.##")
-    val kb = bytes / 1024.0
-    val mb = kb / 1024.0
-    val gb = mb / 1024.0
-    return when {
-        gb >= 1 -> "${df.format(gb)} GB"
-        mb >= 1 -> "${df.format(mb)} MB"
-        else -> "${df.format(kb)} KB"
-    }
 }
 
 

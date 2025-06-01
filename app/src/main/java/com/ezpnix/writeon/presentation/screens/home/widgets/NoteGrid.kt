@@ -67,10 +67,10 @@ fun NotesGrid(
 
     LazyVerticalStaggeredGrid(
         columns = when(viewMode) {
-            true -> StaggeredGridCells.Fixed(2)
+            true  -> StaggeredGridCells.Fixed(settingsViewModel.settings.value.columnsCount)
             false -> StaggeredGridCells.Fixed(1)
         },
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    horizontalArrangement = Arrangement.spacedBy(12.dp),
         content = {
             if (pinnedNotes.isNotEmpty()) {
                 item(span = StaggeredGridItemSpan.FullLine) {

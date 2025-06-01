@@ -5,9 +5,7 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.widget.Toast
 import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -37,6 +35,7 @@ import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import com.google.gson.Gson
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
@@ -52,13 +51,29 @@ class SettingsViewModel @Inject constructor(
     val databaseUpdate = mutableStateOf(false)
     var password : String? = null
 
-    private val _settings = mutableStateOf(Settings())
-    var settings: State<Settings> = _settings
-
-    private val _dynamicPlaceholder = MutableStateFlow("Search")
+    private val _dynamicPlaceholder = MutableStateFlow("Simple Notepad")
     val dynamicPlaceholder: StateFlow<String> = _dynamicPlaceholder.asStateFlow()
     private val sharedPreferences: SharedPreferences =
         context.getSharedPreferences("notes_prefs", Context.MODE_PRIVATE)
+    private val _settings = mutableStateOf(Settings())
+    var settings: State<Settings> = _settings
+
+    fun update(newSettings: Settings) {
+        _settings.value = newSettings.copy()
+        viewModelScope.launch {
+            settingsUseCase.saveSettingsToRepository(newSettings)
+            if (newSettings.autoBackupEnabled) {
+                startAutoBackup(context)
+            } else {
+                stopAutoBackup(context)
+            }
+        }
+    }
+
+    // helper for just updating columnsCount
+    fun setColumnsCount(count: Int) {
+        update(settings.value.copy(columnsCount = count))
+    }
 
     init {
         viewModelScope.launch {
@@ -104,18 +119,6 @@ class SettingsViewModel @Inject constructor(
             settingsUseCase.loadSettingsFromRepository()
         }
         _settings.value = loadedSettings
-    }
-
-    fun update(newSettings: Settings) {
-        _settings.value = newSettings.copy()
-        viewModelScope.launch {
-            settingsUseCase.saveSettingsToRepository(newSettings)
-            if (newSettings.autoBackupEnabled) {
-                startAutoBackup(context)
-            } else {
-                stopAutoBackup(context)
-            }
-        }
     }
 
     private fun startAutoBackup(context: Context) {
@@ -203,6 +206,32 @@ class SettingsViewModel @Inject constructor(
 
     private fun showToast(message: String, context: Context) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private var flashcardStorage = mutableListOf<Flashcard>()
+    private val flashPrefs: SharedPreferences =
+        context.getSharedPreferences("flashcards_prefs", Context.MODE_PRIVATE)
+    private val gson = Gson()
+    private val listType = object : com.google.gson.reflect.TypeToken<List<Flashcard>>() {}.type
+
+    fun loadFlashcards(): List<Flashcard> {
+        val json = flashPrefs.getString("flashcards_key", null)
+        return if (json != null) {
+            try {
+                gson.fromJson<List<Flashcard>>(json, listType)
+            } catch (e: Exception) {
+                emptyList()
+            }
+        } else {
+            emptyList()
+        }
+    }
+
+    fun saveFlashcards(newList: List<Flashcard>) {
+        val json = gson.toJson(newList, listType)
+        flashPrefs.edit()
+            .putString("flashcards_key", json)
+            .apply()
     }
 
     val version: String = BuildConfig.VERSION_NAME

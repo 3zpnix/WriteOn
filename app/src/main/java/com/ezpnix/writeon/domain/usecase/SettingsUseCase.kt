@@ -28,7 +28,7 @@ class SettingsUseCase @Inject constructor(
                 Boolean::class.java -> settingsRepository.getBoolean(settingName) ?: defaultValue
                 String::class.java -> settingsRepository.getString(settingName) ?: defaultValue
                 Int::class.java -> settingsRepository.getInt(settingName) ?: defaultValue
-                Float::class.java -> settingsRepository.getFloat(settingName) ?: defaultValue // Add this for Float
+                Float::class.java -> settingsRepository.getFloat(settingName) ?: defaultValue
                 else -> throw IllegalArgumentException("Unsupported setting type: $fieldType")
             }
         } catch (e: ClassCastException) {
@@ -57,7 +57,7 @@ class SettingsUseCase @Inject constructor(
             is Boolean -> settingsRepository.putBoolean(settingName, settingValue)
             is String -> settingsRepository.putString(settingName, settingValue)
             is Int -> settingsRepository.putInt(settingName, settingValue)
-            is Float -> settingsRepository.putFloat(settingName, settingValue) // Add this for Float
+            is Float -> settingsRepository.putFloat(settingName, settingValue)
             else -> throw IllegalArgumentException("Unsupported setting type: ${settingValue?.javaClass}")
         }
     }

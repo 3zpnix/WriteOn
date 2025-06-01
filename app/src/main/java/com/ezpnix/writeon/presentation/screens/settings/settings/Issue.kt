@@ -18,7 +18,7 @@ import com.ezpnix.writeon.presentation.screens.settings.model.SettingsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TestScreen(navController: NavController, settingsViewModel: SettingsViewModel) {
+fun IssueScreen(navController: NavController, settingsViewModel: SettingsViewModel) {
     val items = listOf("Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 6")
 
     Scaffold(
@@ -35,7 +35,6 @@ fun TestScreen(navController: NavController, settingsViewModel: SettingsViewMode
         ) {
             items(items.size) { index ->
                 GridItem(itemName = items[index], onClick = {
-                    // Handle item click navigation or action
                 })
             }
         }

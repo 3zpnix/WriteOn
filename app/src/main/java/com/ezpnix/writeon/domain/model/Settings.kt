@@ -20,6 +20,7 @@ data class Settings(
     val isBiometricEnabled: Boolean = false,
     val autoBackupEnabled: Boolean = false,
     val fontSize: Float = 16f,
+    val columnsCount: Int = 2,
 
     var cornerRadius: Int = 32,
 )

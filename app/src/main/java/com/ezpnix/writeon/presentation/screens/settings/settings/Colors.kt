@@ -3,6 +3,7 @@ package com.ezpnix.writeon.presentation.screens.settings.settings
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,6 +20,9 @@ import androidx.compose.material.icons.automirrored.rounded.Sort
 import androidx.compose.material.icons.rounded.Battery1Bar
 import androidx.compose.material.icons.rounded.Colorize
 import androidx.compose.material.icons.rounded.DarkMode
+import androidx.compose.material.icons.rounded.Dashboard
+import androidx.compose.material.icons.rounded.DashboardCustomize
+import androidx.compose.material.icons.rounded.Dataset
 import androidx.compose.material.icons.rounded.GridView
 import androidx.compose.material.icons.rounded.HdrAuto
 import androidx.compose.material.icons.rounded.Home
@@ -40,6 +44,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -54,6 +59,7 @@ import com.ezpnix.writeon.presentation.screens.settings.SettingsScaffold
 import com.ezpnix.writeon.presentation.screens.settings.model.SettingsViewModel
 import com.ezpnix.writeon.presentation.screens.settings.widgets.ActionType
 import com.ezpnix.writeon.presentation.screens.settings.widgets.SettingsBox
+import kotlin.math.roundToInt
 
 fun shapeManager(isBoth: Boolean = false,isLast: Boolean = false,isFirst: Boolean = false,radius: Int): RoundedCornerShape {
     val smallerRadius: Dp = (radius/5).dp
@@ -205,6 +211,28 @@ fun ColorStylesScreen(navController: NavController, settingsViewModel: SettingsV
             }
             item {
                 SettingsBox(
+                    title       = stringResource(R.string.columns),
+                    description = stringResource(R.string.columns_description),
+                    icon        = Icons.Rounded.DashboardCustomize,
+                    radius      = shapeManager(
+                        radius  = settingsViewModel.settings.value.cornerRadius,
+                        isFirst = false,
+                    ),
+                    actionType  = ActionType.CUSTOM,
+                    isEnabled   = settingsViewModel.settings.value.viewMode,
+                    customAction = { onExit ->
+                        OnColumnsClicked(
+                            initialCount = settingsViewModel.settings.value.columnsCount,
+                            onConfirm   = { newCount ->
+                                settingsViewModel.setColumnsCount(newCount)
+                                onExit()
+                            }
+                        )
+                    }
+                )
+            }
+            item {
+                SettingsBox(
                     title = stringResource(id = R.string.radius),
                     description = stringResource(id = R.string.radius_description),
                     icon = Icons.Rounded.RoundedCorner,
@@ -237,6 +265,38 @@ fun ColorStylesScreen(navController: NavController, settingsViewModel: SettingsV
                     ),
                     customAction = { navController.navigateUp() }
                 )
+            }
+        }
+    }
+}
+
+@Composable
+fun OnColumnsClicked(
+    initialCount: Int,
+    onConfirm: (Int) -> Unit
+) {
+    var sliderPos by remember { mutableStateOf((initialCount - 1).toFloat() / 4f) }
+    val count = (sliderPos * 4).roundToInt() + 1
+
+    Dialog(onDismissRequest = { onConfirm(count) }) {
+        Column(
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.surfaceContainerLow, RoundedCornerShape(8.dp))
+                .padding(16.dp)
+        ) {
+            Text("Select number of columns", fontWeight = FontWeight.Bold, modifier = Modifier.align(CenterHorizontally))
+            Spacer(Modifier.height(12.dp))
+            Text("$count columns", textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
+            Slider(
+                value = sliderPos,
+                onValueChange = { sliderPos = it },
+                valueRange = 0f..1f,
+                steps = 3, // for 5 discrete values: steps = count-2
+                modifier = Modifier.padding(horizontal = 8.dp)
+            )
+            Spacer(Modifier.height(16.dp))
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                TextButton(onClick = { onConfirm(count) }) { Text("OK") }
             }
         }
     }

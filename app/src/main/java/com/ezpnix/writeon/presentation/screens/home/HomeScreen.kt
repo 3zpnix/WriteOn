@@ -1,34 +1,53 @@
 package com.ezpnix.writeon.presentation.screens.home
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
+import android.view.MotionEvent
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddComment
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Calculate
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Dataset
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.NoteAlt
 import androidx.compose.material.icons.filled.RestoreFromTrash
@@ -36,6 +55,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -48,17 +68,32 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInteropFilter
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.ezpnix.writeon.R
 import com.ezpnix.writeon.domain.model.Note
+import com.ezpnix.writeon.presentation.components.CalculatorUI
 import com.ezpnix.writeon.presentation.components.CloseButton
 import com.ezpnix.writeon.presentation.components.DeleteButton
+import com.ezpnix.writeon.presentation.components.MainButton
 import com.ezpnix.writeon.presentation.components.NotesScaffold
 import com.ezpnix.writeon.presentation.components.PinButton
 import com.ezpnix.writeon.presentation.components.SelectAllButton
@@ -72,14 +107,6 @@ import com.ezpnix.writeon.presentation.screens.home.widgets.NoteFilter
 import com.ezpnix.writeon.presentation.screens.settings.model.SettingsViewModel
 import com.ezpnix.writeon.presentation.screens.settings.settings.PasswordPrompt
 import com.ezpnix.writeon.presentation.screens.settings.settings.shapeManager
-import androidx.compose.runtime.getValue // 3zpnix
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
-import com.ezpnix.writeon.presentation.components.CalculatorUI
-import com.ezpnix.writeon.presentation.components.MainButton
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarConfig
@@ -103,6 +130,7 @@ fun HomeView (
     navController: NavController
 ) {
     val context = LocalContext.current
+    val placeholder by settingsModel.dynamicPlaceholder.collectAsState()
 
     if (viewModel.isPasswordPromptVisible.value) {
         PasswordPrompt(
@@ -140,95 +168,185 @@ fun HomeView (
                 )
             }
             AnimatedVisibility(
-                viewModel.selectedNotes.isEmpty(),
+                visible = viewModel.selectedNotes.isEmpty(),
                 enter = defaultScreenEnterAnimation(),
                 exit = defaultScreenExitAnimation()
             ) {
-                val dynamicPlaceholder by settingsModel.dynamicPlaceholder.collectAsState()
-                NotesSearchBar(
-                    settingsModel = settingsModel,
-                    query = viewModel.searchQuery.value,
-                    onQueryChange = { viewModel.changeSearchQuery(it) },
-                    onSettingsClick = onSettingsClicked,
-                    onClearClick = { viewModel.changeSearchQuery("") },
-                    viewModel = viewModel,
-                    navController = navController,
-                    placeholderText = dynamicPlaceholder,
-                    onVaultClicked = {
-                        if (!viewModel.isVaultMode.value) {
-                            viewModel.toggleIsPasswordPromptVisible(true)
-                        } else {
-                            viewModel.toggleIsVaultMode(false)
-                            viewModel.encryptionHelper.removePassword()
-                        }
-                    }
-                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .statusBarsPadding()
+                        .padding(horizontal = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    HomeViewTopBarWithSearch(
+                        username = placeholder,
+                        query = viewModel.searchQuery.value,
+                        onQueryChange = { viewModel.changeSearchQuery(it) },
+                        onClearClick = { viewModel.changeSearchQuery("") },
+                        onSettingsClick = onSettingsClicked,
+                        placeholderText = placeholder,
+                        navController = navController,
+                        viewModel = viewModel
+                    )
+                }
             }
         },
         content = {
-            Column(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                Box(
-                    modifier = Modifier.weight(1f)
-                ) {
-                    NoteFilter(
-                        settingsViewModel = settingsModel,
-                        containerColor = containerColor,
-                        shape = shapeManager(
-                            radius = settingsModel.settings.value.cornerRadius / 2,
-                            isBoth = true
-                        ),
-                        onNoteClicked = { onNoteClicked(it, viewModel.isVaultMode.value) },
-                        notes = viewModel.getAllNotes().sortedWith(sorter(settingsModel.settings.value.sortDescending)),
-                        selectedNotes = viewModel.selectedNotes,
-                        viewMode = settingsModel.settings.value.viewMode,
-                        searchText = viewModel.searchQuery.value.ifBlank { null },
-                        isDeleteMode = viewModel.isDeleteMode.value,
-                        onNoteUpdate = { note -> CoroutineScope(Dispatchers.IO).launch { viewModel.noteUseCase.addNote(note) } },
-                        onDeleteNote = {
-                            viewModel.toggleIsDeleteMode(false)
-                            viewModel.noteUseCase.deleteNoteById(it)
-                        }
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Box(
+            Box(modifier = Modifier.fillMaxSize()) {
+                NoteFilter(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp)
-                ) {
-                    BottomButtons(
-                        navController = navController,
-                        onNoteClicked = { onNoteClicked(it, viewModel.isVaultMode.value) },
-                        modifier = Modifier,
-                    )
-                }
+                        .fillMaxSize()
+                        .padding(bottom = 100.dp),
+                    settingsViewModel = settingsModel,
+                    containerColor = containerColor,
+                    shape = shapeManager(
+                        radius = settingsModel.settings.value.cornerRadius / 2,
+                        isBoth = true
+                    ),
+                    onNoteClicked = { onNoteClicked(it, viewModel.isVaultMode.value) },
+                    notes = viewModel.getAllNotes()
+                        .sortedWith(sorter(settingsModel.settings.value.sortDescending)),
+                    selectedNotes = viewModel.selectedNotes,
+                    viewMode = settingsModel.settings.value.viewMode,
+                    searchText = viewModel.searchQuery.value.ifBlank { null },
+                    isDeleteMode = viewModel.isDeleteMode.value,
+                    onNoteUpdate = { note ->
+                        CoroutineScope(Dispatchers.IO).launch {
+                            viewModel.noteUseCase.addNote(note)
+                        }
+                    },
+                    onDeleteNote = {
+                        viewModel.toggleIsDeleteMode(false)
+                        viewModel.noteUseCase.deleteNoteById(it)
+                    }
+                )
+
+                FloatingBottomButtons(
+                    navController = navController,
+                    onNoteClicked = { onNoteClicked(it, viewModel.isVaultMode.value) }
+                )
             }
         }
     )
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HomeViewTopBarWithSearch(
+    username: String = "User",
+    query: String,
+    onQueryChange: (String) -> Unit,
+    onClearClick: () -> Unit,
+    onSettingsClick: () -> Unit,
+    placeholderText: String,
+    navController: NavController,
+    viewModel: HomeViewModel
+) {
+    var searchActive by remember { mutableStateOf(false) }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .statusBarsPadding()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+    ) {
+        if (!searchActive) {
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = "Write On",
+                    style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                Text(
+                    text = username,
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
+                    ),
+                    maxLines = 2,
+                    softWrap = true
+                )
+            }
+        }
+
+        SearchBar(
+            modifier = if (searchActive) Modifier
+                .fillMaxWidth()
+                .height(70.dp)
+            else Modifier
+                .widthIn(min = 140.dp, max = 160.dp)
+                .height(56.dp),
+            query = query,
+            onQueryChange = onQueryChange,
+            onSearch = onQueryChange,
+            active = searchActive,
+            onActiveChange = { active -> searchActive = active },
+            placeholder = {
+                Text("Search", maxLines = 1)
+            },
+            leadingIcon = {
+                if (searchActive) {
+                    IconButton(onClick = { searchActive = false }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
+                    }
+                } else {
+                    MainButton { navController.navigate(NavRoutes.ColorStyles.route) }
+                }
+            },
+                    trailingIcon = {
+                Row {
+                    if (query.isNotBlank()) {
+                        CloseButton(contentDescription = "Clear", onCloseClicked = onClearClick)
+                    }
+                    SettingsButton(onSettingsClicked = onSettingsClick)
+                }
+            }
+        ) {}
+    }
+}
+
+
 
 @Composable
 fun getContainerColor(settingsModel: SettingsViewModel): Color {
     return if (settingsModel.settings.value.extremeAmoledMode) Color.Black else MaterialTheme.colorScheme.surfaceContainerHigh
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("RememberReturnType")
+@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class,
+    ExperimentalComposeUiApi::class
+)
 @Composable
-fun BottomButtons(
+fun FloatingBottomButtons(
     navController: NavController,
-    onNoteClicked: (Int) -> Unit,
-    modifier: Modifier = Modifier,
+    onNoteClicked: (Int) -> Unit
 ) {
     val context = LocalContext.current
-    val activity = LocalContext.current
-
-    var textState by remember { mutableStateOf("") }
-    var showDialog by remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(false) }
+    var showQuickNote by remember { mutableStateOf(false) }
     var showCalculator by remember { mutableStateOf(false) }
+    var quickNoteText by remember { mutableStateOf("") }
+    var showDialog by remember { mutableStateOf(false) }
+    val activity = LocalContext.current
+    var isPressed by remember { mutableStateOf(false) }
+
+    val scale by animateFloatAsState(
+        targetValue = if (isPressed) 0.85f else 1f,
+        animationSpec = tween(durationMillis = 120),
+        label = "ScaleAnimation"
+    )
+
+    val calendarState = rememberUseCaseState()
+    val selectedDates = remember { mutableStateOf<List<LocalDate>>(listOf()) }
+    val disabledDates = listOf(LocalDate.now())
+    var textState by remember { mutableStateOf("") }
 
     val openFileLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CreateDocument("text/plain"),
@@ -245,6 +363,32 @@ fun BottomButtons(
             }
         }
     )
+
+    CalendarDialog(
+        state = calendarState,
+        config = CalendarConfig(
+            yearSelection = true,
+            monthSelection = true,
+            style = CalendarStyle.MONTH,
+            disabledDates = disabledDates
+        ),
+        selection = CalendarSelection.Dates {
+            selectedDates.value = it
+        }
+    )
+
+    if (showCalculator) {
+        AlertDialog(
+            onDismissRequest = { showCalculator = false },
+            title = { Text("Calculator") },
+            text = { CalculatorUI() },
+            confirmButton = {
+                Button(onClick = { showCalculator = false }) {
+                    Text("Close")
+                }
+            }
+        )
+    }
 
     if (showDialog) {
         AlertDialog(
@@ -273,121 +417,136 @@ fun BottomButtons(
         )
     }
 
-    if (showCalculator) {
-        AlertDialog(
-            onDismissRequest = { showCalculator = false },
-            title = { Text("Calculator") },
-            text = { CalculatorUI() },
-            confirmButton = {
-                Button(onClick = { showCalculator = false }) {
-                    Text("Close")
-                }
-            }
-        )
-    }
-
-    val calendarState = rememberUseCaseState()
-    val selectedDates = remember { mutableStateOf<List<LocalDate>>(listOf()) }
-    val disabledDates = listOf(LocalDate.now())
-
-    CalendarDialog(
-        state = calendarState,
-        config = CalendarConfig(
-            yearSelection = true,
-            monthSelection = true,
-            style = CalendarStyle.MONTH,
-            disabledDates = disabledDates
-        ),
-        selection = CalendarSelection.Dates {
-            selectedDates.value = it
-        }
-    )
-
-    Surface(
-        tonalElevation = 1.dp,
-        shape = RoundedCornerShape(32.dp),
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(4.dp)
-            .clip(RoundedCornerShape(32.dp))
-            .background(MaterialTheme.colorScheme.surface)
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(bottom = 32.dp, end = 24.dp),
+        contentAlignment = Alignment.BottomEnd
     ) {
-        LazyRow(
-            modifier = Modifier
-                .padding(vertical = 4.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            contentPadding = PaddingValues(horizontal = 20.dp)
+        Column(
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalAlignment = Alignment.End
         ) {
-    item {
-                IconCircleButton(Icons.Default.AddComment, "Save as TXT") {
-                    showDialog = true
-                }
-            }
-            item {
-                IconCircleButton(Icons.Default.Edit, "Edit Note") {
-                    onNoteClicked(0)
-                    Toast.makeText(context, "Note Created!", Toast.LENGTH_SHORT).show()
-                }
-            }
-            item {
-                IconCircleButton(Icons.Default.CalendarMonth, "Calendar") {
-                    val currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM d, yyyy"))
-                    val dayOfWeek = SimpleDateFormat("EEEE", Locale.getDefault()).format(Date())
-                    Toast.makeText(context, "Today is: $dayOfWeek, $currentDate", Toast.LENGTH_SHORT).show()
-                    calendarState.show()
-                }
-            }
-            item {
-                IconCircleButton(Icons.Default.Calculate, "Calculator") {
-                    showCalculator = true
-                }
-            }
-            item {
-                IconCircleButton(Icons.Default.NoteAlt, "All Notes") {
-                    navController.navigate(NavRoutes.OneNote.route)
-                }
-            }
-            item {
-                IconCircleButton(Icons.Default.RestoreFromTrash, "Trash") {
-                    navController.navigate(NavRoutes.Trash.route)
-                }
-            }
-            item {
-                IconCircleButton(Icons.Default.Search, "Calculator") {
+            val fabItems = listOf(
+                Triple(Icons.Default.Search, "Browser") {
                     val url = "https://www.startpage.com"
-
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-
                     context.startActivity(intent)
                     Toast.makeText(context, "Opening Default Browser...", Toast.LENGTH_SHORT).show()
+                },
+                Triple(Icons.Default.NoteAlt, "Scratchpad") {
+                    navController.navigate(NavRoutes.Scratchpad.route)
+                },
+                Triple(Icons.Default.Dataset, "Flashcard") {
+                    navController.navigate(NavRoutes.Flashback.route)
+                },
+                Triple(Icons.Default.AddComment, "Save TXT") {
+                    showDialog = true
+                },
+                Triple(Icons.Default.Calculate, "Calculator") {
+                    showCalculator = true
+                },
+                Triple(Icons.Default.CalendarMonth, "Calendar") {
+                    val currentDate =
+                        LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM d, yyyy"))
+                    val dayOfWeek = SimpleDateFormat("EEEE", Locale.getDefault()).format(Date())
+                    Toast.makeText(
+                        context,
+                        "Today is: $dayOfWeek, $currentDate",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    calendarState.show()
+                },
+                Triple(Icons.Default.Edit, "New Note") {
+                    onNoteClicked(0)
+                    Toast.makeText(context, "Note Created!", Toast.LENGTH_SHORT).show()
+                },
+            )
+
+            fabItems.forEach { (icon, label, action) ->
+                AnimatedVisibility(
+                    visible = expanded,
+                    enter = fadeIn() + slideInVertically { it },
+                    exit = fadeOut() + slideOutVertically { it }
+                ) {
+                    SmallFAB(icon = icon, description = label) {
+                        expanded = false
+                        action()
+                    }
                 }
+            }
+
+            FloatingActionButton(
+                onClick = {},
+                containerColor = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .graphicsLayer {
+                        scaleX = scale
+                        scaleY = scale
+                    }
+                    .size(60.dp)
+                    .pointerInteropFilter {
+                        when (it.action) {
+                            MotionEvent.ACTION_DOWN -> {
+                                isPressed = true
+                            }
+
+                            MotionEvent.ACTION_UP -> {
+                                isPressed = false
+                                expanded = !expanded
+                            }
+
+                            MotionEvent.ACTION_CANCEL -> {
+                                isPressed = false
+                            }
+                        }
+                        true
+                    }
+            ) {
+                Icon(
+                    imageVector = if (expanded) Icons.Default.Close else Icons.Default.Add,
+                    contentDescription = if (expanded) "Collapse" else "Expand",
+                    modifier = Modifier.size(32.dp)
+                )
             }
         }
     }
 }
 
 @Composable
-private fun IconCircleButton(
+fun SmallFAB(
     icon: ImageVector,
-    contentDescription: String,
+    description: String,
     onClick: () -> Unit
 ) {
-    IconButton(
+    Surface(
         onClick = onClick,
+        shape = RoundedCornerShape(24.dp),
+        color = MaterialTheme.colorScheme.primary,
+        tonalElevation = 6.dp,
         modifier = Modifier
-            .size(54.dp)
-            .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.secondary.copy(alpha = 0.12f))
+            .height(48.dp)
+            .clip(RoundedCornerShape(24.dp))
     ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = contentDescription,
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(28.dp)
-        )
+        Row(
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
+                .fillMaxHeight(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Text(
+                text = description,
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            Icon(
+                imageVector = icon,
+                contentDescription = description,
+                modifier = Modifier.size(24.dp)
+            )
+        }
     }
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -443,47 +602,6 @@ private fun SelectedNotesTopAppBar(
             }
         }
     )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun NotesSearchBar(
-    settingsModel: SettingsViewModel, // AA1
-    viewModel: HomeViewModel, // AA2
-    query: String,
-    onQueryChange: (String) -> Unit,
-    onSettingsClick: () -> Unit,
-    onVaultClicked: () -> Unit, // AA3
-    onClearClick: () -> Unit,
-    navController: NavController,
-    placeholderText: String
-) {
-    SearchBar(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 42.dp, vertical = 10.dp),
-        query = query,
-        placeholder = { Text(placeholderText) },
-        leadingIcon = {
-            Row {
-                MainButton { navController.navigate(NavRoutes.Privacy.route) }
-            }
-        },
-        trailingIcon = {
-            Row {
-                if (query.isNotBlank()) {
-                    CloseButton(contentDescription = "Clear", onCloseClicked = onClearClick)
-                }
-                SettingsButton(onSettingsClicked = onSettingsClick)
-            }
-        },
-        onQueryChange = onQueryChange,
-        onSearch = onQueryChange,
-        onActiveChange = {},
-        active = false,
-    ) {
-        // AA4
-    }
 }
 
 private fun selectAllNotes(viewModel: HomeViewModel, allNotes: List<Note>) {

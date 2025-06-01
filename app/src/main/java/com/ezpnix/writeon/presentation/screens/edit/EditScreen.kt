@@ -553,7 +553,7 @@ fun PreviewScreen(viewModel: EditViewModel, settingsViewModel: SettingsViewModel
                 onClick = {
                     coroutineScope.launch {
                         val firstVisibleItemIndex = listState.firstVisibleItemIndex
-                        listState.animateScrollToItem(minOf(listState.layoutInfo.totalItemsCount - 1, firstVisibleItemIndex + 1)) // Move right
+                        listState.animateScrollToItem(minOf(listState.layoutInfo.totalItemsCount - 1, firstVisibleItemIndex + 1))
                     }
                 },
                 modifier = Modifier.size(40.dp)

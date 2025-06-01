@@ -54,7 +54,7 @@ fun ToolsScreen(navController: NavController, settingsViewModel: SettingsViewMod
     settingsViewModel.noteUseCase.observe()
     var showSearchDialog by remember { mutableStateOf(false) }
     var showFontSizeDialog by remember { mutableStateOf(false) }
-    var dynamicPlaceholderInput by remember { mutableStateOf("Search") }
+    var dynamicPlaceholderInput by remember { mutableStateOf("Enter text") }
     SettingsScaffold(
         settingsViewModel = settingsViewModel,
         title = stringResource(id = R.string.tools),
@@ -199,21 +199,20 @@ fun ToolsScreen(navController: NavController, settingsViewModel: SettingsViewMod
         if (showSearchDialog) {
             AlertDialog(
                 onDismissRequest = { showSearchDialog = true },
-                title = { Text("Salutations/Greeting") },
+                title = { Text("Example: Hello!") },
                 text = {
                     TextField(
                         value = dynamicPlaceholderInput,
                         onValueChange = { newText ->
                             dynamicPlaceholderInput = newText
                         },
-                        label = { Text("Example: Welcome home, user!") }
                     )
                 },
                 confirmButton = {
                     Button(onClick = {
                         settingsViewModel.updatePlaceholder(dynamicPlaceholderInput)
                         repeat(2) { navController.popBackStack() }
-                        Toast.makeText(context, "Searchbar updated!", Toast.LENGTH_SHORT)
+                        Toast.makeText(context, "Text updated!", Toast.LENGTH_SHORT)
                             .show()
                     }) {
                         Text("Save")
@@ -222,7 +221,7 @@ fun ToolsScreen(navController: NavController, settingsViewModel: SettingsViewMod
                 dismissButton = {
                     Button(onClick = {
                         repeat(2) { navController.popBackStack() }
-                        Toast.makeText(context, "Searchbar not updated!", Toast.LENGTH_SHORT)
+                        Toast.makeText(context, "Text updated!", Toast.LENGTH_SHORT)
                             .show()
                     }) {
                         Text("Exit")
@@ -237,7 +236,7 @@ fun ToolsScreen(navController: NavController, settingsViewModel: SettingsViewMod
                 text = {
                     Column {
                         val fontSizeOptions =
-                            listOf(12f, 14f, 16f, 18f, 20f, 24f, 28f, 32f) // Add more if needed
+                            listOf(12f, 14f, 16f, 18f, 20f, 24f, 28f, 32f)
 
                         fontSizeOptions.forEach { size ->
                             Row(

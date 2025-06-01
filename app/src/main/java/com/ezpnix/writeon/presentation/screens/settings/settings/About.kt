@@ -8,6 +8,7 @@ import android.os.Environment
 import android.os.StatFs
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,6 +23,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.rounded.Android
 import androidx.compose.material.icons.rounded.Build
 import androidx.compose.material.icons.rounded.Download
 import androidx.compose.material.icons.rounded.Email
@@ -51,6 +53,7 @@ import androidx.navigation.NavController
 import com.ezpnix.writeon.R
 import com.ezpnix.writeon.core.constant.ConnectionConst
 import com.ezpnix.writeon.presentation.components.TitleText
+import com.ezpnix.writeon.presentation.navigation.NavRoutes
 import com.ezpnix.writeon.presentation.screens.settings.SettingsScaffold
 import com.ezpnix.writeon.presentation.screens.settings.TitleText
 import com.ezpnix.writeon.presentation.screens.settings.formatStorage
@@ -110,14 +113,23 @@ fun AboutScreen(navController: NavController, settingsViewModel: SettingsViewMod
             }
             item {
                 SettingsBox(
-                    title = stringResource(id = R.string.email),
-                    description = stringResource(id = R.string.email_description),
-                    icon = Icons.Rounded.Email,
-                    actionType = ActionType.LINK,
-                    linkClicked = { uriHandler.openUri("https://github.com/3zpnix/WriteOn/issues/new") },
-                    radius = shapeManager(isFirst = true, radius = settingsViewModel.settings.value.cornerRadius),
+                    title       = stringResource(id = R.string.android),
+                    description = stringResource(id = R.string.android_description),
+                    icon        = Icons.Rounded.Android,
+                    actionType  = ActionType.CUSTOM,
+                    radius      = shapeManager(
+                        isFirst = true,
+                        radius  = settingsViewModel.settings.value.cornerRadius
+                    ),
+                    customAction = {
+                        navController.navigate(NavRoutes.Android.route)
+                        {
+                            launchSingleTop = true
+                        }
+                    }
                 )
             }
+
             item {
                 SettingsBox(
                     isBig = true,
@@ -129,7 +141,7 @@ fun AboutScreen(navController: NavController, settingsViewModel: SettingsViewMod
                 )
             }
             item {
-                AnnouncementsSection(settingsViewModel, context = LocalContext.current, navController)
+                LicenseSection(settingsViewModel, context = LocalContext.current, navController)
             }
         }
     }
@@ -160,7 +172,7 @@ fun ContributorsClicked(
 }
 
 @Composable
-fun AnnouncementsSection(settingsViewModel: SettingsViewModel, context: Context, navController: NavController) {
+fun LicenseSection(settingsViewModel: SettingsViewModel, context: Context, navController: NavController) {
     val preferences = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
     val savedState = remember { mutableStateOf(loadState(preferences)) }
 
@@ -175,6 +187,12 @@ fun AnnouncementsSection(settingsViewModel: SettingsViewModel, context: Context,
         Box(
             modifier = Modifier
                 .padding(16.dp)
+                .fillMaxWidth()
+                .clickable {
+                    val newState = !isExpanded
+                    savedState.value = newState
+                    saveState(preferences, newState)
+                }
                 .background(
                     color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = alphaValue),
                     shape = shapeManager(

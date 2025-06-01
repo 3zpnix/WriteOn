@@ -29,6 +29,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+enum class SettingActionType {
+    NAVIGATE,
+    LINK
+}
+
 @Composable
 fun SettingCategory(
     title: String,
@@ -37,6 +42,10 @@ fun SettingCategory(
     shape: RoundedCornerShape,
     isLast: Boolean = false,
     smallSetting: Boolean = false,
+
+    actionType: SettingActionType = SettingActionType.NAVIGATE,
+    linkClicked: () -> Unit = {},
+
     action: () -> Unit = {},
     composableAction: @Composable (() -> Unit) -> Unit = {},
 ) {
@@ -48,10 +57,16 @@ fun SettingCategory(
         modifier = Modifier
             .clip(shape)
             .clickable {
-                showCustomAction = showCustomAction.not()
-                action()
+                showCustomAction = !showCustomAction
+                when (actionType) {
+                    SettingActionType.LINK -> linkClicked()
+                    SettingActionType.NAVIGATE -> action()
+                }
             },
-        colors = if (smallSetting) CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.primary) else CardDefaults.elevatedCardColors(),
+        colors = if (smallSetting)
+            CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.primary)
+        else
+            CardDefaults.elevatedCardColors(),
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 6.dp),
     ) {
         Row(
@@ -59,16 +74,12 @@ fun SettingCategory(
                 .clip(shape)
                 .fillMaxSize()
                 .padding(
-                    24.dp,
-                    if (smallSetting) 11.dp else 16.dp,
-                    14.dp,
-                    if (smallSetting) 11.dp else 16.dp
+                    horizontal = 24.dp,
+                    vertical = if (smallSetting) 11.dp else 16.dp
                 ),
         ) {
             if (smallSetting) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     RenderCategoryTitle(title = title)
                     Spacer(modifier = Modifier.weight(1f))
                     RenderCategoryDescription(subTitle = subTitle, smallSetting = true)
@@ -123,8 +134,7 @@ private fun RenderCategoryIcon(icon: ImageVector, reverseColors: Boolean) {
             tint = if (reverseColors) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.surfaceContainerHigh,
             modifier = Modifier
                 .scale(if (reverseColors) 0.8f else 1f)
-                .padding(if (reverseColors) 9.dp else 9.dp)
+                .padding(9.dp)
         )
     }
 }
-

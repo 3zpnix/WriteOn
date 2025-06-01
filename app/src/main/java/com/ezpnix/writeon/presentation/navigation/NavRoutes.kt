@@ -2,15 +2,17 @@ package com.ezpnix.writeon.presentation.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
+import com.ezpnix.writeon.presentation.screens.settings.AndroidScreen
+import com.ezpnix.writeon.presentation.screens.settings.FlashcardScreen
 import com.ezpnix.writeon.presentation.screens.settings.MainSettings
-import com.ezpnix.writeon.presentation.screens.settings.OneNote
+import com.ezpnix.writeon.presentation.screens.settings.ScratchpadScreen
 import com.ezpnix.writeon.presentation.screens.settings.model.SettingsViewModel
 import com.ezpnix.writeon.presentation.screens.settings.settings.AboutScreen
 import com.ezpnix.writeon.presentation.screens.settings.settings.ColorStylesScreen
 import com.ezpnix.writeon.presentation.screens.settings.settings.LanguageScreen
 import com.ezpnix.writeon.presentation.screens.settings.settings.MarkdownScreen
 import com.ezpnix.writeon.presentation.screens.settings.settings.PrivacyScreen
-import com.ezpnix.writeon.presentation.screens.settings.settings.TestScreen
+import com.ezpnix.writeon.presentation.screens.settings.settings.IssueScreen
 import com.ezpnix.writeon.presentation.screens.settings.settings.ToolsScreen
 import com.ezpnix.writeon.presentation.screens.settings.settings.GuideScreen
 import com.ezpnix.writeon.presentation.screens.settings.trash.TrashScreen
@@ -28,11 +30,12 @@ sealed class NavRoutes(val route: String) {
     data object Markdown : NavRoutes("settings/markdown")
     data object Tools : NavRoutes("settings/tools")
     data object About : NavRoutes("settings/about")
-    data object OneNote: NavRoutes("settings-extra")
-
-    data object Test: NavRoutes("test")
+    data object Scratchpad: NavRoutes("scratchpad")
+    data object Issue: NavRoutes("issue")
     data object Guide: NavRoutes("guide")
     data object Trash: NavRoutes("trash")
+    data object Flashback: NavRoutes("flashback")
+    data object Android: NavRoutes("android")
 }
 
 val settingScreens = mapOf<String, @Composable (settingsViewModel: SettingsViewModel, navController : NavController) -> Unit>(
@@ -43,8 +46,10 @@ val settingScreens = mapOf<String, @Composable (settingsViewModel: SettingsViewM
     NavRoutes.Markdown.route to { settings, navController -> MarkdownScreen(navController,settings) },
     NavRoutes.Tools.route to { settings, navController -> ToolsScreen(navController,settings) },
     NavRoutes.About.route to { settings, navController -> AboutScreen(navController,settings) },
-    NavRoutes.OneNote.route to { settings, navController -> OneNote(navController,settings) },
-    NavRoutes.Test.route to { settings, navController -> TestScreen(navController,settings) },
+    NavRoutes.Scratchpad.route to { settings, navController -> ScratchpadScreen(navController,settings) },
+    NavRoutes.Issue.route to { settings, navController -> IssueScreen(navController,settings) },
     NavRoutes.Guide.route to { settings, navController -> GuideScreen(navController, settings) },
     NavRoutes.Trash.route to { settings, navController -> TrashScreen(navController, settings) },
+    NavRoutes.Flashback.route to { settings, navController -> FlashcardScreen(navController, settings) },
+    NavRoutes.Android.route to { settings, navController -> AndroidScreen(navController, settings) },
 )
