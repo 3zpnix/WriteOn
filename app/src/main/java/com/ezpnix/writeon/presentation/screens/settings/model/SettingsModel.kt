@@ -36,6 +36,7 @@ import java.io.IOException
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
@@ -212,7 +213,7 @@ class SettingsViewModel @Inject constructor(
     private val flashPrefs: SharedPreferences =
         context.getSharedPreferences("flashcards_prefs", Context.MODE_PRIVATE)
     private val gson = Gson()
-    private val listType = object : com.google.gson.reflect.TypeToken<List<Flashcard>>() {}.type
+    private val listType = TypeToken.getParameterized(List::class.java, Flashcard::class.java).type
 
     fun loadFlashcards(): List<Flashcard> {
         val json = flashPrefs.getString("flashcards_key", null)
