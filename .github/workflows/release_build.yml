@@ -73,6 +73,6 @@ jobs:
         run: |
           gh release create v1.6 WriteOn.apk \
             --title "v1.6" \
-            --notes "Jun Major Update~" \
+            --notes "Fixed Jun Update~" \
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}

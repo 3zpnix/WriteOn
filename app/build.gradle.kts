@@ -78,7 +78,6 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
     implementation(libs.androidx.glance.appwidget)
     implementation(libs.androidx.biometric.ktx)
-    implementation(libs.firebase.crashlytics.buildtools)
     ksp(libs.androidx.room.compiler)
     ksp(libs.hilt.android.compiler)
     ksp(libs.hilt.compile)

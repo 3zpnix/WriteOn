@@ -6,8 +6,8 @@
     <string name="latest_release">Check Latest Release</string>
     <string name="source_code">Open Source Code</string>
     <string name="app_list">Version Catalogue</string>
-    <string name="android">Your Device</string>
-    <string name="android_description">Details and information</string>
+    <string name="android">About Phone</string>
+    <string name="android_description">details</string>
     <string name="about">About</string>
     <string name="description_about">Github • Version •  Email</string>
 
