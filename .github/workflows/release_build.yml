@@ -73,6 +73,6 @@ jobs:
         run: |
           gh release create v1.7 WriteOn.apk \
             --title "v1.7" \
-            --notes "July Fdroid Update~" \
+            --notes "July Update~" \
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
