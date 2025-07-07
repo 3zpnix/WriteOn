@@ -86,6 +86,8 @@ class NoteUseCase @Inject constructor(
         }
     }
 
+    fun getAllNotesFlow(): Flow<List<Note>> = getAllNotes()
+
     private fun getAllNotes(): Flow<List<Note>> {
         return noteRepository.getAllNotes()
     }

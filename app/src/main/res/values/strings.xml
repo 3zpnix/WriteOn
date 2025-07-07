@@ -30,6 +30,7 @@
     <string name="yes"> Confirm</string>
     <string name="cancel"> Cancel</string>
     <string name="share">Share</string>
+    <string name="share_text">Share text</string>
 
     <!-- Sort & View -->
     <string name="grid_view">Grid Layout</string>
@@ -86,13 +87,15 @@
     <string name="minimalistic_mode_description">Changes the way the notes look</string>
 
     <!-- Backup / Restore -->
-    <string name="backup_restore">Fingerprint • Backup</string>
+    <string name="backup_restore">Fingerprint • Security</string>
+    <string name="manual_backup">Manual Backup</string>
+    <string name="manual_restore">Manual Restore</string>
     <string name="backup">Backup</string>
     <string name="restore">Restore</string>
     <string name="auto_backup">Automatic Backup</string>
-    <string name="auto_backup_description">Saves into your cache directory (ROOT)</string>
+    <string name="auto_backup_description">Saves automatically to Android/data folder (Usually requires ROOT access for Android 10+)</string>
     <string name="backup_dropdown">Backup</string>
-    <string name="backup_description">Store all notes to a zip file</string>
+    <string name="backup_description">Store or restore all notes to/from a zip file</string>
     <string name="restore_description">Restore notes from a zip file</string>
 
     <!-- File Import -->
@@ -135,7 +138,7 @@
     <!-- General -->
     <string name="database">Database</string>
     <string name="not_supported">Not supported yet</string>
-    <string name="information_dropdown">Details</string>
+    <string name="note_details">Note Details</string>
     <string name="cloud">Cloud</string>
     <string name="homepage">Go Back to Homepage</string>
     <string name="others">Others</string>
@@ -182,4 +185,9 @@
     <string name="discord">Discord</string>
     <string name="privacy">Privacy</string>
     <string name="unsupported_image_size">Image Size is too huge(15mb)</string>
+    <string name="description_cloud">Save your notes locally and on the cloud</string>
+    <string name="pattern_authentication">Pattern Authentication</string>
+    <string name="pattern_authentication_description">Coming Soon!</string>
+    <string name="pin_authentication">Pin Authentication</string>
+    <string name="pin_authentication_description">Coming Soon!</string>
 </resources>

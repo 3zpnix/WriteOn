@@ -75,6 +75,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.automirrored.rounded.Help
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.rounded.BuildCircle
+import androidx.compose.material.icons.rounded.Cloud
 import androidx.compose.material.icons.rounded.Games
 import androidx.compose.material.icons.rounded.Help
 import androidx.compose.material.icons.rounded.HelpOutline
@@ -165,6 +166,16 @@ fun MainSettings(settingsViewModel: SettingsViewModel, navController: NavControl
                     shape = shapeManager(radius = settingsViewModel.settings.value.cornerRadius, isLast = true),
                     isLast = true,
                     action = { navController.navigate(NavRoutes.Tools.route) }
+                )
+            }
+            item {
+                SettingCategory(
+                    title = stringResource(id = R.string.backup),
+                    subTitle = stringResource(R.string.description_cloud),
+                    icon = Icons.Rounded.Cloud,
+                    shape = shapeManager(radius = settingsViewModel.settings.value.cornerRadius, isBoth = true),
+                    isLast = true,
+                    action = { navController.navigate(NavRoutes.Cloud.route) }
                 )
             }
             item {

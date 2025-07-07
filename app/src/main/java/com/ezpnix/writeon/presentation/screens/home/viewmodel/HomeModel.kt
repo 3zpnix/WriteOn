@@ -6,6 +6,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.ezpnix.writeon.R
 import com.ezpnix.writeon.domain.model.Note
 import com.ezpnix.writeon.domain.usecase.NoteUseCase
@@ -13,6 +14,9 @@ import com.ezpnix.writeon.presentation.components.DecryptionResult
 import com.ezpnix.writeon.presentation.components.EncryptionHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,7 +25,21 @@ class HomeViewModel @Inject constructor(
     val noteUseCase: NoteUseCase,
     @ApplicationContext private val context: Context,
 ) : ViewModel() {
+
     var selectedNotes = mutableStateListOf<Note>()
+
+    val notesFlow = noteUseCase.getAllNotesFlow()
+
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing = _isRefreshing.asStateFlow()
+
+    fun refreshNotes() {
+        viewModelScope.launch {
+            _isRefreshing.value = true
+            delay(500)
+            _isRefreshing.value = false
+        }
+    }
 
     private var _isDeleteMode = mutableStateOf(false)
     val isDeleteMode: State<Boolean> = _isDeleteMode
@@ -35,8 +53,43 @@ class HomeViewModel @Inject constructor(
     private var _searchQuery = mutableStateOf("")
     val searchQuery: State<String> = _searchQuery
 
+    private val _notes = MutableStateFlow<List<Note>>(emptyList())
+    val notes: StateFlow<List<Note>> = _notes
+
     init {
+        observeNotes()
+    }
+
+    private fun observeNotes() {
         noteUseCase.observe()
+        viewModelScope.launch {
+            noteUseCase.getAllNotesFlow().collectLatest { allNotes ->
+                val filteredNotes = allNotes.filter { it.encrypted == _isVaultMode.value }
+                handleDecryptionState()
+                _notes.value = filteredNotes
+            }
+        }
+    }
+
+    private fun handleDecryptionState() {
+        when (noteUseCase.decryptionResult) {
+            DecryptionResult.LOADING -> {}
+            DecryptionResult.EMPTY -> {
+                if (!encryptionHelper.isPasswordEmpty()) {
+                    toggleIsVaultMode(true)
+                }
+            }
+            DecryptionResult.BAD_PASSWORD,
+            DecryptionResult.BLANK_DATA,
+            DecryptionResult.INVALID_DATA -> {
+                toggleIsVaultMode(false)
+                Toast.makeText(context, context.getString(R.string.invalid_password), Toast.LENGTH_SHORT).show()
+                encryptionHelper.removePassword()
+            }
+            else -> {
+                toggleIsVaultMode(true)
+            }
+        }
     }
 
     fun toggleIsDeleteMode(enabled: Boolean) {
@@ -48,7 +101,7 @@ class HomeViewModel @Inject constructor(
         if (!enabled) {
             noteUseCase.decryptionResult = DecryptionResult.LOADING
         }
-        noteUseCase.observe()
+        observeNotes()
     }
 
     fun toggleIsPasswordPromptVisible(enabled: Boolean) {
@@ -71,27 +124,6 @@ class HomeViewModel @Inject constructor(
                 noteUseCase.pinNote(updatedNote)
             }
         }
-
         selectedNotes.clear()
-    }
-
-    fun getAllNotes(): List<Note> {
-        val allNotes = noteUseCase.notes
-        val filteredNotes = allNotes.filter { it.encrypted == isVaultMode.value}
-        when (noteUseCase.decryptionResult) {
-            DecryptionResult.LOADING -> {}
-            DecryptionResult.EMPTY -> {
-                if (!encryptionHelper.isPasswordEmpty()) {
-                    toggleIsVaultMode(true)
-                }
-            }
-            DecryptionResult.BAD_PASSWORD, DecryptionResult.BLANK_DATA, DecryptionResult.INVALID_DATA -> {
-                toggleIsVaultMode(false)
-                Toast.makeText(context, context.getString(R.string.invalid_password), Toast.LENGTH_SHORT).show()
-                encryptionHelper.removePassword()
-            }
-            else -> { toggleIsVaultMode(true) }
-        }
-        return filteredNotes
     }
 }

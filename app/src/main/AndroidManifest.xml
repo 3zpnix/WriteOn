@@ -1,23 +1,16 @@
 <?xml version="1.1" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <uses-permission
-        android:name="android.permission.ACCESS_NETWORK_STATE"
-        tools:node="remove"/>
 
-    <uses-permission
-        android:name="android.permission.WAKE_LOCK"
-        tools:node="remove"/>
+    <!-- Permissions -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
-    <uses-permission
-        android:name="android.permission.RECEIVE_BOOT_COMPLETED"
-        tools:node="remove"/>
-
-    <uses-permission
-        android:name="android.permission.FOREGROUND_SERVICE"
-        tools:node="remove"/>
-
-
+    <!-- Removed ones -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" tools:node="remove"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" tools:node="remove"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" tools:node="remove"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" tools:node="remove"/>
 
     <application
         android:name=".App"
@@ -31,24 +24,23 @@
         android:theme="@style/Theme.EasySplash"
         tools:targetApi="34"
         tools:ignore="DataExtractionRules">
-        <receiver android:name=".widget.AddNoteReceiver"
-            android:exported="true">
+
+        <!-- Widget Receivers -->
+        <receiver android:name=".widget.AddNoteReceiver" android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/add_note" />
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/add_note" />
         </receiver>
-        <receiver android:name=".widget.NotesWidgetReceiver"
-            android:exported="true">
+
+        <receiver android:name=".widget.NotesWidgetReceiver" android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/notes" />
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/notes" />
         </receiver>
+
+        <!-- Widget Config Activity -->
         <activity
             android:name=".widget.NotesWidgetActivity"
             android:exported="true"
@@ -59,22 +51,22 @@
             </intent-filter>
         </activity>
 
+        <!-- Main App Entry -->
         <activity
             android:name=".presentation.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.EasySplash">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Locale Support -->
         <service
             android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
             android:enabled="false"
-            android:exported="false"
-        >
+            android:exported="false">
             <meta-data android:name="autoStoreLocales" android:value="true" />
         </service>
     </application>

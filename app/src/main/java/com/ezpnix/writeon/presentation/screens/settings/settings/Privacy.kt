@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Fingerprint
+import androidx.compose.material.icons.filled.Pattern
+import androidx.compose.material.icons.filled.Pin
 import androidx.compose.material.icons.filled.RemoveRedEye
 import androidx.compose.material.icons.rounded.ArrowCircleDown
 import androidx.compose.material.icons.rounded.ArrowCircleUp
@@ -95,11 +97,44 @@ fun PrivacyScreen(navController: NavController, settingsViewModel: SettingsViewM
                 )
             }
             item {
+                var patternEnabled by remember { mutableStateOf(false) }
+
+                SettingsBox(
+                    title = stringResource(id = R.string.pattern_authentication),
+                    description = stringResource(id = R.string.pattern_authentication_description),
+                    icon = Icons.Filled.Pattern,
+                    radius = shapeManager(radius = settingsViewModel.settings.value.cornerRadius, isFirst = false),
+                    actionType = ActionType.SWITCH,
+                    variable = patternEnabled,
+                    switchEnabled = { isEnabled ->
+                        patternEnabled = isEnabled
+                        Toast.makeText(context, "Pattern coming soon", Toast.LENGTH_SHORT).show()
+                    }
+                )
+            }
+            item {
+                var pinEnabled by remember { mutableStateOf(false) }
+
+                SettingsBox(
+                    title = stringResource(id = R.string.pin_authentication),
+                    description = stringResource(id = R.string.pin_authentication_description),
+                    icon = Icons.Filled.Pin,
+                    radius = shapeManager(radius = settingsViewModel.settings.value.cornerRadius, isLast = true),
+                    actionType = ActionType.SWITCH,
+                    variable = pinEnabled,
+                    switchEnabled = { isEnabled ->
+                        pinEnabled = isEnabled
+                        Toast.makeText(context, "PIN coming soon", Toast.LENGTH_SHORT).show()
+                    }
+                )
+                Spacer(modifier = Modifier.height(18.dp))
+            }
+            item {
                 SettingsBox(
                     title = stringResource(id = R.string.screen_protection),
                     description = stringResource(id = R.string.screen_protection_description),
                     icon = Icons.Filled.RemoveRedEye,
-                    radius = shapeManager(radius = settingsViewModel.settings.value.cornerRadius),
+                    radius = shapeManager(radius = settingsViewModel.settings.value.cornerRadius, isFirst = true),
                     actionType = ActionType.SWITCH,
                     variable = settingsViewModel.settings.value.screenProtection,
                     switchEnabled = { isEnabled -> settingsViewModel.update(settingsViewModel.settings.value.copy(screenProtection = isEnabled))
@@ -130,93 +165,6 @@ fun PrivacyScreen(navController: NavController, settingsViewModel: SettingsViewM
                             "Database Encryption Disabled"
                         }
                         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                    }
-                )
-                Spacer(modifier = Modifier.height(18.dp))
-            }
-
-            item {
-                SettingsBox(
-                    title = stringResource(id = R.string.auto_backup),
-                    description = stringResource(id = R.string.auto_backup_description),
-                    icon = Icons.Rounded.Backup,
-                    radius = shapeManager(radius = settingsViewModel.settings.value.cornerRadius, isFirst = true),
-                    actionType = ActionType.SWITCH,
-                    variable = settingsViewModel.settings.value.autoBackupEnabled,
-                    switchEnabled = { isEnabled ->
-                        settingsViewModel.update(settingsViewModel.settings.value.copy(autoBackupEnabled = isEnabled))
-
-                        val message = if (isEnabled) {
-                            "Enabled - Backups per day"
-                        } else {
-                            "Disabled Auto Backup"
-                        }
-                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                    }
-                )
-            }
-            item {
-                SettingsBox(
-                    title = stringResource(id = R.string.backup),
-                    description = stringResource(id = R.string.backup_description),
-                    icon = Icons.Rounded.ArrowCircleUp,
-                    radius = shapeManager(radius = settingsViewModel.settings.value.cornerRadius),
-                    actionType = ActionType.CUSTOM,
-                    customAction = {onExit ->
-                        if (settingsViewModel.settings.value.encryptBackup) {
-                            PasswordPrompt(
-                                context = context,
-                                text = stringResource(id = R.string.backup),
-                                settingsViewModel = settingsViewModel,
-                                onExit = { password ->
-                                    if (password != null) {
-                                        settingsViewModel.password = password.text
-                                    }
-                                    onExit()
-                                },
-                                onBackup = {
-                                    exportBackupLauncher.launch("${DatabaseConst.NOTES_DATABASE_BACKUP_NAME}-${currentDateTime()}.zip")
-                                }
-                            )
-                        }
-                        else {
-                            LaunchedEffect(true) {
-                                exportBackupLauncher.launch("${DatabaseConst.NOTES_DATABASE_BACKUP_NAME}-${currentDateTime()}.zip")
-                            }
-                        }
-                    }
-                )
-            }
-            item {
-                SettingsBox(
-                    title = stringResource(id = R.string.restore),
-                    description = stringResource(id = R.string.restore_description),
-                    icon = Icons.Rounded.ArrowCircleDown,
-                    radius = shapeManager(radius = settingsViewModel.settings.value.cornerRadius, isLast = true),
-                    actionType = ActionType.CUSTOM,
-                    customAction = { onExit ->
-                        if (settingsViewModel.settings.value.encryptBackup) {
-                            PasswordPrompt(
-                                context = context,
-                                text = stringResource(id = R.string.restore),
-                                settingsViewModel = settingsViewModel,
-                                onExit = { password ->
-                                    if (password != null) {
-                                        settingsViewModel.password = password.text
-                                    }
-                                    onExit()
-                                },
-                                onBackup = {
-                                    importBackupLauncher.launch(arrayOf("application/zip"))
-                                }
-                            )
-                        }
-                        else {
-                            LaunchedEffect(true) {
-                                settingsViewModel.password = null
-                                importBackupLauncher.launch(arrayOf("application/zip"))
-                            }
-                        }
                     }
                 )
                 Spacer(modifier = Modifier.height(18.dp))

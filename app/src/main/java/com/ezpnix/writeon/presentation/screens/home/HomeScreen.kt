@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -120,9 +121,18 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 
+
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun HomeView (
+fun HomeView(
     viewModel: HomeViewModel = hiltViewModel(),
     settingsModel: SettingsViewModel,
     onSettingsClicked: () -> Unit,
@@ -130,108 +140,127 @@ fun HomeView (
     navController: NavController
 ) {
     val context = LocalContext.current
+    val notes by viewModel.notesFlow.collectAsState(initial = emptyList())
     val placeholder by settingsModel.dynamicPlaceholder.collectAsState()
+    val isRefreshing by viewModel.isRefreshing.collectAsState()
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = isRefreshing,
+        onRefresh = { viewModel.refreshNotes() }
+    )
+    var showDimBackground by remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
+    var fabExpanded by remember { mutableStateOf(false) }
 
-    if (viewModel.isPasswordPromptVisible.value) {
-        PasswordPrompt(
-            context = context,
-            text = stringResource(id = R.string.password_continue),
-            settingsViewModel = settingsModel,
-            onExit = { password ->
-                if (password != null && password.text.isNotBlank()) {
-                    viewModel.encryptionHelper.setPassword(password.text)
-                    viewModel.noteUseCase.observe()
-                }
-                viewModel.toggleIsPasswordPromptVisible(false)
-            }
-        )
-    }
+    Box(modifier = Modifier.fillMaxSize()) {
 
-    if (settingsModel.databaseUpdate.value) viewModel.noteUseCase.observe()
-    val containerColor = getContainerColor(settingsModel)
-
-    NotesScaffold(
-        topBar = {
-            AnimatedVisibility(
-                visible = viewModel.selectedNotes.isNotEmpty(),
-                enter = defaultScreenEnterAnimation(),
-                exit = defaultScreenExitAnimation()
-            ) {
-                SelectedNotesTopAppBar(
-                    selectedNotes = viewModel.selectedNotes,
-                    allNotes = viewModel.getAllNotes(),
-                    settingsModel = settingsModel,
-                    onPinClick = { viewModel.pinOrUnpinNotes() },
-                    onDeleteClick = { viewModel.toggleIsDeleteMode(true) },
-                    onSelectAllClick = { selectAllNotes(viewModel, viewModel.getAllNotes()) },
-                    onCloseClick = { viewModel.selectedNotes.clear() }
-                )
-            }
-            AnimatedVisibility(
-                visible = viewModel.selectedNotes.isEmpty(),
-                enter = defaultScreenEnterAnimation(),
-                exit = defaultScreenExitAnimation()
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .statusBarsPadding()
-                        .padding(horizontal = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+        NotesScaffold(
+            topBar = {
+                AnimatedVisibility(
+                    visible = viewModel.selectedNotes.isNotEmpty(),
+                    enter = defaultScreenEnterAnimation(),
+                    exit = defaultScreenExitAnimation()
                 ) {
-                    HomeViewTopBarWithSearch(
-                        username = placeholder,
-                        query = viewModel.searchQuery.value,
-                        onQueryChange = { viewModel.changeSearchQuery(it) },
-                        onClearClick = { viewModel.changeSearchQuery("") },
-                        onSettingsClick = onSettingsClicked,
-                        placeholderText = placeholder,
-                        navController = navController,
-                        viewModel = viewModel
+                    SelectedNotesTopAppBar(
+                        selectedNotes = viewModel.selectedNotes,
+                        allNotes = notes,
+                        settingsModel = settingsModel,
+                        onPinClick = { viewModel.pinOrUnpinNotes() },
+                        onDeleteClick = { viewModel.toggleIsDeleteMode(true) },
+                        onSelectAllClick = { selectAllNotes(viewModel, notes) },
+                        onCloseClick = { viewModel.selectedNotes.clear() }
+                    )
+                }
+
+                AnimatedVisibility(
+                    visible = viewModel.selectedNotes.isEmpty(),
+                    enter = defaultScreenEnterAnimation(),
+                    exit = defaultScreenExitAnimation()
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .statusBarsPadding()
+                            .padding(horizontal = 16.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        HomeViewTopBarWithSearch(
+                            username = placeholder,
+                            query = viewModel.searchQuery.value,
+                            onQueryChange = { viewModel.changeSearchQuery(it) },
+                            onClearClick = { viewModel.changeSearchQuery("") },
+                            onSettingsClick = onSettingsClicked,
+                            placeholderText = placeholder,
+                            navController = navController,
+                            viewModel = viewModel
+                        )
+                    }
+                }
+            },
+            content = {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .pullRefresh(pullRefreshState)
+                ) {
+                    NoteFilter(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(bottom = 100.dp),
+                        settingsViewModel = settingsModel,
+                        containerColor = getContainerColor(settingsModel),
+                        shape = shapeManager(
+                            radius = settingsModel.settings.value.cornerRadius / 2,
+                            isBoth = true
+                        ),
+                        onNoteClicked = { onNoteClicked(it, viewModel.isVaultMode.value) },
+                        notes = notes.sortedWith(sorter(settingsModel.settings.value.sortDescending)),
+                        selectedNotes = viewModel.selectedNotes,
+                        viewMode = settingsModel.settings.value.viewMode,
+                        searchText = viewModel.searchQuery.value.ifBlank { null },
+                        isDeleteMode = viewModel.isDeleteMode.value,
+                        onNoteUpdate = { note ->
+                            coroutineScope.launch(Dispatchers.IO) {
+                                viewModel.noteUseCase.addNote(note)
+                            }
+                        },
+                        onDeleteNote = {
+                            viewModel.toggleIsDeleteMode(false)
+                            viewModel.noteUseCase.deleteNoteById(it)
+                        }
+                    )
+
+                    PullRefreshIndicator(
+                        refreshing = isRefreshing,
+                        state = pullRefreshState,
+                        modifier = Modifier.align(Alignment.TopCenter)
                     )
                 }
             }
-        },
-        content = {
-            Box(modifier = Modifier.fillMaxSize()) {
-                NoteFilter(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(bottom = 100.dp),
-                    settingsViewModel = settingsModel,
-                    containerColor = containerColor,
-                    shape = shapeManager(
-                        radius = settingsModel.settings.value.cornerRadius / 2,
-                        isBoth = true
-                    ),
-                    onNoteClicked = { onNoteClicked(it, viewModel.isVaultMode.value) },
-                    notes = viewModel.getAllNotes()
-                        .sortedWith(sorter(settingsModel.settings.value.sortDescending)),
-                    selectedNotes = viewModel.selectedNotes,
-                    viewMode = settingsModel.settings.value.viewMode,
-                    searchText = viewModel.searchQuery.value.ifBlank { null },
-                    isDeleteMode = viewModel.isDeleteMode.value,
-                    onNoteUpdate = { note ->
-                        CoroutineScope(Dispatchers.IO).launch {
-                            viewModel.noteUseCase.addNote(note)
-                        }
-                    },
-                    onDeleteNote = {
-                        viewModel.toggleIsDeleteMode(false)
-                        viewModel.noteUseCase.deleteNoteById(it)
-                    }
-                )
+        )
 
-                FloatingBottomButtons(
-                    navController = navController,
-                    onNoteClicked = { onNoteClicked(it, viewModel.isVaultMode.value) }
-                )
-            }
+        if (showDimBackground) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.5f))
+                    .clickable {
+                        showDimBackground = false
+                        fabExpanded = false
+                    }
+            )
         }
-    )
+        FloatingBottomButtons(
+            navController = navController,
+            onNoteClicked = { onNoteClicked(it, viewModel.isVaultMode.value) },
+            expanded = fabExpanded,
+            onExpandedChange = { fabExpanded = it },
+            onDimToggle = { showDimBackground = it }
+        )
+    }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+
+        @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeViewTopBarWithSearch(
     username: String = "User",
@@ -313,26 +342,25 @@ fun HomeViewTopBarWithSearch(
 }
 
 
-
 @Composable
 fun getContainerColor(settingsModel: SettingsViewModel): Color {
     return if (settingsModel.settings.value.extremeAmoledMode) Color.Black else MaterialTheme.colorScheme.surfaceContainerHigh
 }
 
 @SuppressLint("RememberReturnType")
-@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class,
-    ExperimentalComposeUiApi::class
-)
+@OptIn(ExperimentalAnimationApi::class,
+    ExperimentalMaterial3Api::class,
+    ExperimentalComposeUiApi::class)
 @Composable
 fun FloatingBottomButtons(
     navController: NavController,
-    onNoteClicked: (Int) -> Unit
+    onNoteClicked: (Int) -> Unit,
+    onDimToggle: (Boolean) -> Unit,
+    expanded: Boolean,
+    onExpandedChange: (Boolean) -> Unit
 ) {
     val context = LocalContext.current
-    var expanded by remember { mutableStateOf(false) }
-    var showQuickNote by remember { mutableStateOf(false) }
     var showCalculator by remember { mutableStateOf(false) }
-    var quickNoteText by remember { mutableStateOf("") }
     var showDialog by remember { mutableStateOf(false) }
     val activity = LocalContext.current
     var isPressed by remember { mutableStateOf(false) }
@@ -417,52 +445,52 @@ fun FloatingBottomButtons(
         )
     }
 
+    val fabItems = listOf(
+        Triple(Icons.Default.Search, "Browser") {
+            val url = "https://www.startpage.com"
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            try {
+                context.startActivity(intent)
+                Toast.makeText(context, "Opening Default Browser...", Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                Toast.makeText(context, "No browser found!", Toast.LENGTH_SHORT).show()
+            }
+        },
+        Triple(Icons.Default.NoteAlt, "Scratchpad") {
+            navController.navigate(NavRoutes.Scratchpad.route)
+        },
+        Triple(Icons.Default.Dataset, "Flashcard") {
+            navController.navigate(NavRoutes.Flashback.route)
+        },
+        Triple(Icons.Default.AddComment, "Save TXT") {
+            showDialog = true
+        },
+        Triple(Icons.Default.Calculate, "Calculator") {
+            showCalculator = true
+        },
+        Triple(Icons.Default.CalendarMonth, "Calendar") {
+            val currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM d, yyyy"))
+            val dayOfWeek = SimpleDateFormat("EEEE", Locale.getDefault()).format(Date())
+            Toast.makeText(context, "Today is: $dayOfWeek, $currentDate", Toast.LENGTH_SHORT).show()
+            calendarState.show()
+        },
+        Triple(Icons.Default.Edit, "New Note") {
+            onNoteClicked(0)
+            Toast.makeText(context, "Note Created!", Toast.LENGTH_SHORT).show()
+        },
+    )
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom = 32.dp, end = 24.dp),
+            .padding(bottom = 32.dp, end = 24.dp)
+            .navigationBarsPadding(),
         contentAlignment = Alignment.BottomEnd
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalAlignment = Alignment.End
         ) {
-            val fabItems = listOf(
-                Triple(Icons.Default.Search, "Browser") {
-                    val url = "https://www.startpage.com"
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                    context.startActivity(intent)
-                    Toast.makeText(context, "Opening Default Browser...", Toast.LENGTH_SHORT).show()
-                },
-                Triple(Icons.Default.NoteAlt, "Scratchpad") {
-                    navController.navigate(NavRoutes.Scratchpad.route)
-                },
-                Triple(Icons.Default.Dataset, "Flashcard") {
-                    navController.navigate(NavRoutes.Flashback.route)
-                },
-                Triple(Icons.Default.AddComment, "Save TXT") {
-                    showDialog = true
-                },
-                Triple(Icons.Default.Calculate, "Calculator") {
-                    showCalculator = true
-                },
-                Triple(Icons.Default.CalendarMonth, "Calendar") {
-                    val currentDate =
-                        LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM d, yyyy"))
-                    val dayOfWeek = SimpleDateFormat("EEEE", Locale.getDefault()).format(Date())
-                    Toast.makeText(
-                        context,
-                        "Today is: $dayOfWeek, $currentDate",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    calendarState.show()
-                },
-                Triple(Icons.Default.Edit, "New Note") {
-                    onNoteClicked(0)
-                    Toast.makeText(context, "Note Created!", Toast.LENGTH_SHORT).show()
-                },
-            )
-
             fabItems.forEach { (icon, label, action) ->
                 AnimatedVisibility(
                     visible = expanded,
@@ -470,7 +498,8 @@ fun FloatingBottomButtons(
                     exit = fadeOut() + slideOutVertically { it }
                 ) {
                     SmallFAB(icon = icon, description = label) {
-                        expanded = false
+                        onExpandedChange(false)
+                        onDimToggle(false)
                         action()
                     }
                 }
@@ -487,18 +516,13 @@ fun FloatingBottomButtons(
                     .size(60.dp)
                     .pointerInteropFilter {
                         when (it.action) {
-                            MotionEvent.ACTION_DOWN -> {
-                                isPressed = true
-                            }
-
+                            MotionEvent.ACTION_DOWN -> isPressed = true
                             MotionEvent.ACTION_UP -> {
                                 isPressed = false
-                                expanded = !expanded
+                                onExpandedChange(!expanded)
+                                onDimToggle(!expanded)
                             }
-
-                            MotionEvent.ACTION_CANCEL -> {
-                                isPressed = false
-                            }
+                            MotionEvent.ACTION_CANCEL -> isPressed = false
                         }
                         true
                     }
@@ -605,11 +629,14 @@ private fun SelectedNotesTopAppBar(
 }
 
 private fun selectAllNotes(viewModel: HomeViewModel, allNotes: List<Note>) {
-    allNotes.forEach {
-        if (!viewModel.selectedNotes.contains(it)) {
-            viewModel.selectedNotes.add(it)
+    val updatedSelection = viewModel.selectedNotes.toMutableList()
+    allNotes.forEach { note ->
+        if (!updatedSelection.contains(note)) {
+            updatedSelection.add(note)
         }
     }
+    viewModel.selectedNotes.clear()
+    viewModel.selectedNotes.addAll(updatedSelection)
 }
 
 fun sorter(descending: Boolean): Comparator<Note> {

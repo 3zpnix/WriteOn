@@ -24,6 +24,7 @@ import androidx.compose.material.icons.rounded.Style
 import androidx.compose.material.icons.rounded.TextFields
 import androidx.compose.material.icons.rounded.Title
 import androidx.compose.material.icons.rounded.ViewAgenda
+import androidx.compose.material.icons.rounded.VisibilityOff
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
@@ -184,12 +185,33 @@ fun ToolsScreen(navController: NavController, settingsViewModel: SettingsViewMod
             }
             item {
                 SettingsBox(
+                    title = "Auto-hide visibility button",
+                    description = "Hides the button when the keyboard is visible while editing a note.",
+                    icon = Icons.Rounded.VisibilityOff,
+                    actionType = ActionType.SWITCH,
+                    radius = shapeManager(
+                        radius = settingsViewModel.settings.value.cornerRadius,
+                        isLast = true
+                    ),
+                    variable = settingsViewModel.settings.value.hideVisibilityButtonWhenKeyboard,
+                    switchEnabled = {
+                        settingsViewModel.update(
+                            settingsViewModel.settings.value.copy(
+                                hideVisibilityButtonWhenKeyboard = it
+                            )
+                        )
+                    }
+                )
+                Spacer(modifier = Modifier.height(18.dp))
+            }
+            item {
+                SettingsBox(
                     isBig = true,
                     title = stringResource(id = R.string.homepage),
                     icon = Icons.Rounded.Home,
                     actionType = ActionType.CUSTOM,
                     radius = shapeManager(
-                        isLast = true,
+                        isBoth = true,
                         radius = settingsViewModel.settings.value.cornerRadius
                     ),
                     customAction = { navController.navigateUp() }

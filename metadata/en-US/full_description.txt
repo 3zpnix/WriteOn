@@ -1,9 +1,20 @@
-A simple note-taking app with a Material You design to create a visually comforting interface and distraction-free environment. With a focus on simplicity and usability, offering several useful features.
+WriteOn is a note-taking app designed with simplicity and usability at its core — perfect for students and everyday use.
 
-🔐 Key features include:
+🛠️ Key Features:
+• 🔐 Secure your notes with app lock (Authentication)
+• ☁️ Backup & Restore notes (offline & WebDAV supported)
+• 👁️ Screen protection (prevents screenshots & previews)
+• 🖋️ Markdown support for rich text formatting
+• 🎨 Customizable themes for light/dark comfort
+• 📶 Works both offline and online
+• 🔒 Privacy-respecting – no access to your personal data
+• 📝 Export notes to .txt format and more
+• 📷 Attach and view images inside notes
+• 📅 Built-in calendar for instant checking
+• 🧮 Built-in calculator for easy access
+• 🎓 Flashcard mode for studying and others
+• 📌 Pin notes to your notification panel (requires notification permission)
+• 🌈 Visually calming and intuitive interface
 
-★ Biometric Authentication ★ Backup/Restore ★ Screen Protection ★ Markdown Support ★ Customizable Themes ★ Offline Functionality ★ Data Privacy ★ No Unnecessary Permissions ★ Intuitive UI ★ Built-In Calendar ★ Quick note export to txt ★ Direct to translate button ★ Dropdown share button ★ Internet search button ★ Attach Images ★ Calculator ★
-
-Whether you're jotting down quick thoughts or crafting detailed notes. Write On is the perfect companion for staying organized and manageable. Attach photos, codes, words, quotes, works, anything that your brain needs to write on. 
-
-Open-Source Code: https://github.com/3zpnix/WriteOn
+"Evolution. Constant. Reminder."
+– A space to write, reflect, and grow.

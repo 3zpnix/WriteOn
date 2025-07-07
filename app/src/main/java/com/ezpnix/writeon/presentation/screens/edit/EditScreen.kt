@@ -1,22 +1,32 @@
 package com.ezpnix.writeon.presentation.screens.edit
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.icu.text.SimpleDateFormat
+import android.os.Build
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -28,13 +38,9 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.outlined.PushPin
-import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Description
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Info
@@ -43,7 +49,6 @@ import androidx.compose.material.icons.rounded.PushPin
 import androidx.compose.material.icons.rounded.RemoveRedEye
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material.icons.rounded.Visibility
-import androidx.compose.material.icons.rounded.VisibilityOff
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
@@ -59,15 +64,20 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
@@ -75,6 +85,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -101,12 +112,12 @@ import com.ezpnix.writeon.presentation.screens.settings.settings.shapeManager
 import com.ezpnix.writeon.presentation.screens.settings.widgets.ActionType
 import com.ezpnix.writeon.presentation.screens.settings.widgets.SettingsBox
 import com.ezpnix.writeon.presentation.screens.settings.widgets.copyToClipboard
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import java.util.Locale
 import com.ezpnix.writeon.presentation.components.TranslateButton
 import com.ezpnix.writeon.presentation.components.TxtButton
 import com.ezpnix.writeon.presentation.components.openTranslateApp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import java.util.Locale
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -116,7 +127,7 @@ fun EditNoteView(
     encrypted: Boolean = false,
     onClickBack: () -> Unit
 ) {
-    val viewModel: EditViewModel = hiltViewModel<EditViewModel>()
+    val viewModel: EditViewModel = hiltViewModel()
     viewModel.updateIsEncrypted(encrypted)
     viewModel.setupNoteData(id)
     ObserveLifecycleEvents(viewModel)
@@ -126,7 +137,7 @@ fun EditNoteView(
     val coroutineScope = rememberCoroutineScope()
 
     NotesScaffold(
-        topBar = { if (!settingsViewModel.settings.value.minimalisticMode) TopBar(pagerState,onClickBack, viewModel) },
+        topBar = { if (!settingsViewModel.settings.value.minimalisticMode) TopBar(pagerState, onClickBack, viewModel) },
         content = { PagerContent(pagerState, coroutineScope, viewModel, settingsViewModel, onClickBack) }
     )
 }
@@ -136,6 +147,22 @@ fun EditNoteView(
 fun TopBarActions(pagerState: PagerState, onClickBack: () -> Unit, viewModel: EditViewModel) {
     val context = LocalContext.current
     val isPinned = viewModel.isPinned.value
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            NoteNotificationManager.showPinnedNotification(
+                context,
+                viewModel.noteName.value.text.ifBlank { "Untitled Note" },
+                viewModel.noteDescription.value.text.ifBlank { "No content" }
+            )
+            viewModel.toggleNotePin(true)
+            Toast.makeText(context, "Pinned to Notification", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(context, "Permission denied. Cannot pin to Notification.", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     when (pagerState.currentPage) {
 
@@ -158,20 +185,60 @@ fun TopBarActions(pagerState: PagerState, onClickBack: () -> Unit, viewModel: Ed
                 ) {
                     if (viewModel.noteId.value != 0) {
                         DropdownMenuItem(
-                            text = { Text(stringResource(R.string.pin)) },
-                            leadingIcon = { Icon(if (viewModel.isPinned.value) Icons.Rounded.PushPin else Icons.Outlined.PushPin, contentDescription = "Pin")},
+                            text = { Text("Pin to Notification") },
+                            leadingIcon = {
+                                Icon(
+                                    if (viewModel.isPinned.value) Icons.Rounded.PushPin else Icons.Outlined.PushPin,
+                                    contentDescription = "Pin to Notification"
+                                )
+                            },
                             onClick = {
-                                val message = if (isPinned) {
-                                    "Unpinned Note"
+                                if (viewModel.isPinned.value) {
+                                    NoteNotificationManager.cancelPinnedNotification(context)
+                                    viewModel.toggleNotePin(false)
+                                    Toast.makeText(context, "Unpinned from Notification", Toast.LENGTH_SHORT).show()
                                 } else {
-                                    "Pinned Note"
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                                        ActivityCompat.checkSelfPermission(
+                                            context,
+                                            Manifest.permission.POST_NOTIFICATIONS
+                                        ) != PackageManager.PERMISSION_GRANTED
+                                    ) {
+                                        permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                                    } else {
+                                        NoteNotificationManager.showPinnedNotification(
+                                            context,
+                                            viewModel.noteName.value.text.ifBlank { "Untitled Note" },
+                                            viewModel.noteDescription.value.text.ifBlank { "No content" }
+                                        )
+                                        viewModel.toggleNotePin(true)
+                                        Toast.makeText(context, "Pinned to Notification", Toast.LENGTH_SHORT).show()
+                                    }
                                 }
-                                viewModel.toggleNotePin(!isPinned)
-                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                                viewModel.toggleEditMenuVisibility(false)
                             }
                         )
+//                        DropdownMenuItem(
+//                            text = { Text(stringResource(R.string.pin)) },
+//                            leadingIcon = {
+//                                Icon(
+//                                    if (viewModel.isPinned.value) Icons.Rounded.PushPin else Icons.Outlined.PushPin,
+//                                    contentDescription = "Pin"
+//                                )
+//                            },
+//                            onClick = {
+//                                val message = if (isPinned) {
+//                                    "Unpinned Note"
+//                                } else {
+//                                    "Pinned Note"
+//                                }
+//                                viewModel.toggleNotePin(!isPinned)
+//                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+//                                viewModel.toggleEditMenuVisibility(false)
+//                            }
+//                        )
                         DropdownMenuItem(
-                            text = { Text(stringResource(id = R.string.share)) },
+                            text = { Text(stringResource(id = R.string.share_text)) },
                             leadingIcon = { Icon(Icons.Rounded.Share, contentDescription = "Share") },
                             onClick = {
                                 val sendIntent = Intent().apply {
@@ -181,11 +248,12 @@ fun TopBarActions(pagerState: PagerState, onClickBack: () -> Unit, viewModel: Ed
                                 }
                                 val shareIntent = Intent.createChooser(sendIntent, null)
                                 context.startActivity(shareIntent)
+                                viewModel.toggleEditMenuVisibility(false)
                             }
                         )
                         DropdownMenuItem(
-                            text = { Text(stringResource(R.string.information_dropdown)) },
-                            leadingIcon = { Icon(Icons.Rounded.Info, contentDescription = "Information")},
+                            text = { Text(stringResource(R.string.note_details)) },
+                            leadingIcon = { Icon(Icons.Rounded.Info, contentDescription = "Details") },
                             onClick = {
                                 viewModel.toggleEditMenuVisibility(false)
                                 viewModel.toggleNoteInfoVisibility(true)
@@ -200,7 +268,13 @@ fun TopBarActions(pagerState: PagerState, onClickBack: () -> Unit, viewModel: Ed
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun PagerContent(pagerState: PagerState, coroutineScope: CoroutineScope, viewModel: EditViewModel,settingsViewModel: SettingsViewModel, onClickBack: () -> Unit) {
+fun PagerContent(
+    pagerState: PagerState,
+    coroutineScope: CoroutineScope,
+    viewModel: EditViewModel,
+    settingsViewModel: SettingsViewModel,
+    onClickBack: () -> Unit
+) {
     HorizontalPager(
         state = pagerState,
         modifier = Modifier.imePadding(),
@@ -217,13 +291,15 @@ fun PagerContent(pagerState: PagerState, coroutineScope: CoroutineScope, viewMod
 fun TopBar(pagerState: PagerState, onClickBack: () -> Unit, viewModel: EditViewModel) {
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
-        title = { CustomTextField(
-            value = viewModel.noteName.value,
-            onValueChange = { viewModel.updateNoteName(it) },
-            placeholder = stringResource(R.string.no_title),
-            enabled = pagerState.currentPage == 0,
-            modifier = Modifier.fillMaxWidth(),
-        ) },
+        title = {
+            CustomTextField(
+                value = viewModel.noteName.value,
+                onValueChange = { viewModel.updateNoteName(it) },
+                placeholder = stringResource(R.string.no_title),
+                enabled = pagerState.currentPage == 0,
+                modifier = Modifier.fillMaxWidth(),
+            )
+        },
         navigationIcon = {
             Row {
                 NavigationIcon(onClickBack)
@@ -231,8 +307,8 @@ fun TopBar(pagerState: PagerState, onClickBack: () -> Unit, viewModel: EditViewM
                     UndoButton { viewModel.undo() }
                 }
             }
-     },
-        actions = { TopBarActions(pagerState,  onClickBack, viewModel) }
+        },
+        actions = { TopBarActions(pagerState, onClickBack, viewModel) }
     )
 }
 
@@ -293,13 +369,15 @@ fun BottomModal(viewModel: EditViewModel, settingsViewModel: SettingsViewModel) 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MinimalisticMode(
-    alignment : Alignment.Vertical = Alignment.CenterVertically,
+    alignment: Alignment.Vertical = Alignment.CenterVertically,
     viewModel: EditViewModel,
     @SuppressLint("ModifierParameter") modifier: Modifier = Modifier,
-    isEnabled: Boolean, pagerState: PagerState,
+    isEnabled: Boolean,
+    pagerState: PagerState,
     isExtremeAmoled: Boolean,
     showOnlyDescription: Boolean = false,
-    onClickBack: () -> Unit, content: @Composable () -> Unit,
+    onClickBack: () -> Unit,
+    content: @Composable () -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
     Row(
@@ -312,8 +390,9 @@ fun MinimalisticMode(
             if (isEnabled) NavigationIcon(onClickBack)
             if (isEnabled && viewModel.isDescriptionInFocus.value) UndoButton { viewModel.undo() }
             content()
-            if (isEnabled) TopBarActions(pagerState,  onClickBack, viewModel)
-            if (isEnabled) ModeButton(pagerState, coroutineScope, isMinimalistic = true, isExtremeAmoled = isExtremeAmoled) } else {
+            if (isEnabled) TopBarActions(pagerState, onClickBack, viewModel)
+            if (isEnabled) ModeButton(pagerState, coroutineScope, isMinimalistic = true, isExtremeAmoled = isExtremeAmoled)
+        } else {
             Column {
                 Row(
                     verticalAlignment = Alignment.CenterVertically
@@ -321,7 +400,7 @@ fun MinimalisticMode(
                     if (isEnabled) NavigationIcon(onClickBack)
                     Spacer(modifier = Modifier.weight(1f))
                     if (isEnabled) ModeButton(pagerState, coroutineScope, isMinimalistic = true, isExtremeAmoled = isExtremeAmoled)
-                    if (isEnabled) TopBarActions(pagerState,  onClickBack, viewModel)
+                    if (isEnabled) TopBarActions(pagerState, onClickBack, viewModel)
                 }
                 content()
             }
@@ -342,10 +421,27 @@ fun EditScreen(
     val showButtons = remember { mutableStateOf(false) }
     val listState = rememberLazyListState()
 
+    val imeVisible = WindowInsets.ime.getBottom(LocalDensity.current) > 0
+
+    val hideOnKeyboard = settingsViewModel.settings.value.hideVisibilityButtonWhenKeyboard
+
+    var fabVisible by remember { mutableStateOf(true) }
+
+    LaunchedEffect(imeVisible, hideOnKeyboard) {
+        fabVisible = if (hideOnKeyboard) !imeVisible else true
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .imePadding()
+            .pointerInput(imeVisible) {
+                detectTapGestures {
+                    if (!imeVisible) {
+                        fabVisible = true
+                    }
+                }
+            }
     ) {
         Column(
             modifier = Modifier
@@ -378,18 +474,24 @@ fun EditScreen(
             )
         }
 
-        FloatingActionButton(
-            onClick = { showButtons.value = true },
+        AnimatedVisibility(
+            visible = fabVisible,
+            enter = fadeIn(),
+            exit = fadeOut(),
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(24.dp),
-            containerColor = MaterialTheme.colorScheme.surface,
-            contentColor = MaterialTheme.colorScheme.primary
+                .padding(24.dp)
         ) {
-            Icon(
-                imageVector = Icons.Rounded.Visibility,
-                contentDescription = "Show Options"
-            )
+            FloatingActionButton(
+                onClick = { showButtons.value = true },
+                containerColor = MaterialTheme.colorScheme.surface,
+                contentColor = MaterialTheme.colorScheme.primary
+            ) {
+                Icon(
+                    imageVector = Icons.Rounded.Visibility,
+                    contentDescription = "Show Options"
+                )
+            }
         }
 
         if (showButtons.value) {
@@ -467,6 +569,7 @@ fun EditScreen(
         }
     }
 }
+
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

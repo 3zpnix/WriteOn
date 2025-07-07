@@ -43,21 +43,48 @@ class SettingsViewModel @Inject constructor(
     private val backup: ImportExportRepository,
     private val settingsUseCase: SettingsUseCase,
     val noteUseCase: NoteUseCase,
-    private val importExportUseCase: ImportExportUseCase, // AA1
+    private val importExportUseCase: ImportExportUseCase,
     @ApplicationContext private val context: Context,
     private val settingsPreferences: SettingsPreferences,
 ) : ViewModel() {
+
     private val _savedNote = MutableStateFlow("")
     val savedNote: String get() = _savedNote.value
+
     val databaseUpdate = mutableStateOf(false)
-    var password : String? = null
+    var password: String? = null
 
     private val _dynamicPlaceholder = MutableStateFlow("Simple Notepad")
     val dynamicPlaceholder: StateFlow<String> = _dynamicPlaceholder.asStateFlow()
+
     private val sharedPreferences: SharedPreferences =
         context.getSharedPreferences("notes_prefs", Context.MODE_PRIVATE)
+
     private val _settings = mutableStateOf(Settings())
     var settings: State<Settings> = _settings
+
+    init {
+        viewModelScope.launch {
+            launch {
+                settingsPreferences.dynamicPlaceholder.collect { placeholder ->
+                    _dynamicPlaceholder.value = placeholder
+                }
+            }
+
+            launch {
+                settingsPreferences.columnsCount.collect { count ->
+                    val baseSettings = runBlocking(Dispatchers.IO) {
+                        settingsUseCase.loadSettingsFromRepository()
+                    }
+                    _settings.value = baseSettings.copy(columnsCount = count)
+
+                    if (_settings.value.autoBackupEnabled) {
+                        startAutoBackup(context)
+                    }
+                }
+            }
+        }
+    }
 
     fun update(newSettings: Settings) {
         _settings.value = newSettings.copy()
@@ -71,16 +98,17 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    // helper for just updating columnsCount
     fun setColumnsCount(count: Int) {
-        update(settings.value.copy(columnsCount = count))
+        viewModelScope.launch {
+            settingsPreferences.saveColumnsCount(count)
+            _settings.value = _settings.value.copy(columnsCount = count)
+        }
     }
 
-    init {
+    fun updateFontSize(size: Float) {
+        _settings.value = _settings.value.copy(fontSize = size)
         viewModelScope.launch {
-            settingsPreferences.dynamicPlaceholder.collect { placeholder ->
-                _dynamicPlaceholder.value = placeholder
-            }
+            settingsUseCase.saveSettingsToRepository(_settings.value)
         }
     }
 
@@ -99,32 +127,8 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    init {
-        viewModelScope.launch {
-            loadSettings()
-            if (_settings.value.autoBackupEnabled) run {
-                startAutoBackup(context)
-            }
-        }
-    }
-
-    fun updateFontSize(size: Float) {
-        _settings.value = _settings.value.copy(fontSize = size)
-        viewModelScope.launch {
-            settingsUseCase.saveSettingsToRepository(_settings.value)
-        }
-    }
-
-    private suspend fun loadSettings() {
-        val loadedSettings = runBlocking(Dispatchers.IO) {
-            settingsUseCase.loadSettingsFromRepository()
-        }
-        _settings.value = loadedSettings
-    }
-
     private fun startAutoBackup(context: Context) {
-        val backupRequest = PeriodicWorkRequestBuilder<BackupWorker>(1, TimeUnit.DAYS)
-            .build()
+        val backupRequest = PeriodicWorkRequestBuilder<BackupWorker>(1, TimeUnit.DAYS).build()
 
         WorkManager.getInstance(context).enqueueUniquePeriodicWork(
             "AutoBackup",
@@ -136,7 +140,6 @@ class SettingsViewModel @Inject constructor(
     private fun stopAutoBackup(context: Context) {
         WorkManager.getInstance(context).cancelUniqueWork("AutoBackup")
     }
-
 
     fun onExportBackup(uri: Uri, context: Context) {
         viewModelScope.launch {
@@ -154,16 +157,13 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    // Taken from: https://stackoverflow.com/questions/74114067/get-list-of-locales-from-locale-config-in-android-13
     private fun getLocaleListFromXml(context: Context): LocaleListCompat {
         val tagsList = mutableListOf<CharSequence>()
         try {
             val xpp: XmlPullParser = context.resources.getXml(R.xml.locales_config)
             while (xpp.eventType != XmlPullParser.END_DOCUMENT) {
-                if (xpp.eventType == XmlPullParser.START_TAG) {
-                    if (xpp.name == "locale") {
-                        tagsList.add(xpp.getAttributeValue(0))
-                    }
+                if (xpp.eventType == XmlPullParser.START_TAG && xpp.name == "locale") {
+                    tagsList.add(xpp.getAttributeValue(0))
                 }
                 xpp.next()
             }
@@ -172,36 +172,31 @@ class SettingsViewModel @Inject constructor(
         } catch (e: IOException) {
             e.printStackTrace()
         }
-
         return LocaleListCompat.forLanguageTags(tagsList.joinToString(","))
     }
 
     fun getSupportedLanguages(context: Context): Map<String, String> {
         val localeList = getLocaleListFromXml(context)
         val map = mutableMapOf<String, String>()
-
         for (a in 0 until localeList.size()) {
-            localeList[a].let {
-                it?.let { it1 -> map.put(it1.getDisplayName(it), it.toLanguageTag()) }
-            }
+            localeList[a]?.let { map[it.getDisplayName(it)] = it.toLanguageTag() }
         }
         return map
     }
 
     private fun handleBackupResult(result: BackupResult, context: Context) {
         when (result) {
-            is BackupResult.Success -> showToast("Backup Restored", context)
+            is BackupResult.Success -> showToast("Restored! (Restart App)", context)
             is BackupResult.Error -> showToast("Error", context)
             BackupResult.BadPassword -> showToast(context.getString(R.string.database_restore_error), context)
         }
     }
 
-    // AA2
     private fun handleImportResult(result: ImportResult, context: Context) {
         when (result.successful) {
-            result.total -> {showToast(context.getString(R.string.file_import_success), context)}
-            0 -> {showToast(context.getString(R.string.file_import_error), context)}
-            else -> {showToast(context.getString(R.string.file_import_partial_error), context)}
+            result.total -> showToast(context.getString(R.string.file_import_success), context)
+            0 -> showToast(context.getString(R.string.file_import_error), context)
+            else -> showToast(context.getString(R.string.file_import_partial_error), context)
         }
     }
 

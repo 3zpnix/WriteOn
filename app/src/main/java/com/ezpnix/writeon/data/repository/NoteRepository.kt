@@ -13,6 +13,10 @@ class NoteRepositoryImpl @Inject constructor(
         return provider.noteDao().getAllNotes()
     }
 
+    override suspend fun getAllNotesSync(): List<Note> {
+        return provider.noteDao().getAllNotesSync()
+    }
+
     override suspend fun addNote(note: Note) {
         provider.noteDao().addNote(note)
     }

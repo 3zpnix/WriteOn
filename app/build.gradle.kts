@@ -13,8 +13,8 @@ android {
         applicationId = "com.ezpnix.writeon"
         minSdk = 26
         targetSdk = 34
-        versionCode = 7
-        versionName = "1.6"
+        versionCode = 8
+        versionName = "1.7"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -61,7 +61,12 @@ android {
     }
     packaging {
         resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += setOf(
+                "/META-INF/AL2.0",
+                "/META-INF/LGPL2.1",
+                "/META-INF/INDEX.LIST",
+                "/META-INF/DEPENDENCIES"
+            )
         }
     }
     buildToolsVersion = "34.0.0"
@@ -97,4 +102,11 @@ dependencies {
     implementation(libs.message.bar)
     implementation(libs.automatic.backup)
     implementation(libs.gson)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.material3)
+    implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.material)
+    implementation(libs.androidx.security)
+    implementation(libs.okhttp)
+    implementation(libs.errorprone)
 }

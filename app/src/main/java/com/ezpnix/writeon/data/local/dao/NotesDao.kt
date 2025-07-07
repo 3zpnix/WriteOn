@@ -18,6 +18,9 @@ interface NoteDao {
     @Query("SELECT * FROM `notes-table`")
     fun getAllNotes(): Flow<List<Note>>
 
+    @Query("SELECT * FROM `notes-table`")
+    suspend fun getAllNotesSync(): List<Note>
+
     @Update
     suspend fun updateNote(note: Note)
 

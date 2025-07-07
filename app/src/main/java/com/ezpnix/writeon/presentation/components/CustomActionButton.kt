@@ -446,7 +446,6 @@ fun evalExpression(expression: String): Double {
             outputQueue.add(operatorStack.pop().toString())
         }
 
-        // Evaluate RPN
         val evalStack = Stack<Double>()
         for (token in outputQueue) {
             when {

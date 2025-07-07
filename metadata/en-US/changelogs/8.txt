@@ -1,0 +1,6 @@
+• Polished the notes custom grid count code
+• Cloud backup and restore feature added
+• Fixed some biometric authentication bugs
+• New homepage user interface and optimizations
+• Pin note to notification feature added
+• Added an option for more visibility on the edit screen

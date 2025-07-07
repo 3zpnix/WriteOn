@@ -17,10 +17,10 @@ data class Settings(
     var editMode: Boolean = false,
     var showOnlyTitle: Boolean = false,
     var termsOfService: Boolean = false,
+    var cornerRadius: Int = 32,
     val isBiometricEnabled: Boolean = false,
     val autoBackupEnabled: Boolean = false,
     val fontSize: Float = 16f,
     val columnsCount: Int = 2,
-
-    var cornerRadius: Int = 32,
+    val hideVisibilityButtonWhenKeyboard: Boolean = true
 )
