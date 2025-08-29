@@ -193,8 +193,10 @@ fun EmptyRightButton(
 
     Button(
         onClick = {
-            clipboardManager.setText(AnnotatedString("(^-^) Your support would be appreciated! https://github.com/3zpnix/WriteOn/"))
-            Toast.makeText(context, "Link copied to clipboard!", Toast.LENGTH_SHORT).show()
+            val msg_1 = context.getString(R.string.support_message)
+            clipboardManager.setText(AnnotatedString(msg_1))
+            val msg_2 = context.getString(R.string.link_copied_message)
+            Toast.makeText(context, msg_2, Toast.LENGTH_SHORT).show()
         },
         shape = shape,
         modifier = Modifier

@@ -16,6 +16,60 @@
     <string name="enter_placeholder">Messaggio iniziale</string>
     <string name="enter_placeholder_description">Inserisci qualsiasi testo a tuo piacere</string>
 
+    <!-- Home page  - Pagina iniziale-->
+    <string name="search_label">Cerca</string>
+    <string name="home_app_title">Write On</string>
+    <string name="home_app_subtitle">Blocco note semplice</string>
+
+    <!--  Menu - Menu -->
+    <string name="new_note_menu">Nuova nota</string>
+    <string name="note_created_snackbar_label">Nota creata!</string>
+    <string name="open_calendar_menu">Calendario</string>
+    <string name="today_is">Oggi è: %1$s, %2$s</string>
+    <string name="open_calculator_menu">Calcolatrice</string>
+    <string name="save_new_txt_menu">Salva TXT</string>
+    <string name="open_flashcard_menu">Flashcard</string>
+    <string name="open_scratchpad_menu">Nota rapida</string>
+    <string name="open_browser_menu">Browser</string>
+    <string name="opening_default_browser_label">Apertura del browser di default&#8230;</string>
+    <string name="no_browser_found_label">Nessun browser trovato!</string>
+
+    <!-- Dialogs - Finestre di dialogo -->
+    <string name="quick_note_dialog_title">Nota veloce</string>
+    <string name="quick_note_dialog_enter_text_hint">Inserisci testo&#8230;</string>
+
+    <!-- Flashcards - Flashcards-->
+    <string name="add_flashcard_title">Aggiungi flashcard</string>
+    <string name="flashcard_question_hint">Domanda</string>
+    <string name="flashcard_answer_hint">Risposta</string>
+
+    <!-- Buttons labels - Bottoni -->
+    <string name="cancel_button">Annulla</string>
+    <string name="save_txt_button">Salva come TXT</string>
+    <string name="add_button">Aggiungi</string>
+    <string name="start_test_button">Avvia test</string>
+    <string name="close_button">Chiudi</string>
+    <string name="pin_to_notification_button">Fissa come notifica</string>
+
+    <!-- Miscellaneous - Varie -->
+    <string name="saved_successfully_message">Testo salvato con successo</string>
+    <string name="error_message">Errore :</string>
+    <string name="calculator_result_label">Risultato</string>
+    <string name="copied_text_message">Testo copiato</string>
+    <string name="link_copied_message">Link copiato negli appunti!</string>
+    <string name="support_message">(^-^) Il tuo supporto sarebbe molto apprezzato! https://github.com/3zpnix/WriteOn/</string>
+    <string name="back_action_description">Indietro</string>
+    <string name="clear_action_description">Clear</string>
+    <string name="details_action_description">Dettagli</string>
+    <string name="share_action_description">Condividi</string>
+
+    <!-- Note editing page - Pagina di modifica delle note -->
+    <string name="pinned_to_notification_message">Fissato come notifica</string>
+    <string name="unpinned_to_notification_message">Rimosso dalle notifiche</string>
+    <string name="not_pinned_to_notification_message">Permesso negato. Impossibile fissare come notifica.</string>
+    <string name="notification_blank_title">Nota senza titolo</string>
+    <string name="notification_blank_content">Nessun contenuto</string>
+
     <!-- Notes - Note-->
     <string name="add_note">Nuova nota</string>
     <string name="new_note">Crea</string>
