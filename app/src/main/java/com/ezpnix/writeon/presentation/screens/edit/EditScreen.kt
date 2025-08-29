@@ -147,6 +147,8 @@ fun EditNoteView(
 fun TopBarActions(pagerState: PagerState, onClickBack: () -> Unit, viewModel: EditViewModel) {
     val context = LocalContext.current
     val isPinned = viewModel.isPinned.value
+    val msg_title = context.getString(R.string.notification_blank_title)
+    val msg_content = context.getString(R.string.notification_blank_content)
 
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
@@ -154,13 +156,15 @@ fun TopBarActions(pagerState: PagerState, onClickBack: () -> Unit, viewModel: Ed
         if (isGranted) {
             NoteNotificationManager.showPinnedNotification(
                 context,
-                viewModel.noteName.value.text.ifBlank { "Untitled Note" },
-                viewModel.noteDescription.value.text.ifBlank { "No content" }
+                viewModel.noteName.value.text.ifBlank { msg_title },
+                viewModel.noteDescription.value.text.ifBlank { msg_content }
             )
             viewModel.toggleNotePin(true)
-            Toast.makeText(context, "Pinned to Notification", Toast.LENGTH_SHORT).show()
+            val msg = context.getString(R.string.pinned_to_notification_message)
+            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
         } else {
-            Toast.makeText(context, "Permission denied. Cannot pin to Notification.", Toast.LENGTH_SHORT).show()
+            val msg = context.getString(R.string.not_pinned_to_notification_message)
+            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -185,18 +189,19 @@ fun TopBarActions(pagerState: PagerState, onClickBack: () -> Unit, viewModel: Ed
                 ) {
                     if (viewModel.noteId.value != 0) {
                         DropdownMenuItem(
-                            text = { Text("Pin to Notification") },
+                            text = { Text(stringResource(id = R.string.pin_to_notification_button)) },
                             leadingIcon = {
                                 Icon(
                                     if (viewModel.isPinned.value) Icons.Rounded.PushPin else Icons.Outlined.PushPin,
-                                    contentDescription = "Pin to Notification"
+                                    contentDescription = stringResource(id = R.string.pin_to_notification_button)
                                 )
                             },
                             onClick = {
                                 if (viewModel.isPinned.value) {
                                     NoteNotificationManager.cancelPinnedNotification(context)
                                     viewModel.toggleNotePin(false)
-                                    Toast.makeText(context, "Unpinned from Notification", Toast.LENGTH_SHORT).show()
+                                    val msg = context.getString(R.string.unpinned_to_notification_message)
+                                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                                 } else {
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
                                         ActivityCompat.checkSelfPermission(
@@ -208,11 +213,12 @@ fun TopBarActions(pagerState: PagerState, onClickBack: () -> Unit, viewModel: Ed
                                     } else {
                                         NoteNotificationManager.showPinnedNotification(
                                             context,
-                                            viewModel.noteName.value.text.ifBlank { "Untitled Note" },
-                                            viewModel.noteDescription.value.text.ifBlank { "No content" }
+                                            viewModel.noteName.value.text.ifBlank { msg_title },
+                                            viewModel.noteDescription.value.text.ifBlank { msg_content }
                                         )
                                         viewModel.toggleNotePin(true)
-                                        Toast.makeText(context, "Pinned to Notification", Toast.LENGTH_SHORT).show()
+                                        val msg = context.getString(R.string.pinned_to_notification_message)
+                                        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                                     }
                                 }
                                 viewModel.toggleEditMenuVisibility(false)
@@ -239,7 +245,7 @@ fun TopBarActions(pagerState: PagerState, onClickBack: () -> Unit, viewModel: Ed
 //                        )
                         DropdownMenuItem(
                             text = { Text(stringResource(id = R.string.share_text)) },
-                            leadingIcon = { Icon(Icons.Rounded.Share, contentDescription = "Share") },
+                            leadingIcon = { Icon(Icons.Rounded.Share, contentDescription = stringResource(id = R.string.share_action_description)) },
                             onClick = {
                                 val sendIntent = Intent().apply {
                                     action = Intent.ACTION_SEND
@@ -253,7 +259,7 @@ fun TopBarActions(pagerState: PagerState, onClickBack: () -> Unit, viewModel: Ed
                         )
                         DropdownMenuItem(
                             text = { Text(stringResource(R.string.note_details)) },
-                            leadingIcon = { Icon(Icons.Rounded.Info, contentDescription = "Details") },
+                            leadingIcon = { Icon(Icons.Rounded.Info, contentDescription = stringResource(id = R.string.details_action_description)) },
                             onClick = {
                                 viewModel.toggleEditMenuVisibility(false)
                                 viewModel.toggleNoteInfoVisibility(true)

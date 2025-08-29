@@ -287,7 +287,7 @@ fun HomeViewTopBarWithSearch(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = "Write On",
+                    text = stringResource(id = R.string.home_app_title),
                     style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold),
                     color = MaterialTheme.colorScheme.onBackground
                 )
@@ -315,14 +315,14 @@ fun HomeViewTopBarWithSearch(
             active = searchActive,
             onActiveChange = { active -> searchActive = active },
             placeholder = {
-                Text("Search", maxLines = 1)
+                Text(stringResource(id = R.string.search_label), maxLines = 1)
             },
             leadingIcon = {
                 if (searchActive) {
                     IconButton(onClick = { searchActive = false }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = stringResource(id = R.string.back_action_description)
                         )
                     }
                 } else {
@@ -332,7 +332,7 @@ fun HomeViewTopBarWithSearch(
                     trailingIcon = {
                 Row {
                     if (query.isNotBlank()) {
-                        CloseButton(contentDescription = "Clear", onCloseClicked = onClearClick)
+                        CloseButton(contentDescription = stringResource(id = R.string.clear_action_description), onCloseClicked = onClearClick)
                     }
                     SettingsButton(onSettingsClicked = onSettingsClick)
                 }
@@ -384,9 +384,11 @@ fun FloatingBottomButtons(
                     activity.contentResolver.openOutputStream(it)?.use { stream ->
                         stream.write(textState.toByteArray())
                     }
-                    Toast.makeText(activity, "Text saved successfully", Toast.LENGTH_SHORT).show()
+                    val msg = context.getString(R.string.saved_successfully_message)
+                    Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show()
                 } catch (e: Exception) {
-                    Toast.makeText(activity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                    val msg = context.getString(R.string.error_message)
+                    Toast.makeText(activity, "$msg ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -408,11 +410,11 @@ fun FloatingBottomButtons(
     if (showCalculator) {
         AlertDialog(
             onDismissRequest = { showCalculator = false },
-            title = { Text("Calculator") },
+            title = { Text(stringResource(id = R.string.open_calculator_menu)) },
             text = { CalculatorUI() },
             confirmButton = {
                 Button(onClick = { showCalculator = false }) {
-                    Text("Close")
+                    Text(stringResource(id = R.string.close_button))
                 }
             }
         )
@@ -421,12 +423,12 @@ fun FloatingBottomButtons(
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false },
-            title = { Text("Quick Note") },
+            title = { Text(stringResource(id = R.string.quick_note_dialog_title)) },
             text = {
                 TextField(
                     value = textState,
                     onValueChange = { textState = it },
-                    label = { Text("Enter text") }
+                    label = { Text(stringResource(id = R.string.quick_note_dialog_enter_text_hint)) }
                 )
             },
             confirmButton = {
@@ -434,49 +436,53 @@ fun FloatingBottomButtons(
                     openFileLauncher.launch("rename.txt")
                     showDialog = false
                 }) {
-                    Text("Save as TXT")
+                    Text(stringResource(id = R.string.save_txt_button))
                 }
             },
             dismissButton = {
                 Button(onClick = { showDialog = false }) {
-                    Text("Cancel")
+                    Text(stringResource(id = R.string.cancel_button))
                 }
             }
         )
     }
 
     val fabItems = listOf(
-        Triple(Icons.Default.Search, "Browser") {
+        Triple(Icons.Default.Search, stringResource(id = R.string.open_browser_menu)) {
             val url = "https://www.startpage.com"
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
             try {
                 context.startActivity(intent)
-                Toast.makeText(context, "Opening Default Browser...", Toast.LENGTH_SHORT).show()
+                val msg = context.getString(R.string.opening_default_browser_label)
+                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
             } catch (e: Exception) {
-                Toast.makeText(context, "No browser found!", Toast.LENGTH_SHORT).show()
+                val msg = context.getString(R.string.no_browser_found_label)
+                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
             }
         },
-        Triple(Icons.Default.NoteAlt, "Scratchpad") {
+        Triple(Icons.Default.NoteAlt, stringResource(id = R.string.open_scratchpad_menu)) {
             navController.navigate(NavRoutes.Scratchpad.route)
         },
-        Triple(Icons.Default.Dataset, "Flashcard") {
+        Triple(Icons.Default.Dataset, stringResource(id = R.string.open_flashcard_menu)) {
             navController.navigate(NavRoutes.Flashback.route)
         },
-        Triple(Icons.Default.AddComment, "Save TXT") {
+        Triple(Icons.Default.AddComment, stringResource(id = R.string.save_new_txt_menu)) {
             showDialog = true
         },
-        Triple(Icons.Default.Calculate, "Calculator") {
+        Triple(Icons.Default.Calculate, stringResource(id = R.string.open_calculator_menu)) {
             showCalculator = true
         },
-        Triple(Icons.Default.CalendarMonth, "Calendar") {
+        Triple(Icons.Default.CalendarMonth, stringResource(id = R.string.open_calendar_menu)) {
             val currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM d, yyyy"))
             val dayOfWeek = SimpleDateFormat("EEEE", Locale.getDefault()).format(Date())
-            Toast.makeText(context, "Today is: $dayOfWeek, $currentDate", Toast.LENGTH_SHORT).show()
+            val msg = context.getString(R.string.today_is, dayOfWeek, currentDate)
+            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
             calendarState.show()
         },
-        Triple(Icons.Default.Edit, "New Note") {
+        Triple(Icons.Default.Edit, stringResource(id = R.string.new_note_menu)) {
             onNoteClicked(0)
-            Toast.makeText(context, "Note Created!", Toast.LENGTH_SHORT).show()
+            val msg = context.getString(R.string.note_created_snackbar_label)
+            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
         },
     )
 

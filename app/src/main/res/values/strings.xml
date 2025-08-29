@@ -16,6 +16,61 @@
     <string name="enter_placeholder">Home Greeting</string>
     <string name="enter_placeholder_description">Input any text to your liking</string>
 
+    <!-- Home page -->
+    <string name="search_label">Search</string>
+    <string name="home_app_title">Write On</string>
+    <string name="home_app_subtitle">Simple Notepad</string>
+
+    <!-- Create menu -->
+    <string name="new_note_menu">New note</string>
+    <string name="note_created_snackbar_label">Note created!</string>
+    <string name="open_calendar_menu">Calendar</string>
+    <string name="today_is">Today is: %1$s, %2$s</string>
+    <string name="open_calculator_menu">Calculator</string>
+    <string name="save_new_txt_menu">Save TXT</string>
+    <string name="open_flashcard_menu">Flashcard</string>
+    <string name="open_scratchpad_menu">Scratchpad</string>
+    <string name="open_browser_menu">Browser</string>
+    <string name="opening_default_browser_label">Opening default browser (…, &#8230;)</string>
+    <string name="no_browser_found_label">No browser found!</string>
+
+    <!-- Dialogs -->
+    <string name="quick_note_dialog_title">Quick note</string>
+    <string name="quick_note_dialog_enter_text_hint">Enter text (…, &#8230;)</string>
+
+    <!-- Flashcards -->
+    <string name="add_flashcard_title">Add flashcard</string>
+    <string name="flashcard_question_hint">Question</string>
+    <string name="flashcard_answer_hint">Answer</string>
+
+    <!-- Buttons labels -->
+    <string name="cancel_button">Cancel</string>
+    <string name="save_txt_button">Save as TXT</string>
+    <string name="add_button">Add</string>
+    <string name="start_test_button">Start test</string>
+    <string name="close_button">Close</string>
+    <string name="pin_to_notification_button">Pin to notification</string>
+
+    <!-- Miscellaneous  -->
+    <string name="saved_successfully_message">Text saved successfully</string>
+    <string name="calculator_result_label">Result</string>
+    <string name="error_message">Error :</string>
+    <string name="copied_text_message">Copied text</string>
+    <string name="link_copied_message">Link copied to the clipboard!</string>
+    <string name="support_message">(^-^) Your support would be appreciated! https://github.com/3zpnix/WriteOn/</string>
+    <string name="back_action_description">Back</string>
+    <string name="clear_action_description">Clear</string>
+    <string name="details_action_description">Details</string>
+    <string name="share_action_description">Share</string>
+
+    <!-- Note editing page -->
+    <string name="pinned_to_notification_message">Pinned to notification</string>
+    <string name="unpinned_to_notification_message">Unpinned from notification</string>
+    <string name="not_pinned_to_notification_message">Permission denied. Cannot pin to notification.</string>
+    <string name="notification_blank_title">Untitled Note</string>
+    <string name="notification_blank_content">No content</string>
+
+
     <!-- Notes -->
     <string name="add_note">New Note</string>
     <string name="new_note">Create</string>

@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.ezpnix.writeon.R
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -21,9 +22,11 @@ class SettingsPreferences @Inject constructor(
         private const val DEFAULT_COLUMNS_COUNT = 2
     }
 
+    val msg = context.getString(R.string.home_app_subtitle)
+
     val dynamicPlaceholder: Flow<String> = context.dataStore.data
         .map { preferences ->
-            preferences[PLACEHOLDER_KEY] ?: "Simple Notepad"
+            preferences[PLACEHOLDER_KEY] ?: msg
         }
 
     suspend fun savePlaceholder(placeholder: String) {

@@ -1,0 +1,249 @@
+<resources>
+    <!-- App Info - Informazioni sull'app -->
+    <string name="app_name">Write On</string>
+    <string name="version">Versione app</string>
+    <string name="build_type">Tipo di build</string>
+    <string name="latest_release">Controlla ultima versione</string>
+    <string name="source_code">Codice sorgente</string>
+    <string name="app_list">Catalogo versioni</string>
+    <string name="android">Info sul telefono</string>
+    <string name="android_description">dettagli</string>
+    <string name="about">Informazioni</string>
+    <string name="description_about">Github • Versione • Email</string>
+
+    <!-- Welcome / Greeting - Messaggio di benvenuto -->
+    <string name="startup">"Crea ~ Ripristina ~ Condividi"</string>
+    <string name="enter_placeholder">Messaggio iniziale</string>
+    <string name="enter_placeholder_description">Inserisci qualsiasi testo a tuo piacere</string>
+
+    <!-- Home page  - Pagina iniziale-->
+    <string name="search_label">Cerca</string>
+    <string name="home_app_title">Write On</string>
+    <string name="home_app_subtitle">Blocco note semplice</string>
+
+    <!--  Menu - Menu -->
+    <string name="new_note_menu">Nuova nota</string>
+    <string name="note_created_snackbar_label">Nota creata!</string>
+    <string name="open_calendar_menu">Calendario</string>
+    <string name="today_is">Oggi è: %1$s, %2$s</string>
+    <string name="open_calculator_menu">Calcolatrice</string>
+    <string name="save_new_txt_menu">Salva TXT</string>
+    <string name="open_flashcard_menu">Flashcard</string>
+    <string name="open_scratchpad_menu">Nota rapida</string>
+    <string name="open_browser_menu">Browser</string>
+    <string name="opening_default_browser_label">Apertura del browser di default&#8230;</string>
+    <string name="no_browser_found_label">Nessun browser trovato!</string>
+
+    <!-- Dialogs - Finestre di dialogo -->
+    <string name="quick_note_dialog_title">Nota veloce</string>
+    <string name="quick_note_dialog_enter_text_hint">Inserisci testo&#8230;</string>
+
+    <!-- Flashcards - Flashcards-->
+    <string name="add_flashcard_title">Aggiungi flashcard</string>
+    <string name="flashcard_question_hint">Domanda</string>
+    <string name="flashcard_answer_hint">Risposta</string>
+
+    <!-- Buttons labels - Bottoni -->
+    <string name="cancel_button">Annulla</string>
+    <string name="save_txt_button">Salva come TXT</string>
+    <string name="add_button">Aggiungi</string>
+    <string name="start_test_button">Avvia test</string>
+    <string name="close_button">Chiudi</string>
+    <string name="pin_to_notification_button">Fissa come notifica</string>
+
+    <!-- Miscellaneous - Varie -->
+    <string name="saved_successfully_message">Testo salvato con successo</string>
+    <string name="error_message">Errore :</string>
+    <string name="calculator_result_label">Risultato</string>
+    <string name="copied_text_message">Testo copiato</string>
+    <string name="link_copied_message">Link copiato negli appunti!</string>
+    <string name="support_message">(^-^) Il tuo supporto sarebbe molto apprezzato! https://github.com/3zpnix/WriteOn/</string>
+    <string name="back_action_description">Indietro</string>
+    <string name="clear_action_description">Clear</string>
+    <string name="details_action_description">Dettagli</string>
+    <string name="share_action_description">Condividi</string>
+
+    <!-- Note editing page - Pagina di modifica delle note -->
+    <string name="pinned_to_notification_message">Fissato come notifica</string>
+    <string name="unpinned_to_notification_message">Rimosso dalle notifiche</string>
+    <string name="not_pinned_to_notification_message">Permesso negato. Impossibile fissare come notifica.</string>
+    <string name="notification_blank_title">Nota senza titolo</string>
+    <string name="notification_blank_content">Nessun contenuto</string>
+
+    <!-- Notes - Note-->
+    <string name="add_note">Nuova nota</string>
+    <string name="new_note">Crea</string>
+    <string name="created_time">Nota creata</string>
+    <string name="select_note">Seleziona nota</string>
+    <string name="no_title">Senza titolo</string>
+    <string name="description">Descrizione</string>
+    <string name="pinned">In evidenza</string>
+    <string name="pin">Metti in evidenza</string>
+    <string name="delete">Elimina</string>
+    <string name="alert_text">Sei sicuro di volerla eliminare definitivamente?</string>
+    <string name="yes"> Conferma</string>
+    <string name="cancel"> Annulla</string>
+    <string name="share">Condividi</string>
+    <string name="share_text">Condividi testo</string>
+
+    <!-- Sort & View - Ordinamento e visualizzazione -->
+    <string name="grid_view">Vista griglia</string>
+    <string name="column_view">Vista elenco</string>
+    <string name="columns">Numero colonne</string>
+    <string name="columns_description">Seleziona il numero di colonne per la griglia</string>
+    <string name="sort_ascending">Ordine crescente</string>
+    <string name="sort_descending">Ordine decrescente</string>
+    <string name="sort_description">Ordina le note per data di creazione</string>
+    <string name="view_style_description">Seleziona lo stile di ordinamento delle note</string>
+
+    <!-- Search - Ricerca -->
+    <string name="search">Cerca</string>
+    <string name="search_note">Cerca</string>
+
+    <!-- Selection - Selezione -->
+    <string name="select_all">Seleziona tutto</string>
+
+    <!-- Word & Character Count - Conteggio di caratteri e parole -->
+    <string name="words">Parole totali</string>
+    <string name="characters">Caratteri</string>
+
+    <!-- Settings - Impostazioni -->
+    <string name="screen_settings">Impostazioni</string>
+    <string name="display">Schermo</string>
+    <string name="color_styles"><![CDATA[Colori & Stili]]></string>
+    <string name="description_color_styles">Stile • Tema • Dimensioni</string>
+    <string name="language">Lingua</string>
+    <string name="system_language">Lingua di sistema</string>
+    <string name="language_description">Cambia la lingua dell’app</string>
+    <string name="description_language">Font • Lingua</string>
+    <string name="radius">Raggio</string>
+    <string name="select_radius">Seleziona raggio</string>
+    <string name="radius_description">Personalizza il raggio dei bordi</string>
+    <string name="font_size">Dimensione testo</string>
+    <string name="select_font_size">Seleziona dimensione testo</string>
+    <string name="enter_font_size_description">Influisce sulla dimensione del testo in modifica e anteprima</string>
+    <string name="select_font">Font</string>
+
+    <!-- Themes - Temi -->
+    <string name="system_theme">Tema di sistema</string>
+    <string name="dark_theme">Tema scuro</string>
+    <string name="dynamic_colors">Colori dinamici</string>
+    <string name="amoled_colors">Colori AMOLED</string>
+    <string name="extreme_amoled_mode">Colori AMOLED estremi</string>
+    <string name="system_theme_description">Adatta lo schema colori predefinito di sistema</string>
+    <string name="dark_theme_description">Attiva/disattiva il tema chiaro e scuro</string>
+    <string name="dynamic_colors_description">Adatta i colori allo sfondo</string>
+    <string name="amoled_colors_description">Usa uno sfondo nero profondo</string>
+    <string name="extreme_amoled_mode_description">Perfetto per dispositivi AMOLED</string>
+
+    <!-- View / Reader - Visualizzatore -->
+    <string name="minimalistic_mode">Modalità lettura</string>
+    <string name="minimalistic_mode_description">Modifica l’aspetto delle note</string>
+
+    <!-- Backup / Restore - Backup e ripristino -->
+    <string name="backup_restore">Impronta digitale • Sicurezza</string>
+    <string name="manual_backup">Backup manuale</string>
+    <string name="manual_restore">Ripristino manuale</string>
+    <string name="backup">Backup</string>
+    <string name="restore">Ripristina</string>
+    <string name="auto_backup">Backup automatico</string>
+    <string name="auto_backup_description">Salva automaticamente nella cartella Android/data (richiede solitamente ROOT per Android 10+)</string>
+    <string name="backup_dropdown">Backup</string>
+    <string name="backup_description">Salva o ripristina tutte le note da/in un file zip</string>
+    <string name="restore_description">Ripristina note da un file zip</string>
+
+    <!-- File Import - Importazione di file -->
+    <string name="file_import_title">Importa</string>
+    <string name="file_import_description">Importa altri file di testo come note</string>
+    <string name="file_import_success">Importazione riuscita</string>
+    <string name="file_import_error">Impossibile importare</string>
+    <string name="file_import_partial_error">Importazione di alcuni file non riuscita</string>
+
+    <!-- Markdown / Extras - Markdown ed extra -->
+    <string name="markdown">Personalizzazioni aggiuntive</string>
+    <string name="markdown_description">Elenco puntato • Checklist • Immagine</string>
+    <string name="description_markdown">Supporto • Immagini</string>
+    <string name="images_support">Supporto immagini</string>
+    <string name="description_widgets">Widget • Markdown</string>
+
+    <!-- Tools - Strumenti -->
+    <string name="tools">Strumenti</string>
+    <string name="description_tools">Ordinamento • Personalizzazione</string>
+
+    <!-- History - Cronologia -->
+    <string name="history">Cronologia</string>
+    <string name="description_history">Cronologia • Ripristino</string>
+
+    <!-- Security / Vault - Sicurezza e privacy -->
+    <string name="security">Sicurezza</string>
+    <string name="encrypt_database">Cifra database</string>
+    <string name="encrypt_database_description">Proteggi il database durante il backup</string>
+    <string name="database_restore_error">Password non valida o database non cifrato</string>
+    <string name="password_prompt">Inserisci password</string>
+    <string name="password_continue">continua</string>
+    <string name="invalid_password">Password non valida</string>
+    <string name="password_delete">Elimina password</string>
+    <string name="screen_protection">Protezione schermo</string>
+    <string name="screen_protection_description">Offusca il contenuto quando l’app viene cambiata..\nProtegge l’app dagli screenshot...</string>
+    <string name="biometric_authentication">Autenticazione biometrica</string>
+    <string name="biometric_authentication_description">È richiesta un’impronta digitale registrata</string>
+    <string name="vault_description">Abilita un ulteriore livello di protezione</string>
+
+    <!-- General - Generali -->
+    <string name="database">Database</string>
+    <string name="not_supported">Non ancora supportato</string>
+    <string name="note_details">Dettagli nota</string>
+    <string name="cloud">Cloud</string>
+    <string name="homepage">Torna alla schermata principale</string>
+    <string name="others">Altro</string>
+    <string name="feature">Ciao!</string>
+    <string name="support">(✦) Write On: Blocco note semplice</string>
+    <string name="support_description">Mostra il tuo supporto</string>
+    <string name="issue">Segnala problema</string>
+    <string name="issue_description">Suggerisci funzioni allo sviluppatore</string>
+    <string name="guide">Aiuto &amp; Risposte</string>
+    <string name="description_guide">Scorciatoie • Guida • Consigli</string>
+    <string name="invalid_input">Input non valido</string>
+    <string name="save_and_exit">Salva ed esci</string>
+
+    <!-- Behavior - Comportamento -->
+    <string name="Behavior">Comportamento</string>
+    <string name="always_edit">Aprire le note in modalità modifica</string>
+    <string name="always_edit_description">Disattivato - Priorità a modalità lettura\nAttivato - Priorità a modalità modifica</string>
+    <string name="show_only_title">Mostra solo titolo nella schermata principale</string>
+    <string name="show_only_title_description">Nasconde il contenuto lasciando più spazio</string>
+
+    <!-- Terms of Service -->
+    <string name="terms_of_service">Termini di servizio</string>
+    <string name="agree">Accetto</string>
+    <string name="terms_acceptance_title">1. Accettazione dei termini</string>
+    <string name="terms_acceptance_body">Benvenuto in WriteOn. Usando la nostra applicazione accetti questi Termini di Servizio. Leggili attentamente.</string>
+    <string name="terms_license_title">2. Licenza generale</string>
+    <string name="terms_license_body">WriteOn è distribuito sotto la **GNU General Public License (GPL) versione 3**. Questo ti permette di:\n- Usare, modificare e condividere liberamente l’applicazione.\n- Distribuire l’applicazione o versioni modificate, a condizione di distribuire anche il codice sorgente e mantenere la licenza GPL.</string>
+    <string name="terms_responsibilities_title">3. Responsabilità dell’utente</string>
+    <string name="terms_responsibilities_body">Sei responsabile della riservatezza delle informazioni del tuo account e di tutte le attività eseguite con esso.</string>
+    <string name="terms_liabilities_title">4. Limitazione di responsabilità</string>
+    <string name="terms_liabilities_body">WriteOn è fornito "così com’è", senza alcuna garanzia. Non garantiamo che l’app sia priva di errori, sicura o sempre disponibile.</string>
+    <string name="terms_warranties_title">5. Esclusione di garanzie</string>
+    <string name="terms_warranties_body">Non siamo responsabili di eventuali danni derivanti dall’uso di WriteOn, inclusi danni indiretti, incidentali o consequenziali.</string>
+    <string name="terms_changes_title">6. Modifiche ai termini</string>
+    <string name="terms_changes_body">Possiamo aggiornare questi termini di volta in volta. I termini aggiornati saranno pubblicati sul sito e la data di entrata in vigore sarà modificata di conseguenza.</string>
+    <string name="terms_privacy_title">7. Informativa sulla privacy</string>
+    <string name="terms_privacy_body">WriteOn non raccoglie dati personali. Per ulteriori informazioni consulta la nostra Informativa sulla Privacy disponibile su</string>
+    <string name="terms_contact_title">8. Contattaci</string>
+    <string name="terms_contact_body">Per qualsiasi domanda relativa a questi Termini di Servizio di WriteOn, contattaci a</string>
+    <string name="terms_effective_date">Data di entrata in vigore</string>
+
+    <!-- Fun - Varie -->
+    <string name="announcements">✦ Licenze Open Source</string>
+    <string name="discord">Discord</string>
+    <string name="privacy">Privacy</string>
+    <string name="unsupported_image_size">Dimensione immagine troppo grande (15mb)</string>
+    <string name="description_cloud">Salva le tue note localmente e sul cloud</string>
+    <string name="pattern_authentication">Autenticazione con schema</string>
+    <string name="pattern_authentication_description">Prossimamente!</string>
+    <string name="pin_authentication">Autenticazione con PIN</string>
+    <string name="pin_authentication_description">Prossimamente!</string>
+</resources>
+
+

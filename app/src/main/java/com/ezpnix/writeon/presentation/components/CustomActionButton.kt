@@ -77,6 +77,8 @@ import androidx.compose.material3.Card
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.material3.CardDefaults
+import androidx.compose.ui.res.stringResource
+import com.ezpnix.writeon.R
 
 
 @Composable
@@ -142,9 +144,11 @@ fun TxtButton(currentText: String) {
                     context.contentResolver.openOutputStream(uri)?.use { outputStream ->
                         outputStream.write(currentText.toByteArray())
                     }
-                    Toast.makeText(context, "Text saved successfully", Toast.LENGTH_SHORT).show()
+                    val msg = context.getString(R.string.saved_successfully_message)
+                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                 } catch (e: Exception) {
-                    Toast.makeText(context, "Error saving file: ${e.message}", Toast.LENGTH_SHORT).show()
+                    val msg = context.getString(R.string.error_message)
+                    Toast.makeText(context, "$msg ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -175,7 +179,8 @@ fun BrowserButton() {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
 
             context.startActivity(intent)
-            Toast.makeText(context, "Opening Default Browser...", Toast.LENGTH_SHORT).show()
+            val msg = context.getString(R.string.opening_default_browser_label)
+            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
         }
     )
     {
@@ -198,7 +203,8 @@ fun CalButton() {
     IconButton(
         modifier = Modifier.size(56.dp),
         onClick = {
-            Toast.makeText(context, "Today is: $dayOfWeek, $currentDate", Toast.LENGTH_SHORT).show()
+            val msg = context.getString(R.string.today_is, dayOfWeek, currentDate)
+            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
             calendarState.show()
         }
 
@@ -252,7 +258,8 @@ fun CopyButton(viewModel: EditViewModel, onClick: () -> Unit) {
 @SuppressLint("ServiceCast")
 fun copyToClipboard(context: Context, text: String) {
     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-    val clip = android.content.ClipData.newPlainText("Copied Text", text)
+    val msg = context.getString(R.string.copied_text_message)
+    val clip = android.content.ClipData.newPlainText(msg, text)
     clipboard.setPrimaryClip(clip)
 }
 
@@ -276,13 +283,13 @@ fun CalculatorButton() {
     if (showDialog.value) {
         AlertDialog(
             onDismissRequest = { showDialog.value = false },
-            title = { Text("Calculator") },
+            title = { Text(stringResource(id = R.string.open_calculator_menu)) },
             text = {
                 CalculatorUI()
             },
             confirmButton = {
                 Button(onClick = { showDialog.value = false }) {
-                    Text("Close")
+                    Text(stringResource(id = R.string.close_button))
                 }
             }
         )
@@ -389,7 +396,7 @@ fun CalculatorUI() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Result",
+                    text = stringResource(id = R.string.calculator_result_label),
                     style = TextStyle(
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,
