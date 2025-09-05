@@ -1,7 +1,6 @@
 package com.ezpnix.writeon.presentation.screens.settings.settings
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,26 +11,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.Sort
 import androidx.compose.material.icons.rounded.Battery1Bar
 import androidx.compose.material.icons.rounded.Colorize
 import androidx.compose.material.icons.rounded.DarkMode
-import androidx.compose.material.icons.rounded.Dashboard
 import androidx.compose.material.icons.rounded.DashboardCustomize
-import androidx.compose.material.icons.rounded.Dataset
 import androidx.compose.material.icons.rounded.GridView
 import androidx.compose.material.icons.rounded.HdrAuto
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Palette
 import androidx.compose.material.icons.rounded.RoundedCorner
-import androidx.compose.material.icons.rounded.TextFields
 import androidx.compose.material.icons.rounded.ViewAgenda
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
@@ -43,7 +35,6 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -51,7 +42,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import com.ezpnix.writeon.R

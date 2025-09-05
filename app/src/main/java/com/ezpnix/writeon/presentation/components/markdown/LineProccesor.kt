@@ -2,7 +2,7 @@ package com.ezpnix.writeon.presentation.components.markdown
 
 interface MarkdownLineProcessor {
     fun canProcessLine(line: String): Boolean
-    fun processLine(line: String, builder: MarkdownBuilder): Unit
+    fun processLine(line: String, builder: MarkdownBuilder)
 }
 
 class CodeBlockProcessor : MarkdownLineProcessor {

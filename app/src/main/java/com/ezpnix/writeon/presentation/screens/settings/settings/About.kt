@@ -3,9 +3,6 @@ package com.ezpnix.writeon.presentation.screens.settings.settings
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
-import android.os.Environment
-import android.os.StatFs
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -26,7 +23,6 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.rounded.Android
 import androidx.compose.material.icons.rounded.Build
 import androidx.compose.material.icons.rounded.Download
-import androidx.compose.material.icons.rounded.Email
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Verified
@@ -51,12 +47,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.ezpnix.writeon.R
-import com.ezpnix.writeon.core.constant.ConnectionConst
-import com.ezpnix.writeon.presentation.components.TitleText
 import com.ezpnix.writeon.presentation.navigation.NavRoutes
 import com.ezpnix.writeon.presentation.screens.settings.SettingsScaffold
 import com.ezpnix.writeon.presentation.screens.settings.TitleText
-import com.ezpnix.writeon.presentation.screens.settings.formatStorage
 import com.ezpnix.writeon.presentation.screens.settings.loadState
 import com.ezpnix.writeon.presentation.screens.settings.model.SettingsViewModel
 import com.ezpnix.writeon.presentation.screens.settings.saveState

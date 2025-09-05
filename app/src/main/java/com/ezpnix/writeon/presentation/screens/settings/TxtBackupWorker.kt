@@ -6,7 +6,6 @@ import android.net.Uri
 import com.ezpnix.writeon.data.local.database.NoteDatabaseProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.OutputStream
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 

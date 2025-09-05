@@ -13,7 +13,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.rememberNavController
 import com.ezpnix.writeon.data.repository.SettingsRepositoryImpl
 import com.ezpnix.writeon.presentation.components.registerGalleryObserver

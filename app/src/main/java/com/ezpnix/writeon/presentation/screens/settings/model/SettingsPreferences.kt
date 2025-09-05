@@ -1,7 +1,6 @@
 package com.ezpnix.writeon.presentation.screens.settings.model
 
 import android.content.Context
-import androidx.datastore.dataStore
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey

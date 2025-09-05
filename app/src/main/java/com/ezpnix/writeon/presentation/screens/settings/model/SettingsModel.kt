@@ -14,8 +14,8 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.ezpnix.writeon.BuildConfig
 import com.ezpnix.writeon.R
-import com.ezpnix.writeon.data.repository.ImportExportRepository
 import com.ezpnix.writeon.data.repository.BackupResult
+import com.ezpnix.writeon.data.repository.ImportExportRepository
 import com.ezpnix.writeon.data.repository.SettingsRepositoryImpl
 import com.ezpnix.writeon.domain.model.Settings
 import com.ezpnix.writeon.domain.usecase.ImportExportUseCase
@@ -23,21 +23,19 @@ import com.ezpnix.writeon.domain.usecase.ImportResult
 import com.ezpnix.writeon.domain.usecase.NoteUseCase
 import com.ezpnix.writeon.domain.usecase.SettingsUseCase
 import com.ezpnix.writeon.presentation.screens.settings.BackupWorker
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(

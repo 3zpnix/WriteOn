@@ -1,9 +1,6 @@
 package com.ezpnix.writeon.presentation.screens.home.widgets
 
-import android.content.Context
 import android.widget.Toast
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,15 +10,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Help
 import androidx.compose.material.icons.rounded.AddCircle
-import androidx.compose.material.icons.rounded.CloudDownload
-import androidx.compose.material.icons.rounded.Help
-import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
@@ -33,10 +26,7 @@ import androidx.navigation.NavController
 import com.ezpnix.writeon.R
 import com.ezpnix.writeon.domain.model.Note
 import com.ezpnix.writeon.presentation.navigation.NavRoutes
-import com.ezpnix.writeon.presentation.screens.edit.components.CustomTextField
 import com.ezpnix.writeon.presentation.screens.settings.model.SettingsViewModel
-import com.ezpnix.writeon.presentation.screens.settings.settings.PasswordPrompt
-import com.ezpnix.writeon.presentation.screens.settings.settings.shapeManager
 
 @Composable
 fun NoteFilter(

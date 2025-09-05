@@ -1,20 +1,45 @@
 package com.ezpnix.writeon.presentation.screens.settings.settings
 
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import android.util.Base64
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.rounded.ArrowCircleUp
+import androidx.compose.material.icons.rounded.Backup
+import androidx.compose.material.icons.rounded.Cloud
+import androidx.compose.material.icons.rounded.Description
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -37,6 +62,7 @@ import com.ezpnix.writeon.R
 import com.ezpnix.writeon.core.constant.DatabaseConst
 import com.ezpnix.writeon.presentation.screens.edit.components.CustomTextField
 import com.ezpnix.writeon.presentation.screens.settings.SettingsScaffold
+import com.ezpnix.writeon.presentation.screens.settings.TxtBackupHelper
 import com.ezpnix.writeon.presentation.screens.settings.model.SettingsViewModel
 import com.google.crypto.tink.Aead
 import com.google.crypto.tink.aead.AeadConfig
@@ -101,7 +127,7 @@ fun CloudScreen(navController: NavController, settingsViewModel: SettingsViewMod
             if (uri != null) {
                 coroutineScope.launch {
                     try {
-                        _root_ide_package_.com.ezpnix.writeon.presentation.screens.settings.TxtBackupHelper
+                        TxtBackupHelper
                             .restoreNotesFromZipStream(context, uri)
                         Toast.makeText(context, "Imported! App will restart now.", Toast.LENGTH_LONG).show()
                         kotlinx.coroutines.delay(1000)
@@ -116,7 +142,7 @@ fun CloudScreen(navController: NavController, settingsViewModel: SettingsViewMod
 
     LaunchedEffect(txtBackupUri) {
         txtBackupUri?.let { uri ->
-            _root_ide_package_.com.ezpnix.writeon.presentation.screens.settings.TxtBackupHelper
+            TxtBackupHelper
                 .writeNotesToZipStream(context, uri)
             Toast.makeText(context, "TXT Backup saved!", Toast.LENGTH_SHORT).show()
             txtBackupUri = null

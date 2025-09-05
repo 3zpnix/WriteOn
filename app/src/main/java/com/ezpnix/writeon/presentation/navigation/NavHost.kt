@@ -1,8 +1,6 @@
 package com.ezpnix.writeon.presentation.navigation
 
-import android.app.Activity
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController

@@ -82,7 +82,7 @@ fun SettingsBox(
                         switchEnabled,
                         { showCustomAction = !showCustomAction },
                         linkClicked,
-                        clipboardText ?: ""
+                        clipboardText
                     )
                 }
         ) {
