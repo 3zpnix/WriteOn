@@ -2,8 +2,9 @@ package com.ezpnix.writeon.presentation.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
+import com.ezpnix.writeon.presentation.screens.home.TrashScreen
 import com.ezpnix.writeon.presentation.screens.settings.AndroidScreen
-import com.ezpnix.writeon.presentation.screens.settings.CloudScreen
+import com.ezpnix.writeon.presentation.screens.settings.settings.CloudScreen
 import com.ezpnix.writeon.presentation.screens.settings.FlashcardScreen
 import com.ezpnix.writeon.presentation.screens.settings.MainSettings
 import com.ezpnix.writeon.presentation.screens.settings.ScratchpadScreen
@@ -16,7 +17,6 @@ import com.ezpnix.writeon.presentation.screens.settings.settings.PrivacyScreen
 import com.ezpnix.writeon.presentation.screens.settings.settings.IssueScreen
 import com.ezpnix.writeon.presentation.screens.settings.settings.ToolsScreen
 import com.ezpnix.writeon.presentation.screens.settings.settings.GuideScreen
-import com.ezpnix.writeon.presentation.screens.settings.trash.TrashScreen
 
 sealed class NavRoutes(val route: String) {
     data object Home : NavRoutes("home")
@@ -34,10 +34,10 @@ sealed class NavRoutes(val route: String) {
     data object Scratchpad: NavRoutes("scratchpad")
     data object Issue: NavRoutes("issue")
     data object Guide: NavRoutes("guide")
-    data object Trash: NavRoutes("trash")
     data object Flashback: NavRoutes("flashback")
     data object Android: NavRoutes("android")
     data object Cloud: NavRoutes("cloud")
+    data object Trash: NavRoutes("trash")
 }
 
 val settingScreens = mapOf<String, @Composable (settingsViewModel: SettingsViewModel, navController : NavController) -> Unit>(
@@ -51,8 +51,8 @@ val settingScreens = mapOf<String, @Composable (settingsViewModel: SettingsViewM
     NavRoutes.Scratchpad.route to { settings, navController -> ScratchpadScreen(navController,settings) },
     NavRoutes.Issue.route to { settings, navController -> IssueScreen(navController,settings) },
     NavRoutes.Guide.route to { settings, navController -> GuideScreen(navController, settings) },
-    NavRoutes.Trash.route to { settings, navController -> TrashScreen(navController, settings) },
     NavRoutes.Flashback.route to { settings, navController -> FlashcardScreen(navController, settings) },
     NavRoutes.Android.route to { settings, navController -> AndroidScreen(navController, settings) },
     NavRoutes.Cloud.route to { settings, navController -> CloudScreen(navController, settings) },
-)
+    NavRoutes.Trash.route to { settings, navController -> TrashScreen(settings, navController) },
+    )

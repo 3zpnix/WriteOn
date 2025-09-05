@@ -55,6 +55,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import com.ezpnix.writeon.R
+import com.ezpnix.writeon.presentation.navigation.NavRoutes
 import com.ezpnix.writeon.presentation.screens.settings.SettingsScaffold
 import com.ezpnix.writeon.presentation.screens.settings.model.SettingsViewModel
 import com.ezpnix.writeon.presentation.screens.settings.widgets.ActionType
@@ -263,7 +264,9 @@ fun ColorStylesScreen(navController: NavController, settingsViewModel: SettingsV
                         isLast = true,
                         radius = settingsViewModel.settings.value.cornerRadius
                     ),
-                    customAction = { navController.navigateUp() }
+                    customAction = {
+                        navController.popBackStack(NavRoutes.Home.route, inclusive = false)
+                    }
                 )
             }
         }

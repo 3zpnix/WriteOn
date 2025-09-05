@@ -63,9 +63,6 @@ fun WidgetText(
     )
 }
 
-
-
-
 @Composable
 fun MarkdownWidgetContent(
     modifier: GlanceModifier,
@@ -178,8 +175,8 @@ fun WidgetMarkdownElement(
                     checked = element.checked,
                     onCheckedChange = { newChecked ->
                         val newMarkdown = lines.toMutableList().apply {
-                            this[element.index] = if (newChecked) {
-                                "[X] ${element.text}"
+                            this[element.lineNumber] = if (newChecked) {
+                                "[x] ${element.text}"
                             } else {
                                 "[ ] ${element.text}"
                             }

@@ -1,6 +1,6 @@
 <resources>
     <!-- App Info -->
-    <string name="app_name">Write On</string>
+    <string name="app_name">WriteOn</string>
     <string name="version">App Version</string>
     <string name="build_type">Build Type</string>
     <string name="latest_release">Check Latest Release</string>
@@ -12,7 +12,7 @@
     <string name="description_about">Github • Version •  Email</string>
 
     <!-- Welcome / Greeting -->
-    <string name="startup">"Create ~ Restore ~ Share"</string>
+        <string name="startup">"Help ~ Create ~ Share"</string>
     <string name="enter_placeholder">Home Greeting</string>
     <string name="enter_placeholder_description">Input any text to your liking</string>
 
@@ -21,12 +21,12 @@
     <string name="new_note">Create</string>
     <string name="created_time">Note Created</string>
     <string name="select_note">Select Note</string>
-    <string name="no_title">No title</string>
+    <string name="untitled">Untitled</string>
     <string name="description">Description</string>
     <string name="pinned">Pinned</string>
     <string name="pin">Pin</string>
     <string name="delete">Delete</string>
-    <string name="alert_text"> Are you sure you want to delete it permanently?</string>
+    <string name="alert_text">Move this note(s) to your Recycle Bin?</string>
     <string name="yes"> Confirm</string>
     <string name="cancel"> Cancel</string>
     <string name="share">Share</string>
@@ -88,14 +88,14 @@
 
     <!-- Backup / Restore -->
     <string name="backup_restore">Fingerprint • Security</string>
-    <string name="manual_backup">Manual Backup</string>
-    <string name="manual_restore">Manual Restore</string>
+    <string name="database_backup">Database Backup</string>
+    <string name="database_restore">Database Restore</string>
     <string name="backup">Backup</string>
     <string name="restore">Restore</string>
     <string name="auto_backup">Automatic Backup</string>
-    <string name="auto_backup_description">Saves automatically to Android/data folder (Usually requires ROOT access for Android 10+)</string>
+    <string name="auto_backup_description">Saves automatically to Android/data folder (For Android 10+ devices requires ROOT to access due to the current android policy)</string>
     <string name="backup_dropdown">Backup</string>
-    <string name="backup_description">Store or restore all notes to/from a zip file</string>
+    <string name="backup_description">Store or restore all notes to/from a zip file. Note that this replaces your entire existing notes as well as clearing the recycle bin.</string>
     <string name="restore_description">Restore notes from a zip file</string>
 
     <!-- File Import -->
@@ -130,9 +130,9 @@
     <string name="invalid_password">Invalid Password</string>
     <string name="password_delete">Delete Password</string>
     <string name="screen_protection">Screen Protection</string>
-    <string name="screen_protection_description">Blurs content when app is switched..\nProtects app from screenshots...</string>
+    <string name="screen_protection_description">Blurs content when app is switched..\nProtects app from screenshots…</string>
     <string name="biometric_authentication">Biometric Authentication</string>
-    <string name="biometric_authentication_description">Registered fingerprint is required"</string>
+    <string name="biometric_authentication_description">Coming Soon!"</string>
     <string name="vault_description">Enable extra layer of protection</string>
 
     <!-- General -->
@@ -143,7 +143,7 @@
     <string name="homepage">Go Back to Homepage</string>
     <string name="others">Others</string>
     <string name="feature">Hello there</string>
-    <string name="support">(✦) Write On: Simple Notepad</string>
+    <string name="support">(✦) WriteOn: Simple Notepad</string>
     <string name="support_description">Show your love</string>
     <string name="issue">Issue Feedback</string>
     <string name="issue_description">Suggest features to developer</string>
@@ -190,4 +190,12 @@
     <string name="pattern_authentication_description">Coming Soon!</string>
     <string name="pin_authentication">Pin Authentication</string>
     <string name="pin_authentication_description">Coming Soon!</string>
+
+    <string name="trash">Recycle Bin</string>
+    <string name="trash_empty">Recycle bin is empty!</string>
+    <string name="delete_forever">Delete</string>
+    <string name="confirm_restore">Restore selected note(s)?</string>
+    <string name="confirm_delete">Delete note(s) permanently?</string>
+    <string name="edit">Edit</string>
+    <string name="empty_description">No description yet…</string>
 </resources>

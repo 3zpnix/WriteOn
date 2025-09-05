@@ -1,9 +1,11 @@
 package com.ezpnix.writeon.presentation.screens.settings.model
 
 import android.content.Context
+import androidx.datastore.dataStore
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
@@ -37,6 +39,17 @@ class SettingsPreferences @Inject constructor(
             val raw = preferences[COLUMNS_COUNT_KEY] ?: DEFAULT_COLUMNS_COUNT
             if (raw > 5) DEFAULT_COLUMNS_COUNT else raw
         }
+
+    val visibleFabItems: Flow<Set<String>> =
+        context.dataStore.data.map { prefs ->
+            prefs[stringSetPreferencesKey("visible_fab_items")] ?: emptySet()
+        }
+
+    suspend fun saveVisibleFabItems(items: Set<String>) {
+        context.dataStore.edit { prefs ->
+            prefs[stringSetPreferencesKey("visible_fab_items")] = items
+        }
+    }
 
     suspend fun saveColumnsCount(count: Int) {
         context.dataStore.edit { preferences ->

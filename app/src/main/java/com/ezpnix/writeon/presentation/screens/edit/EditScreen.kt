@@ -15,7 +15,9 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,6 +32,7 @@ import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
@@ -49,6 +52,7 @@ import androidx.compose.material.icons.rounded.PushPin
 import androidx.compose.material.icons.rounded.RemoveRedEye
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material.icons.rounded.Visibility
+import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
@@ -74,6 +78,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
@@ -128,12 +133,32 @@ fun EditNoteView(
     onClickBack: () -> Unit
 ) {
     val viewModel: EditViewModel = hiltViewModel()
+    val context = LocalContext.current
     viewModel.updateIsEncrypted(encrypted)
     viewModel.setupNoteData(id)
     ObserveLifecycleEvents(viewModel)
 
-    val pagerState = rememberPagerState(initialPage = if (id == 0) 0 else 1, pageCount = { 2 })
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        if (!permissions.getOrDefault(Manifest.permission.READ_EXTERNAL_STORAGE, false) ||
+            !permissions.getOrDefault(Manifest.permission.WRITE_EXTERNAL_STORAGE, false)) {
+            Toast.makeText(context, "Storage permissions required to load/save images", Toast.LENGTH_SHORT).show()
+        }
+    }
 
+    LaunchedEffect(Unit) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            permissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                )
+            )
+        }
+    }
+
+    val pagerState = rememberPagerState(initialPage = if (id == 0) 0 else 1, pageCount = { 2 })
     val coroutineScope = rememberCoroutineScope()
 
     NotesScaffold(
@@ -218,25 +243,14 @@ fun TopBarActions(pagerState: PagerState, onClickBack: () -> Unit, viewModel: Ed
                                 viewModel.toggleEditMenuVisibility(false)
                             }
                         )
-//                        DropdownMenuItem(
-//                            text = { Text(stringResource(R.string.pin)) },
-//                            leadingIcon = {
-//                                Icon(
-//                                    if (viewModel.isPinned.value) Icons.Rounded.PushPin else Icons.Outlined.PushPin,
-//                                    contentDescription = "Pin"
-//                                )
-//                            },
-//                            onClick = {
-//                                val message = if (isPinned) {
-//                                    "Unpinned Note"
-//                                } else {
-//                                    "Pinned Note"
-//                                }
-//                                viewModel.toggleNotePin(!isPinned)
-//                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-//                                viewModel.toggleEditMenuVisibility(false)
-//                            }
-//                        )
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.note_details)) },
+                            leadingIcon = { Icon(Icons.Rounded.Info, contentDescription = "Details") },
+                            onClick = {
+                                viewModel.toggleEditMenuVisibility(false)
+                                viewModel.toggleNoteInfoVisibility(true)
+                            }
+                        )
                         DropdownMenuItem(
                             text = { Text(stringResource(id = R.string.share_text)) },
                             leadingIcon = { Icon(Icons.Rounded.Share, contentDescription = "Share") },
@@ -249,14 +263,6 @@ fun TopBarActions(pagerState: PagerState, onClickBack: () -> Unit, viewModel: Ed
                                 val shareIntent = Intent.createChooser(sendIntent, null)
                                 context.startActivity(shareIntent)
                                 viewModel.toggleEditMenuVisibility(false)
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text(stringResource(R.string.note_details)) },
-                            leadingIcon = { Icon(Icons.Rounded.Info, contentDescription = "Details") },
-                            onClick = {
-                                viewModel.toggleEditMenuVisibility(false)
-                                viewModel.toggleNoteInfoVisibility(true)
                             }
                         )
                     }
@@ -295,7 +301,7 @@ fun TopBar(pagerState: PagerState, onClickBack: () -> Unit, viewModel: EditViewM
             CustomTextField(
                 value = viewModel.noteName.value,
                 onValueChange = { viewModel.updateNoteName(it) },
-                placeholder = stringResource(R.string.no_title),
+                placeholder = stringResource(R.string.untitled),
                 enabled = pagerState.currentPage == 0,
                 modifier = Modifier.fillMaxWidth(),
             )
@@ -408,7 +414,7 @@ fun MinimalisticMode(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun EditScreen(
     viewModel: EditViewModel,
@@ -419,12 +425,8 @@ fun EditScreen(
 ) {
     val context = LocalContext.current
     val showButtons = remember { mutableStateOf(false) }
-    val listState = rememberLazyListState()
-
     val imeVisible = WindowInsets.ime.getBottom(LocalDensity.current) > 0
-
     val hideOnKeyboard = settingsViewModel.settings.value.hideVisibilityButtonWhenKeyboard
-
     var fabVisible by remember { mutableStateOf(true) }
 
     LaunchedEffect(imeVisible, hideOnKeyboard) {
@@ -435,11 +437,9 @@ fun EditScreen(
         modifier = Modifier
             .fillMaxSize()
             .imePadding()
-            .pointerInput(imeVisible) {
+            .pointerInput(Unit) {
                 detectTapGestures {
-                    if (!imeVisible) {
-                        fabVisible = true
-                    }
+                    if (!imeVisible) fabVisible = true
                 }
             }
     ) {
@@ -467,10 +467,29 @@ fun EditScreen(
                         value = viewModel.noteDescription.value,
                         onValueChange = { viewModel.updateNoteDescription(it) },
                         modifier = Modifier.fillMaxSize(),
-                        placeholder = stringResource(R.string.description),
+                        placeholder = stringResource(R.string.empty_description),
                         textStyle = TextStyle(fontSize = settingsViewModel.settings.value.fontSize.sp)
                     )
                 }
+            )
+        }
+
+        if (showButtons.value) {
+            val overlayColor = if (isSystemInDarkTheme()) {
+                Color.Black.copy(alpha = 0.5f)
+            } else {
+                Color.Black.copy(alpha = 0.3f)
+            }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(overlayColor)
+                    .pointerInput(Unit) {
+                        detectTapGestures {
+                            showButtons.value = false
+                        }
+                    }
             )
         }
 
@@ -480,90 +499,68 @@ fun EditScreen(
             exit = fadeOut(),
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(24.dp)
+                .padding(32.dp)
         ) {
-            FloatingActionButton(
-                onClick = { showButtons.value = true },
-                containerColor = MaterialTheme.colorScheme.surface,
-                contentColor = MaterialTheme.colorScheme.primary
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(MaterialTheme.colorScheme.surface)
+                    .clickable { showButtons.value = !showButtons.value }
+                    .padding(horizontal = 24.dp, vertical = 12.dp)
             ) {
                 Icon(
-                    imageVector = Icons.Rounded.Visibility,
-                    contentDescription = "Show Options"
+                    imageVector = Icons.Rounded.Description,
+                    contentDescription = "Show Options",
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(30.dp)
+                )
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    text = "Options",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
         }
 
-        if (showButtons.value) {
-            ModalBottomSheet(
-                onDismissRequest = { showButtons.value = false },
-                containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+        AnimatedVisibility(
+            visible = showButtons.value,
+            enter = fadeIn(),
+            exit = fadeOut(),
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 125.dp)
+        ) {
+            Card(
+                shape = RoundedCornerShape(24.dp),
+                elevation = CardDefaults.cardElevation(8.dp),
+                modifier = Modifier
+                    .wrapContentHeight()
+                    .fillMaxWidth(0.95f)
             ) {
                 Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier
-                        .fillMaxWidth()
                         .padding(16.dp)
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    IconButton(
-                        onClick = {
-                            coroutineScope.launch {
-                                val firstVisibleItem = listState.firstVisibleItemIndex
-                                listState.animateScrollToItem(maxOf(0, firstVisibleItem - 1))
-                            }
-                        },
-                        modifier = Modifier.size(40.dp)
-                    ) {
-                        Icon(Icons.Filled.ChevronLeft, contentDescription = "Scroll Left")
+                    CopyButton(viewModel) {
+                        copyToClipboard(context, viewModel.noteDescription.value.text)
+                        showButtons.value = false
                     }
-
-                    LazyRow(
-                        state = listState,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .weight(1f)
-                            .background(
-                                color = MaterialTheme.colorScheme.surface,
-                                shape = RoundedCornerShape(24.dp)
-                            )
-                            .padding(horizontal = 12.dp, vertical = 8.dp)
-                    ) {
-                        item {
-                            CopyButton(viewModel, onClick = {
-                                copyToClipboard(context, viewModel.noteDescription.value.text)
-                            })
-                        }
-                        item { CalButton() }
-                        item {
-                            PreviewButton(pagerState, coroutineScope, onClick = {
-                                showButtons.value = false
-                            })
-                        }
-                        item { CalculatorButton() }
-                        item { TxtButton(currentText = viewModel.noteDescription.value.text) }
-
-                        item { BrowserButton() }
-                        item {
-                            TranslateButton(viewModel, onClick = {
-                                copyToClipboard(context, viewModel.noteDescription.value.text)
-                                openTranslateApp(context, viewModel.noteDescription.value.text)
-                            })
-                        }
+                    CalButton()
+                    PreviewButton(pagerState, coroutineScope) {
+                        showButtons.value = false
                     }
-
-                    IconButton(
-                        onClick = {
-                            coroutineScope.launch {
-                                val firstVisibleItem = listState.firstVisibleItemIndex
-                                listState.animateScrollToItem(firstVisibleItem + 1)
-                            }
-                        },
-                        modifier = Modifier.size(40.dp)
-                    ) {
-                        Icon(Icons.Filled.ChevronRight, contentDescription = "Scroll Right")
-                    }
+                    CalculatorButton()
+                    TxtButton(currentText = viewModel.noteDescription.value.text)
+//                    BrowserButton()
+//                    TranslateButton(viewModel) {
+//                        copyToClipboard(context, viewModel.noteDescription.value.text)
+//                        openTranslateApp(context, viewModel.noteDescription.value.text)
+//                        showButtons.value = false
                 }
             }
         }
@@ -573,16 +570,23 @@ fun EditScreen(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun PreviewScreen(viewModel: EditViewModel, settingsViewModel: SettingsViewModel, pagerState: PagerState, onClickBack: () -> Unit) {
+fun PreviewScreen(
+    viewModel: EditViewModel,
+    settingsViewModel: SettingsViewModel,
+    pagerState: PagerState,
+    onClickBack: () -> Unit
+) {
     if (viewModel.isNoteInfoVisible.value) BottomModal(viewModel, settingsViewModel)
 
     val focusManager = LocalFocusManager.current
     focusManager.clearFocus()
     val coroutineScope = rememberCoroutineScope()
-    val context = LocalContext.current
 
     Column(
-        modifier = Modifier.padding(16.dp),
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
         MarkdownBox(
             isExtremeAmoled = settingsViewModel.settings.value.extremeAmoledMode,
@@ -595,77 +599,63 @@ fun PreviewScreen(viewModel: EditViewModel, settingsViewModel: SettingsViewModel
                 .fillMaxWidth()
                 .padding(bottom = 8.dp),
             content = {
-                MarkdownText(
-                    radius = settingsViewModel.settings.value.cornerRadius,
-                    markdown = viewModel.noteDescription.value.text,
-                    isEnabled = settingsViewModel.settings.value.isMarkdownEnabled,
+                Box(
                     modifier = Modifier
+                        .fillMaxSize()
                         .padding(16.dp)
-                        .weight(1f),
-                    fontSize = settingsViewModel.settings.value.fontSize.sp,
-                    onContentChange = { viewModel.updateNoteDescription(TextFieldValue(text = it)) }
-                )
-            }
-        )
-        val listState = rememberLazyListState()
-        val coroutineScope = rememberCoroutineScope()
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            IconButton(
-                onClick = {
-                    coroutineScope.launch {
-                        val firstVisibleItemIndex = listState.firstVisibleItemIndex
-                        listState.animateScrollToItem(maxOf(0, firstVisibleItemIndex - 1))
+                ) {
+                    if (viewModel.noteDescription.value.text.isBlank()) {
+                        Text(
+                            text = stringResource(R.string.empty_description),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
                     }
-                },
-                modifier = Modifier.size(40.dp)
-            ) {
-                Icon(imageVector = Icons.Filled.ChevronLeft, contentDescription = "Scroll Left")
-            }
-
-            LazyRow(
-                state = listState,
-                horizontalArrangement = Arrangement.spacedBy(3.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.surface, shape = CircleShape)
-                    .padding(8.dp)
-                    .weight(1f)
-            ) {
-                item { CopyButton(viewModel, onClick = {
-                    copyToClipboard(context, viewModel.noteDescription.value.text)
-                }) }
-                item { CalButton() }
-                item { EditButton(pagerState, coroutineScope) }
-                item { CalculatorButton() }
-                item { TxtButton(currentText = viewModel.noteDescription.value.text) }
-                item { BrowserButton() }
-                item {
-                    TranslateButton(viewModel, onClick = {
-                        copyToClipboard(context, viewModel.noteDescription.value.text)
-                        openTranslateApp(context, viewModel.noteDescription.value.text)
-                    })
+                    MarkdownText(
+                        radius = settingsViewModel.settings.value.cornerRadius,
+                        markdown = viewModel.noteDescription.value.text,
+                        isEnabled = settingsViewModel.settings.value.isMarkdownEnabled,
+                        modifier = Modifier.fillMaxSize(),
+                        fontSize = settingsViewModel.settings.value.fontSize.sp,
+                        onContentChange = { viewModel.updateNoteDescription(TextFieldValue(text = it)) }
+                    )
                 }
             }
+        )
 
-            IconButton(
-                onClick = {
-                    coroutineScope.launch {
-                        val firstVisibleItemIndex = listState.firstVisibleItemIndex
-                        listState.animateScrollToItem(minOf(listState.layoutInfo.totalItemsCount - 1, firstVisibleItemIndex + 1))
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(MaterialTheme.colorScheme.surface)
+                    .clickable {
+                        coroutineScope.launch { pagerState.animateScrollToPage(0) }
                     }
-                },
-                modifier = Modifier.size(40.dp)
+                    .padding(horizontal = 24.dp, vertical = 12.dp)
             ) {
-                Icon(imageVector = Icons.Filled.ChevronRight, contentDescription = "Scroll Right")
+                Icon(
+                    imageVector = Icons.Rounded.Edit,
+                    contentDescription = "Edit",
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(30.dp)
+                )
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    text = stringResource(R.string.edit),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.primary
+                )
             }
         }
     }
 }
+
 
 @Composable
 fun MarkdownBox(
@@ -679,18 +669,12 @@ fun MarkdownBox(
         modifier = modifier
             .clip(shape)
             .heightIn(max = 128.dp, min = 42.dp)
-            .then(
-                if (isExtremeAmoled) {
-                    Modifier.border(
-                        1.5.dp,
-                        shape = shape,
-                        color = MaterialTheme.colorScheme.surfaceContainerHighest
-                    )
-                } else Modifier
-            ),
+            .background(MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = if (!isExtremeAmoled) 6.dp else 0.dp),
-
-        ) {
+        colors = CardDefaults.elevatedCardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        )
+    ) {
         content()
     }
     Spacer(modifier = Modifier.height(3.dp))

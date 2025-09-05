@@ -12,22 +12,26 @@ import com.ezpnix.writeon.presentation.screens.settings.model.SettingsViewModel
 import com.ezpnix.writeon.presentation.screens.terms.TermsScreen
 
 @Composable
-fun AppNavHost(settingsModel: SettingsViewModel,navController: NavHostController = rememberNavController(), noteId: Int) {
-    val activity = (LocalContext.current as? Activity)
-
-    NavHost(navController, startDestination = if (!settingsModel.settings.value.termsOfService) NavRoutes.Terms.route else if (noteId == -1) NavRoutes.Home.route else NavRoutes.Edit.route) {
+fun AppNavHost(
+    settingsViewModel: SettingsViewModel,
+    navController: NavHostController = rememberNavController(),
+    noteId: Int,
+    startDestination: String
+) {
+    NavHost(navController, startDestination = startDestination) {
         animatedComposable(NavRoutes.Home.route) {
             HomeView(
                 onSettingsClicked = { navController.navigate(NavRoutes.Settings.route) },
                 onNoteClicked = { id, encrypted -> navController.navigate(NavRoutes.Edit.createRoute(id, encrypted)) },
-                settingsModel = settingsModel,
+                settingsModel = settingsViewModel,
                 navController = navController
             )
         }
 
         animatedComposable(NavRoutes.Terms.route) {
             TermsScreen(
-                settingsModel
+                settingsViewModel = settingsViewModel,
+                navController = navController
             )
         }
 
@@ -35,14 +39,16 @@ fun AppNavHost(settingsModel: SettingsViewModel,navController: NavHostController
             val id = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: 0
             val encrypted = backStackEntry.arguments?.getString("encrypted").toBoolean()
             EditNoteView(
-                settingsViewModel = settingsModel,
+                settingsViewModel = settingsViewModel,
                 id = if (noteId == -1) id else noteId,
                 encrypted = encrypted
             ) {
                 if (noteId == -1) {
-                    navController.navigateUp()
+                    navController.popBackStack()
                 } else {
-                    activity?.finish()
+                    navController.navigate(NavRoutes.Home.route) {
+                        popUpTo(NavRoutes.Edit.route) { inclusive = true }
+                    }
                 }
             }
         }
@@ -50,11 +56,11 @@ fun AppNavHost(settingsModel: SettingsViewModel,navController: NavHostController
         settingScreens.forEach { (route, screen) ->
             if (route == NavRoutes.Settings.route) {
                 slideInComposable(route) {
-                    screen(settingsModel,navController)
+                    screen(settingsViewModel, navController)
                 }
             } else {
                 animatedComposable(route) {
-                    screen(settingsModel,navController)
+                    screen(settingsViewModel, navController)
                 }
             }
         }

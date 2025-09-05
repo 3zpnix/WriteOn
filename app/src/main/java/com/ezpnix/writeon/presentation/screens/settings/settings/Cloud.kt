@@ -1,7 +1,9 @@
-package com.ezpnix.writeon.presentation.screens.settings
+package com.ezpnix.writeon.presentation.screens.settings.settings
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
+import android.util.Base64
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -23,23 +25,68 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.navigation.NavController
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.ezpnix.writeon.R
 import com.ezpnix.writeon.core.constant.DatabaseConst
 import com.ezpnix.writeon.presentation.screens.edit.components.CustomTextField
+import com.ezpnix.writeon.presentation.screens.settings.SettingsScaffold
 import com.ezpnix.writeon.presentation.screens.settings.model.SettingsViewModel
-import com.ezpnix.writeon.presentation.screens.settings.settings.shapeManager
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKey
+import com.google.crypto.tink.Aead
+import com.google.crypto.tink.aead.AeadConfig
+import com.google.crypto.tink.aead.AeadKeyTemplates
+import com.google.crypto.tink.integration.android.AndroidKeysetManager
+import com.jakewharton.processphoenix.ProcessPhoenix
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+
+private val Context.webDavDataStore: DataStore<Preferences> by preferencesDataStore(name = "webdav_prefs")
 
 @Composable
+@Suppress("DEPRECATION")
 fun CloudScreen(navController: NavController, settingsViewModel: SettingsViewModel) {
     val context = LocalContext.current
     val workManager = remember { WorkManager.getInstance(context) }
+    val coroutineScope = rememberCoroutineScope()
+
+    val aead = remember {
+        AeadConfig.register()
+        AndroidKeysetManager.Builder()
+            .withSharedPref(context, "webdav_keyset", "webdav_prefs")
+            .withKeyTemplate(AeadKeyTemplates.AES256_GCM)
+            .withMasterKeyUri("android-keystore://webdav_master_key")
+            .build()
+            .keysetHandle
+            .getPrimitive(Aead::class.java)
+    }
+
+    val webdavUrlKey = stringPreferencesKey("webdav_url")
+    val webdavUsernameKey = stringPreferencesKey("webdav_username")
+    val webdavPasswordKey = stringPreferencesKey("webdav_password")
+
+    var webdavUrl by remember { mutableStateOf("") }
+    var webdavUsername by remember { mutableStateOf("") }
+    var webdavPassword by remember { mutableStateOf("") }
+
+    LaunchedEffect(Unit) {
+        context.webDavDataStore.data.first().let { prefs ->
+            webdavUrl = prefs[webdavUrlKey] ?: ""
+            webdavUsername = prefs[webdavUsernameKey] ?: ""
+            prefs[webdavPasswordKey]?.let { encryptedPassword ->
+                webdavPassword = try {
+                    String(aead.decrypt(Base64.decode(encryptedPassword, Base64.DEFAULT), byteArrayOf()))
+                } catch (e: Exception) {
+                    ""
+                }
+            } ?: ""
+        }
+    }
 
     var txtBackupUri by remember { mutableStateOf<Uri?>(null) }
 
@@ -48,24 +95,54 @@ fun CloudScreen(navController: NavController, settingsViewModel: SettingsViewMod
         onResult = { uri -> txtBackupUri = uri }
     )
 
+    val importTxtBackupLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument(),
+        onResult = { uri ->
+            if (uri != null) {
+                coroutineScope.launch {
+                    try {
+                        _root_ide_package_.com.ezpnix.writeon.presentation.screens.settings.TxtBackupHelper
+                            .restoreNotesFromZipStream(context, uri)
+                        Toast.makeText(context, "Imported! App will restart now.", Toast.LENGTH_LONG).show()
+                        kotlinx.coroutines.delay(1000)
+                        ProcessPhoenix.triggerRebirth(context)
+                    } catch (e: Exception) {
+                        Toast.makeText(context, "Failed to restore TXT backup: ${e.message}", Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
+        }
+    )
+
     LaunchedEffect(txtBackupUri) {
         txtBackupUri?.let { uri ->
-            TxtBackupHelper.writeNotesToZipStream(context, uri)
+            _root_ide_package_.com.ezpnix.writeon.presentation.screens.settings.TxtBackupHelper
+                .writeNotesToZipStream(context, uri)
             Toast.makeText(context, "TXT Backup saved!", Toast.LENGTH_SHORT).show()
-            txtBackupUri = null // reset after use
+            txtBackupUri = null
         }
     }
 
     val exportBackupLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.CreateDocument("*/.zip"),
-        onResult = { uri ->
-            if (uri != null) settingsViewModel.onExportBackup(uri, context)
-        }
+        contract = ActivityResultContracts.CreateDocument("application/zip"),
+        onResult = { uri -> if (uri != null) settingsViewModel.onExportBackup(uri, context) }
     )
+
     val importBackupLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument(),
         onResult = { uri ->
-            if (uri != null) settingsViewModel.onImportBackup(uri, context)
+            if (uri != null) {
+                coroutineScope.launch {
+                    try {
+                        settingsViewModel.onImportBackup(uri, context)
+                        Toast.makeText(context, "Restored! App will restart now.", Toast.LENGTH_LONG).show()
+                        kotlinx.coroutines.delay(1000)
+                        ProcessPhoenix.triggerRebirth(context)
+                    } catch (e: Exception) {
+                        Toast.makeText(context, "Failed to restore backup: ${e.message}", Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
         }
     )
 
@@ -95,28 +172,12 @@ fun CloudScreen(navController: NavController, settingsViewModel: SettingsViewMod
                     )
                     Spacer(Modifier.height(4.dp))
                     Text(
-                        text = "This feature is still experimental. The developer is still testing it out and needs feedback from the users as well. Manual backup/restore is still recommended for now.",
+                        text = "This feature is still a work in progress. Manual backup or restore is still recommended for now.",
                         fontSize = 13.sp,
                         color = MaterialTheme.colorScheme.onErrorContainer
                     )
                 }
             }
-
-            val masterKey = MasterKey.Builder(context)
-                .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-                .build()
-
-            val prefs = EncryptedSharedPreferences.create(
-                context,
-                "webdav_prefs",
-                masterKey,
-                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-            )
-
-            var webdavUrl by remember { mutableStateOf(prefs.getString("webdav_url", "") ?: "") }
-            var webdavUsername by remember { mutableStateOf(prefs.getString("webdav_username", "") ?: "") }
-            var webdavPassword by remember { mutableStateOf(prefs.getString("webdav_password", "") ?: "") }
 
             Spacer(Modifier.height(16.dp))
 
@@ -143,17 +204,27 @@ fun CloudScreen(navController: NavController, settingsViewModel: SettingsViewMod
             )
             Spacer(Modifier.height(8.dp))
             Button(onClick = {
-                prefs.edit()
-                    .putString("webdav_url", webdavUrl)
-                    .putString("webdav_username", webdavUsername)
-                    .putString("webdav_password", webdavPassword)
-                    .apply()
-                Toast.makeText(context, "WebDAV credentials saved!", Toast.LENGTH_SHORT).show()
+                coroutineScope.launch {
+                    context.webDavDataStore.edit { prefs ->
+                        prefs[webdavUrlKey] = webdavUrl
+                        prefs[webdavUsernameKey] = webdavUsername
+                        if (webdavPassword.isNotBlank()) {
+                            val encryptedPassword = Base64.encodeToString(
+                                aead.encrypt(webdavPassword.toByteArray(), byteArrayOf()),
+                                Base64.DEFAULT
+                            )
+                            prefs[webdavPasswordKey] = encryptedPassword
+                        } else {
+                            prefs.remove(webdavPasswordKey)
+                        }
+                    }
+                    Toast.makeText(context, "WebDAV credentials saved!", Toast.LENGTH_SHORT).show()
+                }
             }) {
                 Text("Save WebDAV Info")
             }
-            Spacer(Modifier.height(16.dp))
 
+            Spacer(Modifier.height(16.dp))
             Text("Backup Options", style = MaterialTheme.typography.titleMedium)
             Spacer(Modifier.height(16.dp))
 
@@ -165,46 +236,59 @@ fun CloudScreen(navController: NavController, settingsViewModel: SettingsViewMod
                 secondaryButtonText = "Restore",
                 onPrimaryClick = {
                     if (webdavUrl.isBlank() || webdavUsername.isBlank() || webdavPassword.isBlank()) {
-                        Toast.makeText(
-                            context,
-                            "Please enter WebDAV URL, username, and password before starting backup.",
-                            Toast.LENGTH_LONG
-                        ).show()
+                        Toast.makeText(context, "Enter WebDAV info first", Toast.LENGTH_LONG).show()
                     } else {
-                        prefs.edit()
-                            .putString("webdav_url", webdavUrl)
-                            .putString("webdav_username", webdavUsername)
-                            .putString("webdav_password", webdavPassword)
-                            .apply()
-
-                        workManager.enqueue(OneTimeWorkRequestBuilder<WebDAVBackupWorker>().build())
-                        Toast.makeText(context, "WebDAV backup started", Toast.LENGTH_SHORT).show()
+                        coroutineScope.launch {
+                            context.webDavDataStore.edit { prefs ->
+                                prefs[webdavUrlKey] = webdavUrl
+                                prefs[webdavUsernameKey] = webdavUsername
+                                if (webdavPassword.isNotBlank()) {
+                                    val encryptedPassword = Base64.encodeToString(
+                                        aead.encrypt(webdavPassword.toByteArray(), byteArrayOf()),
+                                        Base64.DEFAULT
+                                    )
+                                    prefs[webdavPasswordKey] = encryptedPassword
+                                }
+                            }
+                            workManager.enqueue(
+                                OneTimeWorkRequestBuilder<com.ezpnix.writeon.presentation.screens.settings.WebDAVBackupWorker>()
+                                    .build()
+                            )
+                            Toast.makeText(context, "WebDAV backup started", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 },
                 onSecondaryClick = {
                     if (webdavUrl.isBlank() || webdavUsername.isBlank() || webdavPassword.isBlank()) {
-                        Toast.makeText(
-                            context,
-                            "Please enter WebDAV URL, username, and password before starting restore.",
-                            Toast.LENGTH_LONG
-                        ).show()
+                        Toast.makeText(context, "Enter WebDAV info first", Toast.LENGTH_LONG).show()
                     } else {
-                        prefs.edit()
-                            .putString("webdav_url", webdavUrl)
-                            .putString("webdav_username", webdavUsername)
-                            .putString("webdav_password", webdavPassword)
-                            .apply()
-
-                        workManager.enqueue(OneTimeWorkRequestBuilder<WebDAVRestoreWorker>().build())
-                        Toast.makeText(context, "WebDAV restore started", Toast.LENGTH_SHORT).show()
+                        coroutineScope.launch {
+                            context.webDavDataStore.edit { prefs ->
+                                prefs[webdavUrlKey] = webdavUrl
+                                prefs[webdavUsernameKey] = webdavUsername
+                                if (webdavPassword.isNotBlank()) {
+                                    val encryptedPassword = Base64.encodeToString(
+                                        aead.encrypt(webdavPassword.toByteArray(), byteArrayOf()),
+                                        Base64.DEFAULT
+                                    )
+                                    prefs[webdavPasswordKey] = encryptedPassword
+                                }
+                            }
+                            workManager.enqueue(
+                                OneTimeWorkRequestBuilder<com.ezpnix.writeon.presentation.screens.settings.WebDAVRestoreWorker>()
+                                    .build()
+                            )
+                            Toast.makeText(context, "WebDAV restore started", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             )
+
             Spacer(Modifier.height(16.dp))
 
             BackupOptionCard(
                 icon = Icons.Rounded.ArrowCircleUp,
-                title = stringResource(id = R.string.manual_backup),
+                title = stringResource(id = R.string.database_backup),
                 description = stringResource(id = R.string.backup_description),
                 primaryButtonText = "Backup",
                 secondaryButtonText = "Restore",
@@ -228,6 +312,22 @@ fun CloudScreen(navController: NavController, settingsViewModel: SettingsViewMod
             Spacer(Modifier.height(16.dp))
 
             BackupOptionCard(
+                icon = Icons.Rounded.Description,
+                title = "Backup as TXT",
+                description = "Export notes as plain TXT files without encryption all compiled into one zip file",
+                primaryButtonText = "Export",
+                secondaryButtonText = "Import",
+                onPrimaryClick = {
+                    exportTxtBackupLauncher.launch("notes-backup-${currentDateTime()}.zip")
+                },
+                onSecondaryClick = {
+                    importTxtBackupLauncher.launch(arrayOf("application/zip"))
+                }
+            )
+
+            Spacer(Modifier.height(16.dp))
+
+            BackupOptionCard(
                 icon = Icons.Rounded.Backup,
                 title = stringResource(id = R.string.auto_backup),
                 description = stringResource(id = R.string.auto_backup_description),
@@ -240,25 +340,13 @@ fun CloudScreen(navController: NavController, settingsViewModel: SettingsViewMod
                     Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                 }
             )
-
-            Spacer(Modifier.height(16.dp))
-
-            BackupOptionCard(
-                icon = Icons.Rounded.Description,
-                title = "Backup as TXT",
-                description = "This will export notes to plain txt file format without encryption. This does not have a restore to app feature yet",
-                primaryButtonText = "Export",
-                onPrimaryClick = {
-                    exportTxtBackupLauncher.launch("notes-backup-${currentDateTime()}.zip")
-                }
-            )
         }
     }
 
     if (showBackupPasswordPrompt) {
         PasswordPrompt(
             context = context,
-            text = stringResource(id = R.string.manual_backup),
+            text = stringResource(id = R.string.database_backup),
             settingsViewModel = settingsViewModel,
             onExit = { password ->
                 showBackupPasswordPrompt = false
@@ -273,7 +361,7 @@ fun CloudScreen(navController: NavController, settingsViewModel: SettingsViewMod
     if (showRestorePasswordPrompt) {
         PasswordPrompt(
             context = context,
-            text = stringResource(id = R.string.manual_restore),
+            text = stringResource(id = R.string.database_restore),
             settingsViewModel = settingsViewModel,
             onExit = { password ->
                 showRestorePasswordPrompt = false
@@ -296,7 +384,7 @@ fun BackupOptionCard(
     onPrimaryClick: () -> Unit = {},
     onSecondaryClick: (() -> Unit)? = null,
     switchState: Boolean? = null,
-    onSwitchToggle: ((Boolean) -> Unit)? = null,
+    onSwitchToggle: ((Boolean) -> Unit)? = null
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -384,50 +472,6 @@ fun PasswordPrompt(
                 }
             ) {
                 Text(text)
-            }
-        }
-    }
-}
-
-fun currentDateTime(): String {
-    val currentDateTime = LocalDateTime.now()
-    val formatter = DateTimeFormatter.ofPattern("MM-dd-HH-mm-ms")
-    return currentDateTime.format(formatter)
-}
-
-@Composable
-fun BackupOptionCard(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    title: String,
-    description: String,
-    primaryButtonText: String,
-    secondaryButtonText: String? = null,
-    onPrimaryClick: () -> Unit,
-    onSecondaryClick: (() -> Unit)? = null
-) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(icon, contentDescription = title, tint = MaterialTheme.colorScheme.primary)
-                Spacer(modifier = Modifier.width(12.dp))
-                Text(title, style = MaterialTheme.typography.titleMedium)
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(description, fontSize = 14.sp)
-            Spacer(modifier = Modifier.height(12.dp))
-            Row {
-                Button(onClick = onPrimaryClick) {
-                    Text(primaryButtonText)
-                }
-                if (secondaryButtonText != null && onSecondaryClick != null) {
-                    Spacer(modifier = Modifier.width(8.dp))
-                    OutlinedButton(onClick = onSecondaryClick) {
-                        Text(secondaryButtonText)
-                    }
-                }
             }
         }
     }

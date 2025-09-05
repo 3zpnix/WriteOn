@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.hilt)
 }
+
 android {
     namespace = "com.ezpnix.writeon"
     compileSdk = 34
@@ -13,8 +14,8 @@ android {
         applicationId = "com.ezpnix.writeon"
         minSdk = 26
         targetSdk = 34
-        versionCode = 8
-        versionName = "1.7"
+        versionCode = 9
+        versionName = "1.8"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -109,4 +110,6 @@ dependencies {
     implementation(libs.androidx.security)
     implementation(libs.okhttp)
     implementation(libs.errorprone)
+    implementation(libs.process.phoenix)
+    implementation(libs.tink)
 }

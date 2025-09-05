@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -42,19 +41,17 @@ fun SettingCategory(
     shape: RoundedCornerShape,
     isLast: Boolean = false,
     smallSetting: Boolean = false,
-
     actionType: SettingActionType = SettingActionType.NAVIGATE,
     linkClicked: () -> Unit = {},
-
     action: () -> Unit = {},
     composableAction: @Composable (() -> Unit) -> Unit = {},
 ) {
     var showCustomAction by remember { mutableStateOf(false) }
     if (showCustomAction) composableAction { showCustomAction = !showCustomAction }
-
     ElevatedCard(
         shape = shape,
         modifier = Modifier
+            .padding(vertical = 2.dp)
             .clip(shape)
             .clickable {
                 showCustomAction = !showCustomAction
@@ -66,17 +63,13 @@ fun SettingCategory(
         colors = if (smallSetting)
             CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.primary)
         else
-            CardDefaults.elevatedCardColors(),
+            CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 6.dp),
     ) {
         Row(
             modifier = Modifier
-                .clip(shape)
-                .fillMaxSize()
-                .padding(
-                    horizontal = 24.dp,
-                    vertical = if (smallSetting) 11.dp else 16.dp
-                ),
+                .padding(horizontal = 16.dp, vertical = if (smallSetting) 8.dp else 12.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             if (smallSetting) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -95,7 +88,7 @@ fun SettingCategory(
             }
         }
     }
-    Spacer(modifier = Modifier.height(if (isLast) 26.dp else 2.dp))
+    Spacer(modifier = Modifier.height(if (isLast) 16.dp else 4.dp))
 }
 
 @Composable
@@ -103,7 +96,8 @@ private fun RenderCategoryTitle(title: String) {
     Text(
         text = title,
         fontSize = 16.sp,
-        fontWeight = FontWeight.Bold
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
     )
 }
 
@@ -113,8 +107,8 @@ private fun RenderCategoryDescription(subTitle: String, smallSetting: Boolean) {
         Text(
             color = if (smallSetting) MaterialTheme.colorScheme.surfaceContainerHigh else MaterialTheme.colorScheme.primary,
             text = subTitle,
-            fontSize = if (smallSetting) 13.sp else 10.sp,
-            modifier = Modifier.padding(if (smallSetting) 7.dp else 0.dp)
+            fontSize = if (smallSetting) 12.sp else 11.sp,
+            modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
         )
     }
 }
@@ -134,7 +128,7 @@ private fun RenderCategoryIcon(icon: ImageVector, reverseColors: Boolean) {
             tint = if (reverseColors) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.surfaceContainerHigh,
             modifier = Modifier
                 .scale(if (reverseColors) 0.8f else 1f)
-                .padding(9.dp)
+                .padding(6.dp)
         )
     }
 }

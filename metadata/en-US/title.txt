@@ -1,1 +1,1 @@
-Write On: Simple Notepad
+WriteOn: Simple Notepad

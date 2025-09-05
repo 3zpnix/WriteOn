@@ -31,3 +31,27 @@
 
 # Optional: If you use other models with Gson, you can keep them like this:
 # -keep class com.ezpnix.writeon.** { *; }
+
+# === ProcessPhoenix rules ===
+-keep class com.jakewharton.processphoenix.** { *; }
+-dontwarn com.jakewharton.processphoenix.**
+
+# === Room rules ===
+-keep class * extends androidx.room.RoomDatabase { *; }
+-keep @androidx.room.Entity class * { *; }
+-keepattributes InnerClasses
+
+# === Hilt rules ===
+-keep class dagger.** { *; }
+-keep class **_HiltModules { *; }
+-keepclasseswithmembers class * {
+    @dagger.hilt.** <methods>;
+}
+
+# === OkHttp rules ===
+-keep class com.squareup.okhttp3.** { *; }
+-dontwarn com.squareup.okhttp3.**
+
+# Tink rules
+-keep class com.google.crypto.tink.** { *; }
+-dontwarn com.google.crypto.tink.**

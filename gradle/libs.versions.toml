@@ -1,34 +1,36 @@
 [versions]
-agp = "8.5.2"
+agp = "8.7.0"
 datastorePreferences = "1.1.1"
-glance = "1.1.0"
+glance = "1.1.1"
 hilt = "2.52"
 hiltCompiler = "1.2.0"
 hiltAndroidCompiler = "2.52"
 coilCompose = "2.7.0"
 hiltNavigationCompose = "1.2.0"
-kotlin = "2.0.0"
-ksp = "2.0.0-1.0.24"
+kotlin = "2.0.20"
+ksp = "2.0.20-1.0.25"
 room = "2.6.1"
-activityCompose = "1.9.1"
+activityCompose = "1.9.2"
 coreKtx = "1.13.1"
 coreSplashscreen = "1.0.1"
-compose = "1.6.8"
-material3 = "1.2.1"
-navigationCompose = "2.7.7"
+compose = "1.7.0"
+material3 = "1.3.0"
+navigationCompose = "2.8.0"
 appcompat = "1.7.0"
-glanceAppwidget = "1.1.0"
+glanceAppwidget = "1.1.1"
 mkcompose = "1.3.0"
 mkcalendar = "1.2.1"
 messageBar = "1.0.5"
 biometricktx = "1.2.0-alpha05"
 runtimeKtx = "2.9.1"
 preferenceKtx = "1.2.1"
-gson = "2.10.1"
-composeBom = "2024.04.01"
-androidxSecurity = "1.1.0-alpha06"
+gson = "2.11.0"
+composeBom = "2024.09.00"
+androidxSecurity = "1.1.0"
 okhttp = "4.12.0"
-errorprone = "2.23.0"
+errorprone = "2.29.2"
+processPhoenix = "2.1.2"
+tink = "1.8.0"
 
 [libraries]
 # Room
@@ -53,9 +55,9 @@ androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", versi
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "compose" }
 androidx-material = { module = "androidx.compose.material:material", version.ref = "compose" }
 
-#Hilt
+# Hilt
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroidCompiler" }
-hilt-compile = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltCompiler"}
+hilt-compile = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltCompiler" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompiler" }
 hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 
@@ -73,10 +75,10 @@ compose-core = { group = "com.maxkeppeler.sheets-compose-dialogs", name = "core"
 message-bar = { group = "com.stevdza-san", name = "messagebarkmp", version.ref = "messageBar" }
 
 # FingerPrint
-androidx-biometric-ktx = { group = "androidx.biometric", name = "biometric", version.ref = "biometricktx"}
+androidx-biometric-ktx = { group = "androidx.biometric", name = "biometric", version.ref = "biometricktx" }
 
 # AutomaticBackup
-automatic-backup = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "runtimeKtx"}
+automatic-backup = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "runtimeKtx" }
 androidx-preference-ktx = { group = "androidx.preference", name = "preference-ktx", version.ref = "preferenceKtx" }
 
 # Gson
@@ -85,6 +87,11 @@ gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 # Cloud
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 errorprone = { group = "com.google.errorprone", name = "error_prone_annotations", version.ref = "errorprone" }
+
+# ProcessPhoenix
+process-phoenix = { group = "com.jakewharton", name = "process-phoenix", version.ref = "processPhoenix" } # Added ProcessPhoenix library
+
+tink = { group = "com.google.crypto.tink", name = "tink-android", version.ref = "tink" }
 
 [plugins]
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }

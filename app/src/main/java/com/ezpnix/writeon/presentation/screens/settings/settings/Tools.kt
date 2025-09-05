@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.ezpnix.writeon.R
+import com.ezpnix.writeon.presentation.navigation.NavRoutes
 import com.ezpnix.writeon.presentation.screens.settings.SettingsScaffold
 import com.ezpnix.writeon.presentation.screens.settings.model.SettingsViewModel
 import com.ezpnix.writeon.presentation.screens.settings.widgets.ActionType
@@ -55,7 +56,7 @@ fun ToolsScreen(navController: NavController, settingsViewModel: SettingsViewMod
     settingsViewModel.noteUseCase.observe()
     var showSearchDialog by remember { mutableStateOf(false) }
     var showFontSizeDialog by remember { mutableStateOf(false) }
-    var dynamicPlaceholderInput by remember { mutableStateOf("Enter text") }
+    var dynamicPlaceholderInput by remember { mutableStateOf("Simple Notepad") }
     SettingsScaffold(
         settingsViewModel = settingsViewModel,
         title = stringResource(id = R.string.tools),
@@ -142,12 +143,18 @@ fun ToolsScreen(navController: NavController, settingsViewModel: SettingsViewMod
                         isLast = true
                     ),
                     variable = settingsViewModel.settings.value.showOnlyTitle,
-                    switchEnabled = {
+                    switchEnabled = { isEnabled ->
                         settingsViewModel.update(
                             settingsViewModel.settings.value.copy(
-                                showOnlyTitle = it
+                                showOnlyTitle = isEnabled
                             )
                         )
+                        val message = if (isEnabled) {
+                            "<Title Only>"
+                        } else {
+                            "<Title With Description>"
+                        }
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                     }
                 )
                 Spacer(modifier = Modifier.height(18.dp))
@@ -214,7 +221,9 @@ fun ToolsScreen(navController: NavController, settingsViewModel: SettingsViewMod
                         isBoth = true,
                         radius = settingsViewModel.settings.value.cornerRadius
                     ),
-                    customAction = { navController.navigateUp() }
+                    customAction = {
+                        navController.popBackStack(NavRoutes.Home.route, inclusive = false)
+                    }
                 )
             }
         }
@@ -233,8 +242,10 @@ fun ToolsScreen(navController: NavController, settingsViewModel: SettingsViewMod
                 confirmButton = {
                     Button(onClick = {
                         settingsViewModel.updatePlaceholder(dynamicPlaceholderInput)
-                        repeat(2) { navController.popBackStack() }
-                        Toast.makeText(context, "Text updated!", Toast.LENGTH_SHORT)
+                        repeat(2) {
+                            navController.popBackStack(NavRoutes.Home.route, inclusive = false)
+                        }
+                        Toast.makeText(context, "Text Updated!", Toast.LENGTH_SHORT)
                             .show()
                     }) {
                         Text("Save")
@@ -242,8 +253,10 @@ fun ToolsScreen(navController: NavController, settingsViewModel: SettingsViewMod
                 },
                 dismissButton = {
                     Button(onClick = {
-                        repeat(2) { navController.popBackStack() }
-                        Toast.makeText(context, "Text updated!", Toast.LENGTH_SHORT)
+                        repeat(2) {
+                            navController.popBackStack(NavRoutes.Home.route, inclusive = false)
+                        }
+                        Toast.makeText(context, "Text Not Updated!", Toast.LENGTH_SHORT)
                             .show()
                     }) {
                         Text("Exit")
@@ -283,7 +296,9 @@ fun ToolsScreen(navController: NavController, settingsViewModel: SettingsViewMod
                 confirmButton = {
                     Button(onClick = {
                         showFontSizeDialog = false
-                        repeat(2) { navController.popBackStack() }
+                        repeat(2) {
+                            navController.popBackStack(NavRoutes.Home.route, inclusive = false)
+                        }
                         Toast.makeText(context, "Saved!", Toast.LENGTH_SHORT)
                             .show()
                     }) {

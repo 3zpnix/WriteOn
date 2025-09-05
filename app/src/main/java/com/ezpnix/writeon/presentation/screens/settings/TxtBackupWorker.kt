@@ -27,6 +27,33 @@ object TxtBackupHelper {
         }
     }
 
+    suspend fun restoreNotesFromZipStream(context: Context, uri: Uri) = withContext(Dispatchers.IO) {
+        val inputStream = context.contentResolver.openInputStream(uri) ?: return@withContext
+        val dbProvider = NoteDatabaseProvider(context.applicationContext as Application)
+        val dao = dbProvider.noteDao()
+
+        java.util.zip.ZipInputStream(inputStream).use { zipIn ->
+            var entry = zipIn.nextEntry
+            while (entry != null) {
+                if (!entry.isDirectory && entry.name.endsWith(".txt")) {
+                    val content = zipIn.reader().readText()
+
+                    val fileName = entry.name.removeSuffix(".txt")
+                    val title = fileName.substringAfter("_").ifBlank { "Untitled" }
+
+                    dao.addNote(
+                        com.ezpnix.writeon.domain.model.Note(
+                            id = 0,
+                            name = title,
+                            description = content
+                        )
+                    )
+                }
+                zipIn.closeEntry()
+                entry = zipIn.nextEntry
+            }
+        }
+    }
 
     private suspend fun getAllNotes(context: Context): List<ExportNote> {
         val dbProvider = NoteDatabaseProvider(context.applicationContext as Application)

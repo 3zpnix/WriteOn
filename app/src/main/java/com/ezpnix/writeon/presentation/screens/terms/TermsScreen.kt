@@ -13,22 +13,28 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.ezpnix.writeon.R
 import com.ezpnix.writeon.core.constant.ConnectionConst
 import com.ezpnix.writeon.presentation.components.AgreeButton
 import com.ezpnix.writeon.presentation.components.NotesScaffold
 import com.ezpnix.writeon.presentation.components.markdown.MarkdownText
+import com.ezpnix.writeon.presentation.navigation.NavRoutes
 import com.ezpnix.writeon.presentation.screens.settings.model.SettingsViewModel
 import com.ezpnix.writeon.presentation.screens.settings.settings.shapeManager
 
 @Composable
 fun TermsScreen(
-    settingsViewModel: SettingsViewModel
+    settingsViewModel: SettingsViewModel,
+    navController: NavController
 ) {
     NotesScaffold(
         floatingActionButton = {
             AgreeButton(text = stringResource(id = R.string.agree)) {
-                settingsViewModel.update(settingsViewModel.settings.value.copy(termsOfService = true))
+                settingsViewModel.updateTermsOfService(true)
+                navController.navigate(NavRoutes.Home.route) {
+                    popUpTo(NavRoutes.Terms.route) { inclusive = true }
+                }
             }
         },
         content = {
@@ -38,7 +44,7 @@ fun TermsScreen(
                 Text(
                     text = stringResource(id = R.string.terms_of_service),
                     style = MaterialTheme.typography.headlineLarge,
-                    modifier = Modifier.padding(0.dp,16.dp,16.dp,16.dp)
+                    modifier = Modifier.padding(0.dp, 16.dp, 16.dp, 16.dp)
                 )
                 Box(
                     modifier = Modifier

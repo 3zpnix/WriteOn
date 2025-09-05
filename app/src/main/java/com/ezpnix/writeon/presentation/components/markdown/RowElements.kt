@@ -10,7 +10,7 @@ data class Heading(val level: Int, val text: String) : MarkdownElement {
     }
 }
 
-data class CheckboxItem(val text: String, var checked: Boolean = false, var index: Int) : MarkdownElement {
+data class CheckboxItem(val text: String, val checked: Boolean, val lineNumber: Int) : MarkdownElement {
     override fun render(builder: StringBuilder) {
         builder.append("[${if (checked) "X" else " "}] $text\n")
     }

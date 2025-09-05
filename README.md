@@ -22,85 +22,23 @@ A clean, intuitive note-taking app with *Material You* design — open source an
 ## 💥 Personal DevLog (^~^)
 
 <details>
-<summary><strong>💥 v1.6 (2025-06-01)</strong></summary>
+<summary><strong>💥 v1.8 (Latest Updates)</strong></summary>
 
-- [x] New homepage user interface
-- [x] More visibility on your notes
-- [x] FAB has returned but cleaner now
-- [x] Added new Flashcard screen feature
-- [x] Column view count is now adjustable
-- [x] Improvements to Scratchpad screen
-- [x] Quick shortcut button redirects to Styles
-- [x] Home greeting placeholder repositioned
-- [x] Issue feedback now on the settings screen
-- [x] Feedback screen cards now fully clickable
-- [x] Added some minor animation improvements
-- [x] Get info on your device found in about
-- [x] Some icons were replaced to be cleaner
-- [x] Bug fixes and optimizations
-</details>
-
-<details>
-<summary><strong>💥 v1.5 (2025-05-09)</strong></summary>
-
-- [x] Removed savenote else-function bug
-- [x] Homescreen buttons surface lazyrow
-- [x] Edit buttons moved to bottom modal
-- [x] Calculator supports manual edits
-- [x] Listed-section improvements
-- [x] Fixed major crash issue
-</details>
-
-<details>
-<summary><strong>💥 v1.4 (2025-03-25)</strong></summary>
-
-- [x] Refactored edit/view models
-- [x] Row icon buttons replace centered buttons
-- [x] Added Help & Feedback section
-- [x] Pin/unpin status saves properly
-- [x] Fixed calculator parenthesis bug
-- [x] New sections in Settings screen
-- [x] DPI support improved
-- [x] Updated note preview UI
-- [x] Alert dialog logic revamped
-</details>
-
-<details>
-<summary><strong>💥 v1.3 (2025-02-25)</strong></summary>
-
-- [x] Home UI updated
-- [x] Searchbar placeholder added
-- [x] Custom dimensions fixed
-- [x] Calculator built-in
-- [x] Adjustable font size
-- [x] More buttons/features
-- [x] Calendar bug squashed
-- [x] Renamed strings
-- [x] Minor bug fixes
-</details>
-
-<details>
-<summary><strong>💥 v1.2 (2025-01-10)</strong></summary>
-
-- [x] More markdown support
-- [x] TXT export for quick notes
-- [x] Improved auto-backup logic
-- [x] Translate and share buttons added
-- [x] Fixed partial image bug
-- [x] UI updates and optimizations
-</details>
-
-<details>
-<summary><strong>💥 v1.1 (2024-11-30)</strong></summary>
-
-- [x] UI Changes
-- [x] Bug Fixes
+- [x] New homepage redesign
+- [x] Navigation drawer added
+- [x] Categories and tags added
+- [x] Search bar UI revamped
+- [x] Backup logics changed
+- [x] Note screen simplicity redesign
+- [x] Slight animation improvements
+- [x] Minor bugs and UI fixes
 </details>
 
 ---
 
 ## 📢 Announcements
 
+- *2025-09-04:* Sophomore year is right around the corner for me, decided to give out an update before it starts.
 - *2025-06-01:* Thankfully, I had time to continue the v1.6 update, had fun with this version, thank you!
 - *2025-05-09:* Small v1.5 update released — life’s hectic with job & university, so expect some slow updates.
 - *2025-02-25:* Found time for v1.3 update — future updates might be delayed due to part-time job.
@@ -121,16 +59,17 @@ A clean, intuitive note-taking app with *Material You* design — open source an
 
 ## 👋 Features
 
-**Biometric Auth** • **Backup/Restore** • **Custom Layout** • **Markdown** •
+**Backup/Restore** • **Custom Layout** • **Markdown** •
 **Built-In Calendar**  • **Offline Access** • **Privacy-Friendly** •
 **No Bloat Permissions** • **Material You UI** • **Custom Themes** •
 **Multiple Export Options** • **Scratchpad** • **Share Text** •
-**Flashcard** • **Image Attachments** • **Calculator** • **Fonts**
+**Flashcard** • **Image Attachments** • **Calculator** • **Fonts** •
+**Tags** • **Recycle Bin** • **Screen Protection**
 
 ---
 
 ## ⚠️ License
-    Write On: Simple Notepad
+    WriteOn: Simple Notepad
 
     Copyright (C)2024 3zpnix
     

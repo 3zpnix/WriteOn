@@ -63,7 +63,7 @@ jobs:
       - name: Upload the APK
         uses: actions/upload-artifact@v4.3.5
         with:
-          name: Write On
+          name: WriteOn
           path: WriteOn.apk
 
       - name: Install GitHub CLI
@@ -71,8 +71,8 @@ jobs:
 
       - name: Create GitHub Release
         run: |
-          gh release create v1.7 WriteOn.apk \
-            --title "v1.7" \
-            --notes "July Update~" \
+          gh release create v1.8 WriteOn.apk \
+            --title "v1.8" \
+            --notes "September Update~" \
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}

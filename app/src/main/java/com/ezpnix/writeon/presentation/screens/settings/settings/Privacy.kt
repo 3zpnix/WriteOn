@@ -20,16 +20,12 @@ import androidx.compose.material.icons.filled.Fingerprint
 import androidx.compose.material.icons.filled.Pattern
 import androidx.compose.material.icons.filled.Pin
 import androidx.compose.material.icons.filled.RemoveRedEye
-import androidx.compose.material.icons.rounded.ArrowCircleDown
-import androidx.compose.material.icons.rounded.ArrowCircleUp
-import androidx.compose.material.icons.rounded.Backup
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Security
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,7 +40,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
 import com.ezpnix.writeon.R
-import com.ezpnix.writeon.core.constant.DatabaseConst
+import com.ezpnix.writeon.presentation.navigation.NavRoutes
 import com.ezpnix.writeon.presentation.screens.edit.components.CustomTextField
 import com.ezpnix.writeon.presentation.screens.settings.SettingsScaffold
 import com.ezpnix.writeon.presentation.screens.settings.model.SettingsViewModel
@@ -56,7 +52,6 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun PrivacyScreen(navController: NavController, settingsViewModel: SettingsViewModel) {
     val context = LocalContext.current
-
     val exportBackupLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CreateDocument("*/.zip"),
         onResult = { uri ->
@@ -69,7 +64,6 @@ fun PrivacyScreen(navController: NavController, settingsViewModel: SettingsViewM
             if (uri != null) settingsViewModel.onImportBackup(uri, context)
         }
     )
-
     SettingsScaffold(
         settingsViewModel = settingsViewModel,
         title = stringResource(id = R.string.privacy),
@@ -77,28 +71,22 @@ fun PrivacyScreen(navController: NavController, settingsViewModel: SettingsViewM
     ) {
         LazyColumn {
             item {
+                var biometricEnabled by remember { mutableStateOf(false) }
                 SettingsBox(
                     title = stringResource(id = R.string.biometric_authentication),
                     description = stringResource(id = R.string.biometric_authentication_description),
                     icon = Icons.Filled.Fingerprint,
                     radius = shapeManager(radius = settingsViewModel.settings.value.cornerRadius, isFirst = true),
                     actionType = ActionType.SWITCH,
-                    variable = settingsViewModel.settings.value.isBiometricEnabled,
+                    variable = biometricEnabled,
                     switchEnabled = { isEnabled ->
-                        settingsViewModel.update(settingsViewModel.settings.value.copy(isBiometricEnabled = isEnabled))
-
-                        val message = if (isEnabled) {
-                            "Activated"
-                        } else {
-                            "Disabled"
-                        }
-                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                        biometricEnabled = isEnabled
+                        Toast.makeText(context, "Biometric coming soon", Toast.LENGTH_SHORT).show()
                     }
                 )
             }
             item {
                 var patternEnabled by remember { mutableStateOf(false) }
-
                 SettingsBox(
                     title = stringResource(id = R.string.pattern_authentication),
                     description = stringResource(id = R.string.pattern_authentication_description),
@@ -114,7 +102,6 @@ fun PrivacyScreen(navController: NavController, settingsViewModel: SettingsViewM
             }
             item {
                 var pinEnabled by remember { mutableStateOf(false) }
-
                 SettingsBox(
                     title = stringResource(id = R.string.pin_authentication),
                     description = stringResource(id = R.string.pin_authentication_description),
@@ -137,8 +124,8 @@ fun PrivacyScreen(navController: NavController, settingsViewModel: SettingsViewM
                     radius = shapeManager(radius = settingsViewModel.settings.value.cornerRadius, isFirst = true),
                     actionType = ActionType.SWITCH,
                     variable = settingsViewModel.settings.value.screenProtection,
-                    switchEnabled = { isEnabled -> settingsViewModel.update(settingsViewModel.settings.value.copy(screenProtection = isEnabled))
-
+                    switchEnabled = { isEnabled ->
+                        settingsViewModel.update(settingsViewModel.settings.value.copy(screenProtection = isEnabled))
                         val message = if (isEnabled) {
                             "Screen Protected"
                         } else {
@@ -158,7 +145,6 @@ fun PrivacyScreen(navController: NavController, settingsViewModel: SettingsViewM
                     actionType = ActionType.SWITCH,
                     switchEnabled = { isEnabled ->
                         settingsViewModel.update(settingsViewModel.settings.value.copy(encryptBackup = isEnabled))
-
                         val message = if (isEnabled) {
                             "Database Encryption Enabled"
                         } else {
@@ -176,7 +162,9 @@ fun PrivacyScreen(navController: NavController, settingsViewModel: SettingsViewM
                     icon = Icons.Rounded.Home,
                     actionType = ActionType.CUSTOM,
                     radius = shapeManager(isBoth = true, radius = settingsViewModel.settings.value.cornerRadius),
-                    customAction = { navController.navigateUp() }
+                    customAction = {
+                        navController.popBackStack(NavRoutes.Home.route, inclusive = false)
+                    }
                 )
             }
         }
@@ -187,7 +175,6 @@ fun currentDateTime(): String {
     val currentDateTime = LocalDateTime.now()
     val formatter = DateTimeFormatter.ofPattern("MM-dd-HH-mm-ms")
     val formattedDateTime = currentDateTime.format(formatter)
-
     return formattedDateTime
 }
 

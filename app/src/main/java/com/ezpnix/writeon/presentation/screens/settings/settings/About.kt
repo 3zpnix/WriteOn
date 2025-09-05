@@ -65,6 +65,7 @@ import com.ezpnix.writeon.presentation.screens.settings.widgets.ListDialog
 import com.ezpnix.writeon.presentation.screens.settings.widgets.SettingsBox
 
 @Composable
+@Suppress("DEPRECATION")
 fun AboutScreen(navController: NavController, settingsViewModel: SettingsViewModel) {
     val uriHandler = LocalUriHandler.current
     SettingsScaffold(
@@ -137,7 +138,9 @@ fun AboutScreen(navController: NavController, settingsViewModel: SettingsViewMod
                     icon = Icons.Rounded.Home,
                     actionType = ActionType.CUSTOM,
                     radius = shapeManager(isLast = true, radius = settingsViewModel.settings.value.cornerRadius),
-                    customAction = { navController.navigateUp() }
+                    customAction = {
+                        navController.popBackStack(NavRoutes.Home.route, inclusive = false)
+                    }
                 )
             }
             item {

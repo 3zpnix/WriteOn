@@ -50,6 +50,7 @@ class EditViewModel @Inject constructor(
     private val _isPinned = mutableStateOf(false)
     val isPinned: State<Boolean> get() = _isPinned
 
+    private val _originalNote = mutableStateOf<Note?>(null)
     private val undoRedoState = UndoRedoState()
 
     fun saveNote(id: Int) {
@@ -59,29 +60,37 @@ class EditViewModel @Inject constructor(
             }
 
             if (noteName.value.text.isNotEmpty() || noteDescription.value.text.isNotBlank()) {
-                noteUseCase.addNote(
-                    Note(
-                        id = id,
-                        name = noteName.value.text,
-                        description = noteDescription.value.text,
-                        pinned = isPinned.value,
-                        encrypted = isEncrypted.value,
-                        createdAt = if (noteCreatedTime.value != 0L) noteCreatedTime.value else System.currentTimeMillis(),
-                    )
+                val note = _originalNote.value?.copy(
+                    name = noteName.value.text,
+                    description = noteDescription.value.text,
+                    pinned = isPinned.value,
+                    encrypted = isEncrypted.value,
+                    createdAt = if (noteCreatedTime.value != 0L) noteCreatedTime.value else System.currentTimeMillis()
+                ) ?: Note(
+                    id = id,
+                    name = noteName.value.text,
+                    description = noteDescription.value.text,
+                    pinned = isPinned.value,
+                    encrypted = isEncrypted.value,
+                    createdAt = if (noteCreatedTime.value != 0L) noteCreatedTime.value else System.currentTimeMillis(),
+                    tags = emptyList()
                 )
+                android.util.Log.d("EditViewModel", "Saving note ${note.id} with tags ${note.tags}")
+                noteUseCase.addNote(note)
             }
 
-        fetchLastNoteAndUpdate()
+            fetchLastNoteAndUpdate()
         }
     }
 
     private fun syncNote(note: Note) {
+        _originalNote.value = note
         if (note.encrypted) {
             val (name, nameStatus) = encryption.decrypt(note.name)
             val (description, descriptionStatus) = encryption.decrypt(note.description)
             if (nameStatus == DecryptionResult.SUCCESS && descriptionStatus == DecryptionResult.SUCCESS) {
-                updateNoteName(TextFieldValue(name!!, selection = TextRange(note.name.length)))
-                updateNoteDescription(TextFieldValue(description!!, selection = TextRange(note.description.length)))
+                updateNoteName(TextFieldValue(name!!, selection = TextRange(name.length)))
+                updateNoteDescription(TextFieldValue(description!!, selection = TextRange(description.length)))
             }
         } else {
             updateNoteName(TextFieldValue(note.name, selection = TextRange(note.name.length)))
@@ -91,9 +100,10 @@ class EditViewModel @Inject constructor(
         updateNoteId(note.id)
         updateNotePin(note.pinned)
         updateIsEncrypted(note.encrypted)
+        android.util.Log.d("EditViewModel", "Synced note ${note.id} with tags ${note.tags}")
     }
 
-    fun setupNoteData(id : Int = noteId.value) {
+    fun setupNoteData(id: Int = noteId.value) {
         if (id != 0) {
             viewModelScope.launch {
                 noteUseCase.getNoteById(id).collectLatest { note ->
@@ -179,7 +189,6 @@ class EditViewModel @Inject constructor(
     private fun isSelectorAtStartOfNonEmptyLine(): Boolean {
         val text = _noteDescription.value.text
         val selectionStart = _noteDescription.value.selection.start
-
         if (selectionStart == 0) {
             return true
         }
@@ -192,32 +201,26 @@ class EditViewModel @Inject constructor(
         val selectionEnd = _noteDescription.value.selection.end
         var lineStart = selectionStart
         var lineEnd = selectionEnd
-
         while (lineStart > 0 && text[lineStart - 1] != '\n') {
             lineStart--
         }
-
         while (lineEnd < text.length && text[lineEnd] != '\n') {
             lineEnd++
         }
-        return IntRange(lineStart, lineEnd - 1);
+        return IntRange(lineStart, lineEnd - 1)
     }
 
     fun insertNumberedText(newLine: Boolean = true) {
         val text = _noteDescription.value.text
         val currentCaretPosition = _noteDescription.value.selection.start
-
         val lastNumber = getLastNumberBeforeCaret(text, currentCaretPosition)
-
         if (lastNumber != null && isSeparated(text, currentCaretPosition)) {
             _currentNumber.value = 1
         } else {
             _currentNumber.value = lastNumber?.plus(1) ?: 1
         }
-
         val textToInsert = "${_currentNumber.value}."
         insertText(textToInsert, newLine = newLine)
-
         _currentNumber.value++
     }
 
@@ -225,7 +228,6 @@ class EditViewModel @Inject constructor(
         val regex = Regex("""(\d+)\.""")
         val matches = regex.findAll(text.substring(0, caretPosition))
         val numbers = matches.map { it.groupValues[1].toInt() }.toList()
-
         return numbers.lastOrNull()
     }
 
@@ -258,7 +260,6 @@ class EditViewModel @Inject constructor(
             resultSelectionIndex = (currentText + insertText).length
             currentText + insertText
         }
-
         _noteDescription.value = TextFieldValue(
             text = updatedText,
             selection = TextRange(resultSelectionIndex + offset)

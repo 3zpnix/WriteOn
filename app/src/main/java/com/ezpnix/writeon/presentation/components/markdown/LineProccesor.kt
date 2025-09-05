@@ -2,7 +2,7 @@ package com.ezpnix.writeon.presentation.components.markdown
 
 interface MarkdownLineProcessor {
     fun canProcessLine(line: String): Boolean
-    fun processLine(line: String, builder: MarkdownBuilder)
+    fun processLine(line: String, builder: MarkdownBuilder): Unit
 }
 
 class CodeBlockProcessor : MarkdownLineProcessor {
@@ -31,15 +31,16 @@ class CodeBlockProcessor : MarkdownLineProcessor {
 }
 
 class CheckboxProcessor : MarkdownLineProcessor {
-    override fun canProcessLine(line: String): Boolean = line.matches(Regex("^\\[[ xX]]( .*)?"))
+    override fun canProcessLine(line: String): Boolean {
+        return line.trim().startsWith("[ ]") || line.trim().startsWith("[x]")
+    }
 
     override fun processLine(line: String, builder: MarkdownBuilder) {
-        val checked = line.contains(Regex("^\\[[Xx]]"))
-        val text = line.replace(Regex("^\\[[ xX]] ?"), "").trim()
-        builder.add(CheckboxItem(text, checked, builder.lineIndex))
+        val checked = line.trim().startsWith("[x]")
+        val text = line.trim().substringAfter("[ ] ").substringAfter("[x] ").trim()
+        builder.add(CheckboxItem(text, checked, lineNumber = builder.lineIndex))
     }
 }
-
 
 class HeadingProcessor : MarkdownLineProcessor {
     override fun canProcessLine(line: String): Boolean = line.startsWith("#")
@@ -72,11 +73,14 @@ class ListItemProcessor : MarkdownLineProcessor {
 
 class ImageInsertionProcessor : MarkdownLineProcessor {
     override fun canProcessLine(line: String): Boolean {
-        return line.trim().startsWith("!(") && line.trim().endsWith(")")
+        val canProcess = line.trim().startsWith("!(") && line.trim().endsWith(")")
+        android.util.Log.d("ImageInsertionProcessor", "Can process line: $line -> $canProcess")
+        return canProcess
     }
 
     override fun processLine(line: String, builder: MarkdownBuilder) {
         val photoUri = line.substringAfter("!(", "").substringBefore(")")
+        android.util.Log.d("ImageInsertionProcessor", "Processing image URI: $photoUri")
         builder.add(ImageInsertion(photoUri))
     }
 }

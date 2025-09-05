@@ -73,6 +73,7 @@ import java.util.Locale
 import java.util.Stack
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.rounded.RemoveRedEye
 import androidx.compose.material3.Card
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -123,7 +124,7 @@ fun PreviewButton(
             }
         }
     ) {
-        Icon(Icons.Rounded.Description, contentDescription = "Preview", tint = MaterialTheme.colorScheme.primary)
+        Icon(Icons.Rounded.RemoveRedEye, contentDescription = "Preview", tint = MaterialTheme.colorScheme.primary)
     }
 }
 
@@ -198,7 +199,6 @@ fun CalButton() {
     IconButton(
         modifier = Modifier.size(56.dp),
         onClick = {
-            Toast.makeText(context, "Today is: $dayOfWeek, $currentDate", Toast.LENGTH_SHORT).show()
             calendarState.show()
         }
 

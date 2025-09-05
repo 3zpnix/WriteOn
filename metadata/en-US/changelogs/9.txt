@@ -1,0 +1,8 @@
+- New homepage redesign
+- Navigation drawer added
+- Categories and tags added
+- Search bar UI revamped
+- Backup logics changed
+- Note screen simplicity redesign
+- Slight animation improvements
+- Minor bugs and UI fixes

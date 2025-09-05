@@ -1,10 +1,20 @@
 package com.ezpnix.writeon.presentation.screens.settings
 
 import android.content.Context
+import android.widget.Toast
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.ezpnix.writeon.core.constant.DatabaseConst
+import com.google.crypto.tink.Aead
+import com.google.crypto.tink.integration.android.AndroidKeysetManager
+import com.jakewharton.processphoenix.ProcessPhoenix
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import okhttp3.Credentials
 import okhttp3.OkHttpClient
@@ -12,6 +22,7 @@ import okhttp3.Request
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.util.Base64
 import java.util.zip.ZipInputStream
 import javax.crypto.Cipher
 import javax.crypto.SecretKeyFactory
@@ -19,6 +30,9 @@ import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.PBEKeySpec
 import javax.crypto.spec.SecretKeySpec
 import java.security.spec.KeySpec
+
+@Suppress("DEPRECATION")
+private val Context.webDavDataStore: DataStore<Preferences> by preferencesDataStore(name = "webdav_prefs")
 
 class WebDAVRestoreWorker(
     context: Context,
@@ -30,10 +44,27 @@ class WebDAVRestoreWorker(
 
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         try {
-            val prefs = applicationContext.getSharedPreferences("webdav_prefs", Context.MODE_PRIVATE)
-            val webdavUrl = prefs.getString("webdav_url", "") ?: return@withContext Result.failure()
-            val username = prefs.getString("webdav_username", "") ?: return@withContext Result.failure()
-            val password = prefs.getString("webdav_password", "") ?: return@withContext Result.failure()
+            val aead = AndroidKeysetManager.Builder()
+                .withSharedPref(applicationContext, "webdav_keyset", "webdav_prefs")
+                .withKeyTemplate(com.google.crypto.tink.aead.AeadKeyTemplates.AES256_GCM)
+                .withMasterKeyUri("android-keystore://webdav_master_key")
+                .build()
+                .keysetHandle
+                .getPrimitive(Aead::class.java)
+
+            val webdavUrlKey = stringPreferencesKey("webdav_url")
+            val webdavUsernameKey = stringPreferencesKey("webdav_username")
+            val webdavPasswordKey = stringPreferencesKey("webdav_password")
+
+            val prefs = applicationContext.webDavDataStore.data.first()
+            val webdavUrl = prefs[webdavUrlKey] ?: return@withContext Result.failure()
+            val username = prefs[webdavUsernameKey] ?: return@withContext Result.failure()
+            val encryptedPassword = prefs[webdavPasswordKey] ?: return@withContext Result.failure()
+            val password = try {
+                String(aead.decrypt(Base64.getDecoder().decode(encryptedPassword), byteArrayOf()))
+            } catch (e: Exception) {
+                return@withContext Result.failure()
+            }
 
             val request = Request.Builder()
                 .url(webdavUrl)
@@ -61,6 +92,12 @@ class WebDAVRestoreWorker(
             decryptedZipFile.writeBytes(decryptedBytes)
 
             unzipAndReplaceDatabase(decryptedZipFile)
+
+            withContext(Dispatchers.Main) {
+                Toast.makeText(applicationContext, "WebDAV restore completed! App will restart now.", Toast.LENGTH_LONG).show()
+                delay(1000)
+                ProcessPhoenix.triggerRebirth(applicationContext)
+            }
 
             Result.success()
         } catch (e: IOException) {

@@ -1,7 +1,6 @@
 WriteOn is a note-taking app designed with simplicity and usability at its core — perfect for students and everyday use.
 
 🛠️ Key Features:
-• 🔐 Secure your notes with app lock (Authentication)
 • ☁️ Backup & Restore notes (offline & WebDAV supported)
 • 👁️ Screen protection (prevents screenshots & previews)
 • 🖋️ Markdown support for rich text formatting
@@ -11,10 +10,11 @@ WriteOn is a note-taking app designed with simplicity and usability at its core 
 • 📝 Export notes to .txt format and more
 • 📷 Attach and view images inside notes
 • 📅 Built-in calendar for instant checking
-• 🧮 Built-in calculator for easy access
-• 🎓 Flashcard mode for studying and others
 • 📌 Pin notes to your notification panel (requires notification permission)
 • 🌈 Visually calming and intuitive interface
+• 🧮 Built-in calculator for easy access
+• 🎓 Flashcard mode for studying and others
 
-"Evolution. Constant. Reminder."
-– A space to write, reflect, and grow.
+This app is a fork of Easynotes.
+Updates and new features are driven by user feedbacks.
+With more improvements coming soon.

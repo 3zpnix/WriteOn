@@ -12,10 +12,12 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.ezpnix.writeon.domain.repository.SettingsRepository
 import com.ezpnix.writeon.widget.NotesWidgetReceiver
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 
 private const val PREFERENCES_NAME = "settings updated"
-
+private val TERMS_OF_SERVICE_KEY = booleanPreferencesKey("termsOfService")
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
     name = PREFERENCES_NAME,
     produceMigrations = { context -> listOf(SharedPreferencesMigration(context, PREFERENCES_NAME)) }
@@ -52,13 +54,35 @@ class SettingsRepositoryImpl (private val context: Context) : SettingsRepository
         val preferencesKey = booleanPreferencesKey(key)
         context.dataStore.edit { preferences ->
             preferences[preferencesKey] = value
+            if (key == "termsOfService") {
+                println("Saved termsOfService: $value")
+            }
         }
     }
 
     override suspend fun getBoolean(key: String): Boolean? {
         val preferencesKey = booleanPreferencesKey(key)
         val preferences = context.dataStore.data.first()
-        return preferences[preferencesKey]
+        val value = preferences[preferencesKey]
+        if (key == "termsOfService") {
+            println("Retrieved termsOfService: $value")
+        }
+        return value
+    }
+
+    suspend fun saveTermsOfService(accepted: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[TERMS_OF_SERVICE_KEY] = accepted
+            println("Saved termsOfService: $accepted")
+        }
+    }
+
+    fun getTermsOfService(): Flow<Boolean> {
+        return context.dataStore.data.map { preferences ->
+            val value = preferences[TERMS_OF_SERVICE_KEY] ?: false
+            println("Retrieved termsOfService (Flow): $value")
+            value
+        }
     }
 
     override suspend fun putFloat(key: String, value: Float) {

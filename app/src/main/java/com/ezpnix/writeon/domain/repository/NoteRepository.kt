@@ -1,8 +1,6 @@
 package com.ezpnix.writeon.domain.repository
-
 import com.ezpnix.writeon.domain.model.Note
 import kotlinx.coroutines.flow.Flow
-
 interface NoteRepository {
     fun getAllNotes(): Flow<List<Note>>
     suspend fun getAllNotesSync(): List<Note>
@@ -11,4 +9,8 @@ interface NoteRepository {
     suspend fun deleteNote(note: Note)
     fun getNoteById(id: Int): Flow<Note>
     fun getLastNoteId(): Long?
+    fun getTrashedNotes(): Flow<List<Note>>
+    fun getNotesByTag(tag: String): Flow<List<Note>>
+    suspend fun getAllTags(): List<String>
+    suspend fun batchUpdateNotes(notes: List<Note>)
 }

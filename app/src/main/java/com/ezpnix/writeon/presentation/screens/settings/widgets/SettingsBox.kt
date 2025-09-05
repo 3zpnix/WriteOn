@@ -63,13 +63,16 @@ fun SettingsBox(
     val context = LocalContext.current
     var showCustomAction by remember { mutableStateOf(false) }
     if (showCustomAction) customAction { showCustomAction = !showCustomAction }
-
     AnimatedVisibility(visible = isEnabled) {
         ElevatedCard(
             shape = radius,
             elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+            colors = CardDefaults.elevatedCardColors(
+                containerColor = MaterialTheme.colorScheme.surface
+            ),
             modifier = Modifier
-                .padding(bottom = 3.dp)
+                .padding(bottom = 2.dp)
+                .padding(2.dp)
                 .clip(radius)
                 .clickable {
                     handleAction(
@@ -87,25 +90,28 @@ fun SettingsBox(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .padding(
-                        horizontal = 20.dp,
-                        vertical = if (description.isNotBlank() || actionType == ActionType.CLIPBOARD || isBig) 12.dp else 6.dp
+                        horizontal = 16.dp,
+                        vertical = if (description.isNotBlank() || actionType == ActionType.CLIPBOARD || isBig) 12.dp else 8.dp
                     )
                     .fillMaxWidth()
             ) {
                 if (icon != null) RenderIcon(icon)
-                Column(Modifier.weight(1f), horizontalAlignment = if (isCentered) Alignment.CenterHorizontally else Alignment.Start) {
+                Column(
+                    Modifier.weight(1f),
+                    horizontalAlignment = if (isCentered) Alignment.CenterHorizontally else Alignment.Start
+                ) {
                     Text(
                         text = title,
-                        modifier = Modifier.padding(start = 3.dp),
+                        modifier = Modifier.padding(start = 4.dp, end = 4.dp, top = 2.dp),
                         fontSize = 16.sp
                     )
                     if (description.isNotEmpty() || actionType == ActionType.CLIPBOARD) {
                         Text(
                             text = if (actionType == ActionType.CLIPBOARD) clipboardText else description,
-                            modifier = Modifier.padding(start = 3.dp, end = 5.dp),
-                            fontSize = 12.sp,
+                            modifier = Modifier.padding(start = 4.dp, end = 4.dp, top = 2.dp),
+                            fontSize = 11.sp,
                             color = MaterialTheme.colorScheme.primary,
-                            lineHeight = 20.sp
+                            lineHeight = 18.sp
                         )
                     }
                 }
@@ -139,7 +145,7 @@ private fun RenderClipboardAction() {
     Icon(
         imageVector = Icons.Default.ContentCopy,
         contentDescription = null,
-        modifier = Modifier.padding(12.dp)
+        modifier = Modifier.padding(6.dp)
     )
 }
 
@@ -202,7 +208,7 @@ private fun RenderLink(linkClicked: () -> Unit) {
         imageVector = Icons.AutoMirrored.Rounded.OpenInNew,
         contentDescription = null,
         modifier = Modifier
-            .padding(12.dp)
+            .padding(6.dp)
             .clickable { linkClicked() }
     )
 }
@@ -214,7 +220,7 @@ private fun CustomIcon() {
         contentDescription = null,
         modifier = Modifier
             .scale(0.6f)
-            .padding(12.dp)
+            .padding(6.dp)
     )
 }
 
@@ -223,6 +229,6 @@ private fun RenderText(customText: String) {
     Text(
         text = customText,
         fontSize = 14.sp,
-        modifier = Modifier.padding(12.dp)
+        modifier = Modifier.padding(6.dp)
     )
 }

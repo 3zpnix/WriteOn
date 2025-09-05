@@ -16,6 +16,7 @@ import com.ezpnix.writeon.BuildConfig
 import com.ezpnix.writeon.R
 import com.ezpnix.writeon.data.repository.ImportExportRepository
 import com.ezpnix.writeon.data.repository.BackupResult
+import com.ezpnix.writeon.data.repository.SettingsRepositoryImpl
 import com.ezpnix.writeon.domain.model.Settings
 import com.ezpnix.writeon.domain.usecase.ImportExportUseCase
 import com.ezpnix.writeon.domain.usecase.ImportResult
@@ -44,6 +45,7 @@ class SettingsViewModel @Inject constructor(
     private val settingsUseCase: SettingsUseCase,
     val noteUseCase: NoteUseCase,
     private val importExportUseCase: ImportExportUseCase,
+    private val settingsRepository: SettingsRepositoryImpl,
     @ApplicationContext private val context: Context,
     private val settingsPreferences: SettingsPreferences,
 ) : ViewModel() {
@@ -65,24 +67,47 @@ class SettingsViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            launch {
-                settingsPreferences.dynamicPlaceholder.collect { placeholder ->
-                    _dynamicPlaceholder.value = placeholder
+            val baseSettings = settingsUseCase.loadSettingsFromRepository()
+            _settings.value = baseSettings
+            settingsRepository.getTermsOfService().collect { termsAccepted ->
+                _settings.value = _settings.value.copy(termsOfService = termsAccepted)
+            }
+            settingsPreferences.columnsCount.collect { count ->
+                _settings.value = _settings.value.copy(columnsCount = count)
+                if (_settings.value.autoBackupEnabled) {
+                    startAutoBackup(context)
                 }
             }
-
-            launch {
-                settingsPreferences.columnsCount.collect { count ->
-                    val baseSettings = runBlocking(Dispatchers.IO) {
-                        settingsUseCase.loadSettingsFromRepository()
-                    }
-                    _settings.value = baseSettings.copy(columnsCount = count)
-
-                    if (_settings.value.autoBackupEnabled) {
-                        startAutoBackup(context)
-                    }
-                }
+            settingsPreferences.dynamicPlaceholder.collect { placeholder ->
+                _dynamicPlaceholder.value = placeholder
             }
+        }
+    }
+
+    private val _visibleFabItems = MutableStateFlow<Set<String>>(emptySet())
+    val visibleFabItems: StateFlow<Set<String>> = _visibleFabItems.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            settingsPreferences.visibleFabItems.collect { set ->
+                _visibleFabItems.value = set
+            }
+        }
+    }
+
+
+
+    fun updateVisibleFabItems(newSet: Set<String>) {
+        viewModelScope.launch {
+            settingsPreferences.saveVisibleFabItems(newSet)
+        }
+    }
+
+
+    fun updateTermsOfService(accepted: Boolean) {
+        _settings.value = _settings.value.copy(termsOfService = accepted)
+        viewModelScope.launch {
+            settingsRepository.saveTermsOfService(accepted)
         }
     }
 
@@ -186,7 +211,7 @@ class SettingsViewModel @Inject constructor(
 
     private fun handleBackupResult(result: BackupResult, context: Context) {
         when (result) {
-            is BackupResult.Success -> showToast("Restored! (Restart App)", context)
+            is BackupResult.Success -> showToast("Successful Backup", context)
             is BackupResult.Error -> showToast("Error", context)
             BackupResult.BadPassword -> showToast(context.getString(R.string.database_restore_error), context)
         }

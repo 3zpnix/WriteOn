@@ -161,6 +161,7 @@ private fun saveImageToAppStorage(context: Context, uri: Uri): String {
         appStorageDir.mkdirs()
     }
     val imageFile = File(appStorageDir, getImageName(uri))
+    android.util.Log.d("SaveImage", "Saving image to: ${imageFile.path}")
 
     val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
     inputStream?.use { input ->
@@ -168,7 +169,12 @@ private fun saveImageToAppStorage(context: Context, uri: Uri): String {
             input.copyTo(output)
         }
     }
-
     inputStream?.close()
-    return imageFile.path.toString()
+
+    if (imageFile.exists()) {
+        android.util.Log.d("SaveImage", "Image file exists: ${imageFile.path}")
+    } else {
+        android.util.Log.e("SaveImage", "Image file does not exist: ${imageFile.path}")
+    }
+    return Uri.fromFile(imageFile).toString()
 }
