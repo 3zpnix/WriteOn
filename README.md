@@ -1,7 +1,7 @@
 <div align="center">
   <img src="app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp" width="192" height="192" alt="App Icon" />
 
-# Write On: Simple Notepad ✅
+# WriteOn: Simple Notepad ✅
 A clean, intuitive note-taking app with *Material You* design — open source and privacy-respecting.
 
 [<img src=".github/github.png" alt="Get it on GitHub" height="55">](https://github.com/3zpnix/WriteOn/releases)
