@@ -73,6 +73,6 @@ jobs:
         run: |
           gh release create v1.8 WriteOn.apk \
             --title "v1.8" \
-            --notes "September Update~" \
+            --notes "September Update" \
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
