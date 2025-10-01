@@ -52,7 +52,7 @@ A clean, intuitive note-taking app with *Material You* design — open source an
 
 ## 💬 Contact
 
-- *Email:* ezpnix@proton.me
+- *Email:* 3zpnix@proton.me
 - *Twitter:* [@3zpnix](https://twitter.com/3zpnix)
 
 ---
